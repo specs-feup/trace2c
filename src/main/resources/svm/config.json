@@ -1,0 +1,21 @@
+{
+   "loadstores":2,
+   "inputs":[
+      "test_vector[1]",
+	  "sup_vectors[1][1]",
+	  "sv_coeff[1]"
+   ],
+   "input_types":[
+      "float",
+	  "float",
+	  "float"
+   ],
+   "outputs":"*sum",
+   "output_type": "float",
+   "folding" : "high",
+   "arithmetic" : true,
+   "acc" : true,
+   "full_part" : true,
+   "full_connect" : false,
+   "graph" : "svm_simp_2.dot"
+}
