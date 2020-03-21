@@ -17,5 +17,5 @@
    "acc" : true,
    "full_part" : true,
    "full_connect" : false,
-   "graph" : "svm_simp_2.dot"
+   "graph" : "svm_simp.dot"
 }

@@ -1270,7 +1270,7 @@ public class LaunchAlgorithm {
      *            current information to update file.
      * @return updated information file.
      */
-    public CInfo full_part(Graph g, CInfo info) {
+    public CInfo fullPartition(Graph g, CInfo info) {
         Algorithm part = new FullPartition(g.getAttribute("levelgraph"), info);
         part.init(g);
         part.compute();
@@ -1288,7 +1288,7 @@ public class LaunchAlgorithm {
      *            information file to update.
      * @return updated information file.
      */
-    public CInfo full_part_total(Graph g, CInfo info) {
+    public CInfo fullPartitionTotal(Graph g, CInfo info) {
         System.out.println("-------Checking graph for full memory partitioning-----------");
         Algorithm part = new FullPartitionNotLevel(g.getAttribute("levelgraph"), info, false);
         part.init(g);
@@ -1298,7 +1298,7 @@ public class LaunchAlgorithm {
         System.out.println("---Printing partition factors-------");
 
         for (VarIO io : info.io_info) {
-            io.print_partition();
+            io.printPartitionFactors();
         }
 
         System.out.println("-----Finished Checking graph for full memory partitioning-----------");

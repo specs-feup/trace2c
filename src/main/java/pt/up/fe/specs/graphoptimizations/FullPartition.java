@@ -83,10 +83,8 @@ public class FullPartition implements Algorithm {
                     System.out.println(ioComp.getName() + " size of list " + edgeList.size());
                 }
 
-                /*
-                This piece of code has no effect at all, please debug me!
                 for (Edge e : edgeList) {
-                    List<Integer> indexes = new ArrayList<>();
+                    List<Integer> indexes = getIndexes(e.getAttribute("label"));
 
                     for (int j = 0; j < indexes.size(); j++) {
                         if (allIndexes.size() < ioComp.getDim()) {
@@ -101,10 +99,10 @@ public class FullPartition implements Algorithm {
                     }
                 }
                 if (!accesses.isEmpty())
-                    ioComp.update_part(accesses);
+                    ioComp.updatePartitionFactor(accesses);
                 accesses.clear();
                 allIndexes.clear();
-                 */
+
                 pair.getValue().clear();
             }
 
@@ -115,5 +113,19 @@ public class FullPartition implements Algorithm {
     public CInfo getInfo() {
         info.full_part = true;
         return info;
+    }
+
+    public List<Integer> getIndexes(String name) {
+        List<Integer> indexes = new ArrayList<>();
+        String temp = name;
+        while (temp.lastIndexOf("[") != -1) {
+
+            temp = temp.substring(temp.indexOf("["));
+            String temp2 = temp.substring(1, temp.indexOf("]"));
+
+            indexes.add(Integer.parseInt(temp2));
+            temp = temp.substring(temp.indexOf("]"));
+        }
+        return indexes;
     }
 }

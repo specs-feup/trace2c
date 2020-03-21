@@ -123,11 +123,10 @@ public class FullPartitionNotLevel implements Algorithm {
                 System.out.println(ioComp.getName() + " size of list " + edgeList.size());
             }
 
-            /*
-            THIS IS ALWAYS FALSE, PLEASE DEBUG
+
             for (Edge e : edgeList) {
-                List<Integer> indexes = new ArrayList<>();
-                //int dim = getIndexes(e.getAttribute("label"), indexes);
+                List<Integer> indexes = getIndexes(e.getAttribute("label"));
+
                 for (int j = 0; j < indexes.size(); j++) {
                     if (allIndexes.size() < ioComp.getDim()) {
                         allIndexes.add(new ArrayList<>());
@@ -140,18 +139,16 @@ public class FullPartitionNotLevel implements Algorithm {
                     }
                 }
             }
-            if (unroll && graph.hasAttribute("size") && !accesses.isEmpty()) {
+            if (isToUnroll && graph.hasAttribute("size") && !accesses.isEmpty()) {
                 for (int k = 0; k < accesses.size(); k++) {
                     if (accesses.get(k) != null)
                         accesses.set(k, accesses.get(k) * Integer.parseInt(graph.getAttribute("size").toString()));
                 }
             }
             if (!accesses.isEmpty())
-                ioComp.update_part(accesses);
+                ioComp.updatePartitionFactor(accesses);
             accesses.clear();
             allIndexes.clear();
-            */
-
             pair.getValue().clear();
         }
 
@@ -164,6 +161,20 @@ public class FullPartitionNotLevel implements Algorithm {
     public CInfo getInfo() {
         info.full_part = true;
         return info;
+    }
+
+    public List<Integer> getIndexes(String name) {
+        List<Integer> indexes = new ArrayList<>();
+        String temp = name;
+        while (temp.lastIndexOf("[") != -1) {
+
+            temp = temp.substring(temp.indexOf("["));
+            String temp2 = temp.substring(1, temp.indexOf("]"));
+
+            indexes.add(Integer.parseInt(temp2));
+            temp = temp.substring(temp.indexOf("]"));
+        }
+        return indexes;
     }
 
 }

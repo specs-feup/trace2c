@@ -11,7 +11,6 @@ import pt.up.fe.specs.graphoptimizations.Loopinfo;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class CGenerateLoopPruned implements Algorithm {
     int level;
     int initv;
     int looplevel;
-    HashMap<String, String> loopVariables;
+    ArrayList<LoopNameAndIterator> loopVariables;
     boolean fold;
     boolean fullunroll;
 
@@ -55,7 +54,7 @@ public class CGenerateLoopPruned implements Algorithm {
      */
     public CGenerateLoopPruned(BufferedWriter out_c, List<Graph> graphList, Graph loop,
                                List<List<Node>> levelGraph, int level, int total_its, int plus_fold, int mult_fold,
-                               HashMap<String, String> loopVariables, int loopLevel,
+                               ArrayList<LoopNameAndIterator> loopVariables, int loopLevel,
                                boolean fold)
             throws IOException {
         this.looplevel = loopLevel;
@@ -173,13 +172,13 @@ public class CGenerateLoopPruned implements Algorithm {
             plus_fold = 0;
             mult_fold = 1;
         }
-        String loopValue = loopVariables.get(looplevel);
+        String loopIterator = loopVariables.get(looplevel).getIterator();
         incr += plus_fold;
         out_c.append(
-                "for( int " + loopValue + " =" + initv + "; "
-                        + loopValue + " < "
+                "for( int " + loopIterator + " =" + initv + "; "
+                        + loopIterator + " < "
                         + total_its / (mult_fold) + "; "
-                        + loopValue + "=" + loopValue + "+"
+                        + loopIterator + "=" + loopIterator + "+"
                         + incr + "){\n");
 
         System.out.println("graph attributes -------");
@@ -234,7 +233,7 @@ public class CGenerateLoopPruned implements Algorithm {
         System.out.println("check");
         fold = true;
 
-        loopVariables.put(struct.getAttribute("Loopname").toString(), "j");
+        loopVariables.add(new LoopNameAndIterator(struct.getAttribute("Loopname").toString(), "j"));
         Algorithm loop = new CGenerateLoopPruned(out_c, graphlist, struct, struct.getAttribute("levelgraph"),
                 struct.getAttribute("maxlevel"), N, plus_fold,
                 mult_fold,
@@ -372,18 +371,18 @@ public class CGenerateLoopPruned implements Algorithm {
 
                     newIndex = newIndex.concat("[");
                     for (Loopinfo loop : list) {
-                        for (Map.Entry<String, String> entry : loopVariables.entrySet()) {
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            if (loop.name.equals(key)) {
+                        for (LoopNameAndIterator entry : loopVariables) {
+                            String loopName = entry.getLoopName();
+                            String loopIterator = entry.getIterator();
+                            if (loop.name.equals(loopName)) {
                                 if (loop.increments.get(i) == 0) {
                                     novar++;
                                     break;
                                 }
                                 if (loop.increments.get(i) == 1) {
-                                    newIndex = newIndex.concat(value + "+");
+                                    newIndex = newIndex.concat(loopIterator + "+");
                                 } else {
-                                    newIndex = newIndex.concat("(" + loop.increments.get(i) + ")" + "*" + value + "+");
+                                    newIndex = newIndex.concat("(" + loop.increments.get(i) + ")" + "*" + loopIterator + "+");
                                 }
 
 

@@ -51,9 +51,10 @@ public class Launcher {
         String path = "";
         if (configFilename.contains("\\"))
             path = configFilename.substring(0, configFilename.lastIndexOf("\\"));
+
         File configFile = new File(configFilename);
         if (!configFile.exists()) {
-            System.out.println("File does no exist");
+            System.out.println("File does no exist on path:");
             return;
         }
         // Creating main part of tool and reading config file
@@ -120,14 +121,15 @@ public class Launcher {
         levelgraph = launch.getLevelgraph();
         if (config.full_part == true) {
             // info = launch.full_part(g, info);
-            info = launch.full_part_total(g, info);
+            info = launch.fullPartitionTotal(g, info);
         }
-        launch.writeC(g, info, "..\\work\\CodeFromGraph", "result",
+        launch.writeC(g, info, path, "result",
                 loadstore);
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
-        g.display();
+        //shapeGraph(g, false);
+        //g.display();
     }
 
     /**

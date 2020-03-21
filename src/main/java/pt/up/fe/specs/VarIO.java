@@ -17,7 +17,7 @@ public class VarIO {
     private boolean output;
     private List<Integer> size = new ArrayList<>();
     private int dim;
-    private List<Integer> part_factor = new ArrayList<>();
+    private List<Integer> partitionFactor = new ArrayList<>();
 
     /**
      * 
@@ -37,7 +37,7 @@ public class VarIO {
         this.type = new String(type);
         this.array = array;
         for (int i = 0; i < dim; i++) {
-            part_factor.add(0);
+            partitionFactor.add(0);
         }
     }
 
@@ -58,9 +58,9 @@ public class VarIO {
     * 
     * @param accesses Lisst of number of accesses to each dimension.
     */
-    public void update_part(List<Integer> accesses) {
+    public void updatePartitionFactor(List<Integer> accesses) {
         for (int j = 0; j < dim; j++) {
-            if (accesses.get(j) > part_factor.get(j)) {
+            if (accesses.get(j) > partitionFactor.get(j)) {
                 int temp = accesses.get(j);
                 //increments part factor to be a divisor of the array size
                 while ((size.get(j) % accesses.get(j)) != 0) {
@@ -70,7 +70,7 @@ public class VarIO {
                         break;
                     }
                 }
-                part_factor.set(j, accesses.get(j));
+                partitionFactor.set(j, accesses.get(j));
             }
         }
         return;
@@ -79,9 +79,9 @@ public class VarIO {
     /**
      * Prints out partitioning factor
      */
-    public void print_partition() {
+    public void printPartitionFactors() {
         System.out.println(name + " Print partition: ");
-        for (Integer i : part_factor) {
+        for (Integer i : partitionFactor) {
             System.out.println("  " + i);
         }
     }
@@ -157,7 +157,7 @@ public class VarIO {
      * @return
      */
     public List<Integer> getPartFactor() {
-        return part_factor;
+        return partitionFactor;
     }
     
     /**

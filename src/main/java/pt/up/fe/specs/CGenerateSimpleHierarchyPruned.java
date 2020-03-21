@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
 
 public class CGenerateSimpleHierarchyPruned implements Algorithm {
     Graph graph;
-    List<List<Node>> levelgraph = new ArrayList<>();
+    List<List<Node>> levelGraph;
 
     CInfo info;
     BufferedWriter out_c;
@@ -47,9 +46,9 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         this.level = level;
         this.info = info;
         this.ngraphs = 0;
-        this.path = new String(path);
+        this.path = path;
         this.function = function;
-        this.levelgraph = levelgraph;
+        this.levelGraph = levelgraph;
         if (loadstore < 17)
             this.loadstore = loadstore;
         else
@@ -64,7 +63,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         // TODO Auto-generated method stub
         this.ngraphs++;
         this.graph = graph;
-        String c_filename = new String("\\" + function + ".c");
+        String c_filename = "\\" + function + ".c";
         path = path.concat(c_filename);
 
         try {
@@ -98,12 +97,12 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
 
             out_c.append("\n\n\n\n// Step 3: write code by level\n");
             out_c.append("// Currently we write attributions and simple operations between two variables\n");
-            for (List<Node> list : levelgraph) {
+            for (List<Node> list : levelGraph) {
                 // out_c.append("// Start of Level " + levelgraph.indexOf(list) + ":\n");
 
-                if (levelgraph.indexOf(list) > 0) {
+                if (levelGraph.indexOf(list) > 0) {
                     for (Node n : list)
-                        if (n.getAttribute("att1").equals("op") && levelgraph.indexOf(list) > 1)
+                        if (n.getAttribute("att1").equals("op") && levelGraph.indexOf(list) > 1)
                             checkAndWrite(n);
                         else if (n.getAttribute("att1").equals("hyper")) {
                             if (!n.hasAttribute("done")) {
@@ -134,7 +133,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
     private void startLoop(Node n) throws IOException {
         // TODO Auto-generated method stub
         out_c.append("\n // Creating Loop\n");
-        List<Graph> graphlist = graph.getAttribute(n.getId().toString());
+        List<Graph> graphlist = graph.getAttribute(n.getId());
         Graph struct = graphlist.get(graphlist.size() - 1);
         int N;
         if (struct.hasAttribute("size"))
@@ -151,13 +150,13 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         // int maxlevel = ((LevelingAlgorithm) leveling).getLevel();
         List<List<Node>> looplevelgraph = new ArrayList<>();
         // looplevelgraph.addAll(((LevelingAlgorithm) leveling).getLevelGraph());
-
-        HashMap<String, String> variables = new HashMap<>();
-        variables.put(struct.getAttribute("Loopname").toString(), "i");
+        int loopLevel = 0;
+        ArrayList<LoopNameAndIterator> variables = new ArrayList<>();
+        variables.add(new LoopNameAndIterator(struct.getAttribute("Loopname"), "i"));
         Algorithm loop = new CGenerateLoopPruned(out_c, graphlist, struct, struct.getAttribute("levelgraph"),
                 struct.getAttribute("maxlevel"), N, plus_fold,
                 mult_fold, variables,
-                0, true);
+                loopLevel, true);
         loop.init(struct);
         loop.compute();
         return;
