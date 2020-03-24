@@ -1,0 +1,16 @@
+Digraph G{
+const0 [label=10, att1=const];
+a_1 [label=a, att1=var, att2=loc, att3=int ];
+const0->a_1 [label=1, ord=1];
+const1 [label=5, att1=const];
+b_1 [label=b, att1=var, att2=loc, att3=int ];
+op1 [label="*", att1=op ];
+const1->op1 [label=2, ord=2, pos=l];
+a_1->op1 [label=3, ord=3, pos=r];
+op1->b_1 [label=4, ord=4];
+c_1 [label=c, att1=var, att2=loc, att3=int ];
+op2 [label="*", att1=op ];
+b_1->op2 [label=5, ord=5, pos=l];
+a_1->op2 [label=6, ord=6, pos=r];
+op2->c_1 [label=7, ord=7];
+}

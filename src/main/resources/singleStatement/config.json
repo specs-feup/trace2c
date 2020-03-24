@@ -1,0 +1,15 @@
+{
+   "loadstores":2,
+   "inputs":[
+   ],
+   "input_types":[
+   ],
+   "outputs":"*a",
+   "output_type": "int",
+   "folding" : "false",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : false,
+   "full_connect" : false,
+   "graph" : "singleStatement.dot"
+}

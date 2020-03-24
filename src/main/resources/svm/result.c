@@ -1,7 +1,7 @@
 //Func created from graph [First implementation]// Step by step description of process
 // Step 1: create function header
 
-void result( float *sum, float test_vector[1], float sup_vectors[1][1], float sv_coeff[1]){
+void result( float *sum, float test_vector[18], float sup_vectors[18][1248], float sv_coeff[1248]){
 #pragma HLS array_partition variable=test_vector cyclic factor=9 dim= 1
 #pragma HLS array_partition variable=sup_vectors cyclic factor=9 dim= 1
 #pragma HLS array_partition variable=sup_vectors cyclic factor=2 dim= 2

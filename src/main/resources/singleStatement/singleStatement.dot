@@ -1,0 +1,5 @@
+Digraph G{
+const0 [label=10, att1=const];
+"*a_1" [label="*a", att1=var, att2=inte, att3=int ];
+const0->"*a_1" [label=1, ord=1];
+}

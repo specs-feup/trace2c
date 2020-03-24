@@ -1,0 +1,15 @@
+{
+   "loadstores":2,
+   "inputs":[
+   ],
+   "input_types":[
+   ],
+   "outputs":"",
+   "output_type": "",
+   "folding" : "false",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : true,
+   "full_connect" : false,
+   "graph" : "3statements.dot"
+}

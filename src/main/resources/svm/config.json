@@ -1,9 +1,9 @@
 {
    "loadstores":2,
    "inputs":[
-      "test_vector[1]",
-	  "sup_vectors[1][1]",
-	  "sv_coeff[1]"
+      "test_vector[18]",
+	  "sup_vectors[18][1248]",
+	  "sv_coeff[1248]"
    ],
    "input_types":[
       "float",
