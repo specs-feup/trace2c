@@ -53,11 +53,12 @@ public class PruneInterNode implements Algorithm {
 
             if (!a.equals("nop") && !a.equals("op")) {
 
-                if (!n.getEnteringEdge(0).getNode0().getAttribute("label").equals("start")
-                        && !n.getLeavingEdge(0).getNode1().getAttribute("label").equals("end"))
-                    removelist.add(n);
-                else
+                if (n.getEnteringEdge(0).getNode0().getAttribute("label").equals("start") ||
+                        n.getLeavingEdge(0).getNode0().getAttribute("label").equals("end")) {
                     io.add(n);
+                }
+                if (!n.getEnteringEdge(0).getNode0().getAttribute("label").equals("start"))
+                    removelist.add(n);
             }
 
         }
