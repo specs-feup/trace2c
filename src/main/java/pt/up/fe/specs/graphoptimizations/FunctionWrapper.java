@@ -7,6 +7,11 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.Graphs;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class FunctionWrapper implements Algorithm {
     private final String startNodeId;
     private final String endNodeId;
@@ -18,6 +23,7 @@ public class FunctionWrapper implements Algorithm {
     private Graph mainGraph;
     private Graph functionGraph;
     private static int functionsCounter = 1;
+    private List<String> inputParameters = new ArrayList<>();
 
     public FunctionWrapper(String startNodeId, String endNodeId) {
        this.startNodeId = startNodeId;
@@ -50,9 +56,21 @@ public class FunctionWrapper implements Algorithm {
         callNode.setAttribute("att2", functionName);
         Edge inEdge = mainGraph.addEdge("in_"+functionName, previousNode, callNode, true); // this edge should contain the call parameters
         Edge outEdge = mainGraph.addEdge("out_"+functionName, callNode, nextNode, true); // this edge should contain the return parameters
+        // Set input parameters on the inEdge
+        inEdge.addAttribute("params", inputParameters);
     }
 
     private void removeAndCopyNodesToNewGraph(Node n) {
+        if (n.hasAttribute("att1") && n.getAttribute("att1").equals("var")) {
+            if (n.hasAttribute("att2") && n.getAttribute("att2").equals("inte")) {
+                String paramName = n.getAttribute("name");
+                boolean isPointer = paramName.charAt(0) == '*';
+                if (isPointer) {
+                    paramName = paramName.substring(1);
+                }
+                inputParameters.add(paramName);
+            }
+        }
         if (n == this.endNode) {
             mainGraph.removeNode(n);
             return;

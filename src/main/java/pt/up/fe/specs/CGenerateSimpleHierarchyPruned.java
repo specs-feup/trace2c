@@ -103,10 +103,18 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
     private void writeCall(Node n) throws IOException {
         outBuffer.append(n.getAttribute("att2"));
         outBuffer.append("(");
+        boolean isFirstParam = true;
         for (Edge e: n.getEachEnteringEdge()) {
-            if (!e.getSourceNode().getId().equals("Start")) {
-                outBuffer.append("var,");
-            }
+            if (e.hasAttribute("params")) {
+                for (String param: (List<String>) e.getAttribute("params")) {
+                    if (isFirstParam) {
+                        outBuffer.append(param);
+                        isFirstParam = false;
+                    } else {
+                        outBuffer.append("," + param);
+                    }
+                }
+           }
         }
         outBuffer.append(");");
     }
