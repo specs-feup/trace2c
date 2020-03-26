@@ -80,7 +80,8 @@ public class Launcher {
 
         mainGraph = launch.Initializations(mainGraph);
         CInfo info = launch.InfoInit(mainGraph, config);
-        FunctionWrapper functionWrapper = new FunctionWrapper("const0","*a_1");
+
+        FunctionWrapper functionWrapper = new FunctionWrapper(2,"*a_1");
         functionWrapper.init(mainGraph);
         functionWrapper.compute();
         graphsWrapper.addGraph(functionWrapper.getNewGraph());
