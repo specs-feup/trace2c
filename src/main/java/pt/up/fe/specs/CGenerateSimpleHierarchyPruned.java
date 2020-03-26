@@ -6,8 +6,6 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,33 +20,24 @@ import java.util.List;
 public class CGenerateSimpleHierarchyPruned implements Algorithm {
     Graph graph;
     List<List<Node>> levelGraph;
-
+    GraphsWrapper graphsWrapper;
     CInfo info;
-    BufferedWriter out_c;
+    BufferedWriter outBuffer;
     String path;
-    Integer ngraphs;
-    String function;
-    int level;
+    int maxLevel;
     int loadstore;
 
     /**
      * 
      * @param info        information file to initialize the variables in the output function.
-     * @param path        path to output function.
-     * @param function    name of output function.
-     * @param level       highest level of the leveled graph.
-     * @param levelgraph  leveled graph.
-     * @param loadstore   number of  concurrent load/stores. 
+     * @param loadstore   number of  concurrent load/stores.
+     * @param graphsWrapper graphs wrapper
      * @throws IOException
      */
-    public CGenerateSimpleHierarchyPruned(CInfo info, String path, String function, int level,
-            List<List<Node>> levelgraph, int loadstore) throws IOException {
-        this.level = level;
+    public CGenerateSimpleHierarchyPruned(CInfo info, int loadstore, GraphsWrapper graphsWrapper, BufferedWriter outBuffer) throws IOException {
         this.info = info;
-        this.ngraphs = 0;
-        this.path = path;
-        this.function = function;
-        this.levelGraph = levelgraph;
+        this.graphsWrapper = graphsWrapper;
+        this.outBuffer = outBuffer;
         if (loadstore < 17)
             this.loadstore = loadstore;
         else
@@ -61,23 +50,9 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
      */
     public void init(Graph graph) {
         // TODO Auto-generated method stub
-        this.ngraphs++;
         this.graph = graph;
-        String c_filename = "\\" + function + ".c";
-        path = path.concat(c_filename);
-
-        try {
-            File file = new File(path);
-            System.out.println("Path: " + path);
-            out_c = new BufferedWriter(new FileWriter(file));
-            out_c.write("//Func created from graph [First implementation]");
-
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.println("Wrong path: " + path);
-            e.printStackTrace();
-            System.exit(0);
-        }
+        this.maxLevel = graph.getAttribute("maxlevel");
+        this.levelGraph = graph.getAttribute("levelgraph");
 
     }
 
@@ -90,13 +65,13 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
     public void compute() {
 
         try {
-            out_c.append("// Step by step description of process\n");
-            out_c.append("// Step 1: create function header\n");
+            outBuffer.append("// Step by step description of process\n");
+            outBuffer.append("// Step 1: create function header\n");
 
             initFunction(info);
 
-            out_c.append("\n\n\n\n// Step 3: write code by level\n");
-            out_c.append("// Currently we write attributions and simple operations between two variables\n");
+            outBuffer.append("\n\n\n\n// Step 3: write code by level\n");
+            outBuffer.append("// Currently we write attributions and simple operations between two variables\n");
             for (List<Node> list : levelGraph) {
                 // out_c.append("// Start of Level " + levelgraph.indexOf(list) + ":\n");
 
@@ -110,18 +85,30 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
                                 n.addAttribute("done", true);
                             }
 
+                        } else if (n.getAttribute("att1").equals("call")) {
+                            writeCall(n);
                         }
 
                 }
-                out_c.append("\n");
+                outBuffer.append("\n");
             }
-            out_c.append("}\n");
-            out_c.close();
+            outBuffer.append("}\n");
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private void writeCall(Node n) throws IOException {
+        outBuffer.append(n.getAttribute("att2"));
+        outBuffer.append("(");
+        for (Edge e: n.getEachEnteringEdge()) {
+            if (!e.getSourceNode().getId().equals("Start")) {
+                outBuffer.append("var,");
+            }
+        }
+        outBuffer.append(");");
     }
 
     /**
@@ -132,7 +119,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
      */
     private void startLoop(Node n) throws IOException {
         // TODO Auto-generated method stub
-        out_c.append("\n // Creating Loop\n");
+        outBuffer.append("\n // Creating Loop\n");
         List<Graph> graphlist = graph.getAttribute(n.getId());
         Graph struct = graphlist.get(graphlist.size() - 1);
         int N;
@@ -140,20 +127,13 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
             N = struct.getAttribute("size");
         else
             N = graphlist.size() - 1;
-        System.out.println("here");
-        // struct.display();
-        /* Algorithm leveling = new LevelingAlgorithm();
-        leveling.init(struct);
-        leveling.compute();*/
+
         int plus_fold = struct.getAttribute("plus_fold");
         int mult_fold = struct.getAttribute("mult_fold");
-        // int maxlevel = ((LevelingAlgorithm) leveling).getLevel();
-        List<List<Node>> looplevelgraph = new ArrayList<>();
-        // looplevelgraph.addAll(((LevelingAlgorithm) leveling).getLevelGraph());
         int loopLevel = 0;
         ArrayList<LoopNameAndIterator> variables = new ArrayList<>();
         variables.add(new LoopNameAndIterator(struct.getAttribute("Loopname"), "i"));
-        Algorithm loop = new CGenerateLoopPruned(out_c, graphlist, struct, struct.getAttribute("levelgraph"),
+        Algorithm loop = new CGenerateLoopPruned(outBuffer, graphlist, struct, struct.getAttribute("levelgraph"),
                 struct.getAttribute("maxlevel"), N, plus_fold,
                 mult_fold, variables,
                 loopLevel, true);
@@ -171,37 +151,38 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
      * @throws IOException
      */
     private void initFunction(CInfo info) throws IOException {
-        out_c.append("\nvoid " + function + "( ");
+        outBuffer.append("\nvoid " + this.graph.getNode("Start").getAttribute("att2") + "( ");
 
+        // write function parameters
         for (VarIO var : info.io_info) {
             if (var.isArray()) {
-                out_c.append(var.getType() + " " + var.getName());
+                outBuffer.append(var.getType() + " " + var.getName());
                 List<Integer> indexes = var.getSize();
                 for (int i = 0; i < var.getDim(); i++) {
-                    out_c.append("[" + indexes.get(i) + "]");
+                    outBuffer.append("[" + indexes.get(i) + "]");
 
                 }
 
             } else
-                out_c.append(var.getType() + " " + var.getName());
+                outBuffer.append(var.getType() + " " + var.getName());
 
             if ((info.io_info.indexOf(var) + 1) != info.io_info.size())
-                out_c.append(", ");
+                outBuffer.append(", ");
 
         }
-        out_c.append("){\n");
+        outBuffer.append("){\n");
         if (info.full_part) {
             for (VarIO var : info.io_info) {
                 List<Integer> part = var.getPartFactor();
                 for (int dim = 0; dim < var.getDim(); dim++) {
                     if (var.isArray()) {
                         if (part.get(dim) != 0) {
-                            out_c.append(
+                            outBuffer.append(
                                     "#pragma HLS array_partition variable=" + var.getName() + " cyclic factor=");
                             if (dim < 1)
-                                out_c.append((part.get(dim) + 1) / 2 + " dim= " + (dim + 1) + "\n");
+                                outBuffer.append((part.get(dim) + 1) / 2 + " dim= " + (dim + 1) + "\n");
                             else
-                                out_c.append((part.get(dim)) + " dim= " + (dim + 1) + "\n");
+                                outBuffer.append((part.get(dim)) + " dim= " + (dim + 1) + "\n");
 
                         }
                     }
@@ -212,7 +193,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
             if (loadstore > 2) {
                 for (VarIO var : info.io_info) {
                     if (var.isArray()) {
-                        out_c.append(
+                        outBuffer.append(
                                 "#pragma HLS array_partition variable=" + var.getName() + " cyclic factor="
                                         + (loadstore + 2 - 1) / 2 + "\n");
 
@@ -220,19 +201,19 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
                 }
             }
         }
-        out_c.append("// Step 2: Initialize local variables\n");
+        outBuffer.append("// Step 2: Initialize local variables\n");
         for (VarLoc var : info.localInfo) {
             if (var.getType().equals("global")) {
                 continue;
             }
             if (var.isArray())
-                out_c.append(var.getType() + " " + var.getName() + "[" + var.getSize() + "];\n");
+                outBuffer.append(var.getType() + " " + var.getName() + "[" + var.getSize() + "];\n");
             else
-                out_c.append(var.getType() + " " + var.getName() + ";\n");
+                outBuffer.append(var.getType() + " " + var.getName() + ";\n");
 
         }
 
-        out_c.append("// Initialization done\n");
+        outBuffer.append("// Initialization done\n");
     }
 
     /**
@@ -249,13 +230,13 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
             for (Edge res : n.getEachLeavingEdge()) {
                 if (n.hasAttribute("mod")) {
                     if (n.getAttribute("mod").equals("sqr")) {
-                        out_c.append(res.getAttribute("label").toString() + n.getAttribute("label").toString()
+                        outBuffer.append(res.getAttribute("label").toString() + n.getAttribute("label").toString()
                                 + n.getEnteringEdge(0).getAttribute("label").toString() + " * "
                                 + n.getEnteringEdge(0).getAttribute("label").toString() + ";\n");
                     }
 
                 } else
-                    out_c.append(res.getAttribute("label").toString() + n.getAttribute("label").toString()
+                    outBuffer.append(res.getAttribute("label").toString() + n.getAttribute("label").toString()
                             + n.getEnteringEdge(0).getAttribute("label").toString() + ";\n");
             }
             return;
@@ -293,10 +274,10 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         for (Edge res : n.getEachLeavingEdge()) {
             String name = res.getAttribute("label").toString();
             if (in0.getAttribute("pos").toString().equals("l"))
-                out_c.append(name + "=" + name0 + " " +
+                outBuffer.append(name + "=" + name0 + " " +
                         n.getAttribute("label").toString() + " " + name1 + ";\n");
             else
-                out_c.append(name + "=" + name1 + " " +
+                outBuffer.append(name + "=" + name1 + " " +
                         n.getAttribute("label").toString() + " " + name0 + ";\n");
         }
         return;

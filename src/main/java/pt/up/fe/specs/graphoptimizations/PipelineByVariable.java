@@ -481,10 +481,10 @@ public class PipelineByVariable implements Algorithm {
      */
     private boolean compareEdge(Edge e0, Edge e1) {
 
-        String label0 = e0.getAttribute("label");
-        String label1 = e1.getAttribute("label");
-        String type0 = e0.getAttribute("att1");
-        String type1 = e1.getAttribute("att1");
+        String label0 = e0.getAttribute("label").toString();
+        String label1 = e1.getAttribute("label").toString();
+        String type0 = e0.getAttribute("att1").toString();
+        String type1 = e1.getAttribute("att1").toString();
 
         String temptemp = new String();
         List<Integer> indexes0 = new ArrayList<>();
@@ -1261,12 +1261,12 @@ public class PipelineByVariable implements Algorithm {
                         if (e.getNode0().getAttribute("att1").equals("var")) {
                             pipeline.addNode(e.getNode0().getId());
                             Graphs.copyAttributes(e.getNode0(), pipeline.getNode(e.getNode0().getId()));
-                            pipeline.addEdge(e.getId().toString(), pipeline.getNode(e.getNode0().getId()).toString(),
-                                    unroll.get(i).getId().toString(), true);
+                            pipeline.addEdge(e.getId(), pipeline.getNode(e.getNode0().getId()).toString(),
+                                    unroll.get(i).getId(), true);
                             Graphs.copyAttributes(e, pipeline.getEdge(e.getId()));
                         } else {
-                            pipeline.addEdge(e.getId().toString(), pipeline.getNode("HyperNode").toString(),
-                                    unroll.get(i).getId().toString(), true);
+                            pipeline.addEdge(e.getId(), pipeline.getNode("HyperNode").toString(),
+                                    unroll.get(i).getId(), true);
 
                             Graphs.copyAttributes(e, pipeline.getEdge(e.getId()));
 

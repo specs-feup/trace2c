@@ -28,17 +28,32 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../diss_compiling2fpgas_20/framework 6" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/singleStatement" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement" />
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\3statements" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement" />
       <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\svm" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.singleStatement">
+    <configuration name="3statements" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\3statements\config.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="SVM Launcher" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
       <module name="trace2c.main" />
@@ -47,6 +62,21 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="singleStatement" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\singleStatement\config.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.3statements" />
+      <item itemvalue="Application.singleStatement" />
+      <item itemvalue="Application.SVM Launcher" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.SVM Launcher" />
@@ -54,14 +84,26 @@
     </recent_temporary>
   </component>
   <component name="WindowStateProjectService">
+    <state x="677" y="178" key="#3statements" timestamp="1585061366886">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="677" y="178" key="#3statements/0.0.1920.1040@0.0.1920.1040" timestamp="1585061366886" />
     <state x="552" y="178" key="#Project_Structure" timestamp="1584286090496">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1584286090496" />
-    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584468567780">
+    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585063878447">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584468567780" />
+    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585063878447" />
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1585149485897">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585149485897" />
+    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585060897784">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585060897784" />
     <state x="808" y="409" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1584369408656">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -70,10 +112,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="445" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584286964625" />
-    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1584471674156">
+    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1585219957315">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584471674156" />
+    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585219957315" />
     <state width="433" height="466" key="DebuggerActiveHint" timestamp="1584459052905">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -82,38 +124,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584560765429" />
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.0.center" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.0.left" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.0.right" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.1.center" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.1.left" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
-    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1584749338331">
+    <state width="1877" height="348" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right" timestamp="1585236319894">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1584749338331" />
+    <state width="1877" height="348" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585236319894" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1584369378690">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -122,14 +164,14 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="776" y="298" key="chooseDestDirectoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584286210843" />
-    <state x="661" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1584556410853">
+    <state x="661" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1585235442405">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="661" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584556410853" />
-    <state x="1043" y="131" width="737" height="909" key="find.popup" timestamp="1584287336619">
+    <state x="661" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585235442405" />
+    <state x="1043" y="131" width="737" height="909" key="find.popup" timestamp="1585222761852">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1043" y="131" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1584287336619" />
+    <state x="1043" y="131" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1585222761852" />
     <state x="342" y="132" key="new project wizard" timestamp="1584560759170">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -154,8 +196,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/LaunchAlgorithm.java</url>
-          <line>882</line>
+          <line>892</line>
           <option name="timeStamp" value="7" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/PipelineByVariable.java</url>
+          <line>1267</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Launcher.java</url>
+          <line>91</line>
+          <option name="timeStamp" value="58" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -164,6 +216,15 @@
         <watch expression="graph" />
         <watch expression="levelGraph" language="JAVA" />
         <watch expression="levelgraph.get(15)" />
+        <watch expression="n" />
+        <watch expression="n" language="JAVA" />
+        <watch expression="n" language="JAVA" />
+        <watch expression="levelGraph.get(1)" />
+        <watch expression="graph" />
+        <watch expression="graph" language="JAVA" />
+        <watch expression="graph" language="JAVA" />
+        <watch expression="mainGraph" />
+        <watch expression="graphsWrapper.graphs" />
       </configuration>
     </watches-manager>
   </component>

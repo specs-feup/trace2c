@@ -18,7 +18,7 @@ import java.util.List;
  *
  */
 public class SeparatePruned implements Algorithm {
-    List<Graph> separategraphlist = new ArrayList<>();
+    List<Graph> separategraphlist;
     List<List<List<Node>>> listlevelgraph = new ArrayList<>();
     Graph graph;
     Graph commongraph = new DefaultGraph("commongraph");

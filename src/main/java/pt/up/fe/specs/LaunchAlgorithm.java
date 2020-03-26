@@ -34,8 +34,6 @@ import java.util.List;
  */
 public class LaunchAlgorithm {
 
-    private static int maxlevel;
-    private static List<List<Node>> levelgraph = new ArrayList<>();
     private boolean separated = false;
     private boolean parallel_access_optimized = false;
     private boolean only_IO = false;
@@ -66,14 +64,14 @@ public class LaunchAlgorithm {
 
     /**
      * Method that applies the initialization algorithms for the graph before the pruning. Currently the only applied
-     * algorithm is removing local vectors.
+     * algorithm is removing local vectors and adding the start and end nodes.
      * 
      * @param graph
      *            Graph to be manipulated
      * @return changed Graph
      */
     public Graph Initializations(Graph graph) {
-
+        add_start_end(graph);
         Algorithm lvecprun = new LocalVectorPruning();
         lvecprun.init(graph);
         lvecprun.compute();
@@ -116,7 +114,6 @@ public class LaunchAlgorithm {
      */
     public Graph Prune(Graph graph) {
 
-        add_start_end(graph);
         Algorithm prune = new PruneInterNode();
         prune.init(graph);
         prune.compute();
@@ -156,8 +153,6 @@ public class LaunchAlgorithm {
         Algorithm level = new LevelingAlgorithmExt();
         level.init(graph);
         level.compute();
-        maxlevel = ((LevelingAlgorithmExt) level).getLevel();
-        levelgraph.addAll(((LevelingAlgorithmExt) level).getLevelGraph());
 
         return graph;
 
@@ -548,24 +543,38 @@ public class LaunchAlgorithm {
     /**
      * Call the algorithm to generate C output.
      * 
-     * @param graph
-     *            Graph to output. Has to be the upper level of the hierarchy.
+     * @param graphs
+     *            Graphs to output. Each graph represents a function that is the upper level of the hierarchy.
      * @param info
      *            Variable information obtained for the variable initializations.
      * @param path
      *            path to place result
-     * @param file
-     *            name of the output C code.
      * @param loadstore
      *            user defined number of concurrent load/stores.
      * @throws IOException
      */
-    public void writeC(Graph graph, CInfo info, String path, String file, int loadstore) throws IOException {
-        Algorithm genClevel = new CGenerateSimpleHierarchyPruned(info, path,
-                file, graph.getAttribute("maxlevel"),
-                graph.getAttribute("levelgraph"), loadstore);
-        genClevel.init(graph);
-        genClevel.compute();
+    public void writeC(GraphsWrapper graphs, CInfo info, String path, int loadstore) throws IOException {
+        String c_filename = "\\result.c";
+        path = path.concat(c_filename);
+
+        try {
+            File file = new File(path);
+            System.out.println("Path: " + path);
+            BufferedWriter outBuffer = new BufferedWriter(new FileWriter(file));
+            Algorithm genClevel = new CGenerateSimpleHierarchyPruned(info, loadstore, graphs, outBuffer);
+            for(Graph graph : graphs.getAllGraphs()) {
+
+                genClevel.init(graph);
+                genClevel.compute();
+            }
+            outBuffer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Wrong path: " + path);
+            e.printStackTrace();
+            System.exit(0);
+        }
+
     }
 
     /**
@@ -581,6 +590,7 @@ public class LaunchAlgorithm {
             startNode = g.addNode("Start");
             startNode.addAttribute("label", "start");
             startNode.addAttribute("att1", "nop");
+            startNode.addAttribute("att2", "main_func");
         }
         if (endNode == null) {
             endNode = g.addNode("End");
@@ -1381,24 +1391,6 @@ public class LaunchAlgorithm {
 
         }
         return;
-    }
-
-    /**
-     * Get max level of leveled graph
-     * 
-     * @return the max level.
-     */
-    public int getMaxLevel() {
-        return maxlevel;
-    }
-
-    /**
-     * Get leveled graph.
-     * 
-     * @return
-     */
-    public List<List<Node>> getLevelgraph() {
-        return levelgraph;
     }
 
     /**

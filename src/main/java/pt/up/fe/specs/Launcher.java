@@ -7,6 +7,7 @@ import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.file.FileSinkDOT;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
+import pt.up.fe.specs.graphoptimizations.FunctionWrapper;
 import pt.up.fe.specs.graphoptimizations.HierarchyHandling;
 
 import java.io.File;
@@ -21,10 +22,6 @@ import java.util.List;
  *
  */
 public class Launcher {
-
-    private static int maxlevel;
-    private static List<List<Node>> levelgraph = new ArrayList<>();
-    // static pt.up.fe.specs.CInfo info;
 
     public static void main(String args[]) throws IOException {
         System.out.println("Framework");
@@ -41,9 +38,10 @@ public class Launcher {
         // Clock timer
         long startTime = System.currentTimeMillis();
         // Creating Graph
-        Graph g = new DefaultGraph("g");
+        Graph mainGraph = new DefaultGraph("mainGraph");
+        GraphsWrapper graphsWrapper = new GraphsWrapper(mainGraph);
         // Getting config file
-        CInfo info = null;
+
         if(args.length < 1) {
             throw new Error("Indicate path to config file");
         }
@@ -76,55 +74,61 @@ public class Launcher {
         // "..\\work\\fir_basic\\fir_basic.dot"
         // "..\\work\\Sobbel\\edge_detect.dot"
         // "..\\work\\SVM\\svm_simp.dot"
-        fs.addSink(g);
+        fs.addSink(mainGraph);
 
         fs.readAll(path + "\\" + config.graph);
 
-        g = launch.Initializations(g);
-        System.out.println("Init done");
+        mainGraph = launch.Initializations(mainGraph);
+        CInfo info = launch.InfoInit(mainGraph, config);
+        FunctionWrapper functionWrapper = new FunctionWrapper("const0","*a_1");
+        functionWrapper.init(mainGraph);
+        functionWrapper.compute();
+        graphsWrapper.addGraph(functionWrapper.getNewGraph());
 
-        info = launch.InfoInit(g, config);
-        System.out.println("Info done");
-        System.out.println("Node count " + g.getNodeCount() + " Edge count " + g.getEdgeCount());
+        for (Graph graph: graphsWrapper.getAllGraphs()) {
+            launch.Prune(graph);
+        }
 
-        g = launch.Prune(g);
-        System.out.println("Prune done");
-        System.out.println("Node count " + g.getNodeCount() + " Edge count " + g.getEdgeCount());
         info.print();
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
         if (config.folding.equals("high") || config.folding.equals("medium")) {
-            g = launch.separateGraph(g, info, "s");
+            mainGraph = launch.separateGraph(mainGraph, info, "s");
             long sepTime = System.currentTimeMillis();
             System.out.println("Separate time:" + (sepTime - startTime));
-            g = launch.separeteFoldExt(g, true);
+            mainGraph = launch.separeteFoldExt(mainGraph, true);
             System.out.println("separate done");
 
             long matchTime = System.currentTimeMillis();
             System.out.println("Match time:" + (matchTime - startTime));
 
-            g = launch.parallelAccessOptimization(g, access, arithmetic);
+            mainGraph = launch.parallelAccessOptimization(mainGraph, access, arithmetic);
 
             HierarchyHandling hierarchy = new HierarchyHandling();
-            g = hierarchy.trimHierarchy(g);
+            mainGraph = hierarchy.trimHierarchy(mainGraph);
             if (config.folding.equals("high"))
-                g = launch.pipeline(g, "s", true);
+                mainGraph = launch.pipeline(mainGraph, "s", true);
 
-            launch.setFoldingByLoadStore(loadstore, null, g, true);
+            launch.setFoldingByLoadStore(loadstore, null, mainGraph, true);
 
-            g = launch.unfoldAllandArithmeticOPt(g, 0, true, true, config);
+            mainGraph = launch.unfoldAllandArithmeticOPt(mainGraph, 0, true, true, config);
         }
-        info = launch.InfoUpdate(g, info);
-        g = launch.Leveling(g);
-        maxlevel = launch.getMaxLevel();
-        levelgraph = launch.getLevelgraph();
+
+
+
+
+
+        for (Graph graph: graphsWrapper.getAllGraphs()) {
+            launch.InfoUpdate(mainGraph, info);
+            launch.Leveling(graph);
+        }
+
         if (config.full_part == true) {
-            // info = launch.full_part(g, info);
-            info = launch.fullPartitionTotal(g, info);
+            info = launch.fullPartitionTotal(mainGraph, info);
         }
-        launch.writeC(g, info, path, "result",
-                loadstore);
+
+        launch.writeC(graphsWrapper, info, path, loadstore);
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
