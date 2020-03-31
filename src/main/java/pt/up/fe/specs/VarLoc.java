@@ -11,22 +11,20 @@ import java.util.List;
  */
 public class VarLoc {
 
-    private boolean array;
-    private String name;
-    private String type;
-    private List<Integer> size = new ArrayList<>();
-    private int dim;
+    protected boolean array;
+    protected String name;
+    protected String type;
+    protected List<Integer> size = new ArrayList<>();
+    protected int dim;
 
     public VarLoc(String type, String name, boolean array, int dim, List<Integer> indexes) {
         if (indexes == null)
             this.size.add(0);
         else
             this.size = indexes;
-        this.size = indexes;
-
         this.dim = dim;
-        this.name = new String(name);
-        this.type = new String(type);
+        this.name = name;
+        this.type = type;
         this.array = array;
     }
     /**

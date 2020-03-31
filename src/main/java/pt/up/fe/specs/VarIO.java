@@ -8,15 +8,8 @@ import java.util.List;
  * @author Afonso
  *
  */
-public class VarIO {
-
-    private boolean array;
-    private String name;
-    private String type;
-    private boolean input;
-    private boolean output;
+public class VarIO extends VarLoc {
     private List<Integer> size = new ArrayList<>();
-    private int dim;
     private List<Integer> partitionFactor = new ArrayList<>();
 
     /**
@@ -28,14 +21,7 @@ public class VarIO {
      * @param indexes indexes of array access.
      */
     public VarIO(String type, String name, boolean array, int dim, List<Integer> indexes) {
-        if (indexes == null)
-            this.size.add(0);
-        else
-            this.size.addAll(indexes);
-        this.dim = dim;
-        this.name = new String(name);
-        this.type = new String(type);
-        this.array = array;
+        super(type, name,array,dim,indexes);
         for (int i = 0; i < dim; i++) {
             partitionFactor.add(0);
         }
@@ -86,38 +72,6 @@ public class VarIO {
         }
     }
 
-    /**
-     * 
-     * @param t 
-     */
-    public void setInput(boolean t) {
-        input = t;
-    }
-
-    /**
-     * 
-     * @param t
-     */
-    public void setOutput(boolean t) {
-        output = t;
-    }
-
-    
-    /**
-     * Reurns true if variable is an input to the graph. 
-     * @return
-     */
-    public boolean getInput() {
-        return input;
-    }
-
-    /**
-     * Returns true if the variable is an output of the graph.
-     * @return
-     */
-    public boolean getOutput() {
-        return output;
-    }
 
     /**
      * Returns name of variable.
