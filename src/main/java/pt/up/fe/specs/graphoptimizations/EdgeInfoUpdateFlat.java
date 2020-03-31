@@ -8,6 +8,7 @@ import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.VarLoc;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -30,8 +31,8 @@ public class EdgeInfoUpdateFlat implements Algorithm {
     public EdgeInfoUpdateFlat(CInfo info) {
         // TODO Auto-generated constructor stub
         this.info = info;
-        this.info.localInfo.clear();
-        this.info.variablesCounter.clear();
+        this.info.clearLocalInfo();
+        this.info.clearVariablesCounter();
         wireNumber = 0;
 
     }
@@ -71,6 +72,8 @@ public class EdgeInfoUpdateFlat implements Algorithm {
         boolean isToWrite = false;
         String tempName;
         String newLabel;
+        List<VarLoc> localInfo = info.getLocalInfo();
+        HashMap<String, Integer> variablesCounter = info.getVariablesCounter();
 
         for (Node n : graph) {
             List<Node> search = new ArrayList<>();
@@ -138,7 +141,7 @@ public class EdgeInfoUpdateFlat implements Algorithm {
                                             indexes = null;
                                         }
 
-                                        for (VarLoc var : info.localInfo) {
+                                        for (VarLoc var : localInfo) {
                                             if (var.getName().equals(tempName)) {
 
                                                 if (isArray)
@@ -148,17 +151,16 @@ public class EdgeInfoUpdateFlat implements Algorithm {
                                             }
                                         }
                                         String key = e.getAttribute("label").toString();
-                                        if (info.variablesCounter.containsKey(key)) {
-                                            Integer counter = info.variablesCounter.get(key);
-                                            info.variablesCounter.put(key, counter + 1);
+                                        if (variablesCounter.containsKey(key)) {
+                                            Integer counter = variablesCounter.get(key);
+                                            variablesCounter.put(key, counter + 1);
                                         } else {
-                                            info.variablesCounter.put(key, 1);
+                                            variablesCounter.put(key, 1);
                                         }
 
 
                                         if (!isCont) {
-                                            info.localInfo
-                                                    .add(new VarLoc(e.getAttribute("att3"), tempName, isArray, dim,
+                                            localInfo.add(new VarLoc(e.getAttribute("att3"), tempName, isArray, dim,
                                                             indexes));
 
                                         }
@@ -166,11 +168,11 @@ public class EdgeInfoUpdateFlat implements Algorithm {
 
                                     if (e.getAttribute("att2").equals("inte")) {
                                         String key = e.getAttribute("label").toString();
-                                        if (info.variablesCounter.containsKey(key)) {
-                                            int counter = info.variablesCounter.get(key);
-                                            info.variablesCounter.put(key, counter + 1);
+                                        if (variablesCounter.containsKey(key)) {
+                                            int counter = variablesCounter.get(key);
+                                            variablesCounter.put(key, counter + 1);
                                         } else {
-                                            info.variablesCounter.put(key, 1);
+                                            variablesCounter.put(key, 1);
                                         }
                                     }
 
