@@ -51,13 +51,13 @@ public class PruneInterNode implements Algorithm {
         for (Node n : graph) {
             String a = n.getAttribute("att1").toString();
 
-            if (!a.equals("nop") && !a.equals("op")) {
+            if (!a.equals("nop") && !a.equals("call") && !a.equals("op")) {
 
-                if (n.getEnteringEdge(0).getNode0().getAttribute("label").equals("start") ||
-                        n.getLeavingEdge(0).getNode0().getAttribute("label").equals("end")) {
+                if (n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start") ||
+                        n.getLeavingEdge(0).getTargetNode().getAttribute("label").equals("end")) {
                     io.add(n);
                 }
-                if (!n.getEnteringEdge(0).getNode0().getAttribute("label").equals("start"))
+                if (!n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start"))
                     removelist.add(n);
             }
 
@@ -83,18 +83,18 @@ public class PruneInterNode implements Algorithm {
      * @param n Node to handled.
      */
     public void removeIntermediate(Node n) {
-        Node prev1 = n.getEnteringEdge(0).getNode0();
-        Node nxt = n.getLeavingEdge(0).getNode1();
+        Node prev1 = n.getEnteringEdge(0).getSourceNode();
+        Node nxt = n.getLeavingEdge(0).getTargetNode();
         boolean not_remove = false;
 
         if (prev1.getAttribute("att1").equals("op") && nxt.getAttribute("att1").equals("op")) {
 
             for (Edge e : n.getEachLeavingEdge()) {
-                if (e.getNode1().getAttribute("att1").equals("var"))
-                    System.out.println("name " + n.getId() + " next " + e.getNode1().getId());
+                if (e.getTargetNode().getAttribute("att1").equals("var"))
+                    System.out.println("name " + n.getId() + " next " + e.getTargetNode().getId());
                 ne++;
                 try {
-                    Edge newEdge = graph.addEdge(prev1.getId() + "->" + e.getNode1().getId() + "_" + ne, prev1, e.getNode1(),
+                    Edge newEdge = graph.addEdge(prev1.getId() + "->" + e.getTargetNode().getId() + "_" + ne, prev1, e.getTargetNode(),
                             true);
                     Graphs.copyAttributes(e, newEdge);
                     Graphs.copyAttributes(n, newEdge);
@@ -106,7 +106,6 @@ public class PruneInterNode implements Algorithm {
                         not_remove = true;
                     }
                 }
-
             }
             if (!not_remove)
                 graph.removeNode(n);
