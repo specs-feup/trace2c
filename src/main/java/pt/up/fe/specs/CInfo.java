@@ -12,55 +12,64 @@ import java.util.*;
  */
 
 public class CInfo {
-    public List<VarIO> io_info = new ArrayList<VarIO>();
-    public List<VarLoc> localInfo = new ArrayList<>();
-    public HashMap<String, Integer> variablesCounter = new HashMap<>();
-    public boolean full_part = false;
+    private List<VarIO> inputs = new ArrayList<>();
+    private List<VarIO> outputs = new ArrayList<>();
+    private List<VarLoc> localInfo = new ArrayList<>();
+    private HashMap<String, Integer> variablesCounter = new HashMap<>();
+    private boolean isFullPartition = false;
 
-    /**
-     * Prints the stored contents
-     *
-     */
-    public void print() {
-        System.out.println(" ");
-        System.out.println("------ printing information file contents--------- ");
-        
-        if (localInfo != null) {
-            for (VarLoc var : localInfo) {
-                System.out.println("Name: " + var.getName() + " Size: " + var.getSize());
-
-            }
-        }
-
-        if (io_info != null) {
-            for (VarIO var : io_info) {
-                System.out
-                        .println("Name: " + var.getName() + " Size: " + var.getSize() + " isInput: " + var.getInput()
-                                + "  isOutput: " + var.getOutput() + "  Dim: " + var.getDim());
-            }
-        }
-        
-        System.out.println("---------------------------------------------------");
-        System.out.println(" ");
+    public void addInput(VarIO input) {
+        inputs.add(input);
     }
 
-    /**
-     * Prints the counter of the variable. 
-     */
-    public void printcounter() {    
-        System.out.println(" ");
-        System.out.println("------ printing counters --------- ");
-
-        if (variablesCounter != null) {
-            for (Map.Entry<String, Integer> pair : variablesCounter.entrySet()) {
-                System.out
-                        .println(
-                                "variable : " + pair.getKey() + " counter: " + pair.getValue());
-            }
-        }
-        
-        System.out.println("------------------------------------- ");
-        System.out.println(" ");
+    public void addOutput(VarIO output) {
+        this.outputs.add(output);
     }
+
+    public void clearLocalInfo() {
+        this.localInfo.clear();
+    }
+
+    public void clearVariablesCounter() {
+        this.variablesCounter.clear();
+    }
+    public List<VarIO> getInputs() {
+        return inputs;
+    }
+
+    public void setInputs(List<VarIO> inputs) {
+        this.inputs = inputs;
+    }
+
+    public List<VarIO> getOutputs() {
+        return outputs;
+    }
+
+
+    public List<VarLoc> getLocalInfo() {
+        return localInfo;
+    }
+
+    public void setLocalInfo(List<VarLoc> localInfo) {
+        this.localInfo = localInfo;
+    }
+
+    public HashMap<String, Integer> getVariablesCounter() {
+        return variablesCounter;
+    }
+
+    public void setVariablesCounter(HashMap<String, Integer> variablesCounter) {
+        this.variablesCounter = variablesCounter;
+    }
+
+    public boolean isFullPartition() {
+        return isFullPartition;
+    }
+
+    public void setFullPartition(boolean fullPartition) {
+        this.isFullPartition = fullPartition;
+    }
+
+
 
 }
