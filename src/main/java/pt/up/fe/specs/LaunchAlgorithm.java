@@ -100,6 +100,7 @@ public class LaunchAlgorithm {
         info = ((CInfoAlgorithm) getinfo).getInfo();
 
         info = io_fromGson(info, config);
+        graph.setAttribute("info", info);
         return info;
 
     }
@@ -125,16 +126,15 @@ public class LaunchAlgorithm {
      * 
      * @param graph
      *            Graph to analyze
-     * @param info
-     *            Cinfo object to update
      * @return updated information
      */
-    public CInfo InfoUpdate(Graph graph, CInfo info) {
+    public CInfo InfoUpdate(Graph graph) {
+        CInfo info = graph.getAttribute("info");
         System.out.println(" ");
         System.out.println("--------Updating information for writing--------------");
-        Algorithm getinfo = new EdgeInfoUpdateFlat(info);
-        getinfo.init(graph);
-        getinfo.compute();
+        Algorithm getInfoAlgorithm = new EdgeInfoUpdateFlat(info);
+        getInfoAlgorithm.init(graph);
+        getInfoAlgorithm.compute();
         System.out.println("-----Finished updating information for writing--------------");
         System.out.println(" ");
         return info;
@@ -250,13 +250,13 @@ public class LaunchAlgorithm {
      * 
      * @param graph
      *            Graph to be separated.
-     * @param info
      * @param out
      *            Output of the graph defined by the user in the configurations.
      * @return A graph with the common nodes and a node storing the unique graphs.
      * @throws IOException
      */
-    public Graph separateGraph(Graph graph, CInfo info, String out) throws IOException {
+    public Graph separateGraph(Graph graph, String out) throws IOException {
+        CInfo info = graph.getAttribute("info");
         System.out.println("");
         System.out.println("----------Acquiring separate dataflows per output--------------");
         out = output_name;
@@ -545,15 +545,13 @@ public class LaunchAlgorithm {
      * 
      * @param graphs
      *            Graphs to output. Each graph represents a function that is the upper level of the hierarchy.
-     * @param info
-     *            Variable information obtained for the variable initializations.
      * @param path
      *            path to place result
      * @param loadstore
      *            user defined number of concurrent load/stores.
      * @throws IOException
      */
-    public void writeC(GraphsWrapper graphs, CInfo info, String path, int loadstore) throws IOException {
+    public void writeC(GraphsWrapper graphs, String path, int loadstore) throws IOException {
         String c_filename = "\\result.c";
         path = path.concat(c_filename);
 
@@ -561,7 +559,7 @@ public class LaunchAlgorithm {
             File file = new File(path);
             System.out.println("Path: " + path);
             BufferedWriter outBuffer = new BufferedWriter(new FileWriter(file));
-            Algorithm genClevel = new CGenerateSimpleHierarchyPruned(info, loadstore, graphs, outBuffer);
+            Algorithm genClevel = new CGenerateSimpleHierarchyPruned(loadstore, graphs, outBuffer);
             for(Graph graph : graphs.getAllGraphs()) {
 
                 genClevel.init(graph);
@@ -665,12 +663,7 @@ public class LaunchAlgorithm {
      *            list of separate sequences to order.
      */
     private static void OrderSequences(CInfo info, List<Graph> graphlist) {
-        List<VarIO> outputs = new ArrayList<>();
-        for (VarIO io : info.io_info) {
-
-            if (io.getOutput())
-                outputs.add(io);
-        }
+        List<VarIO> outputs = info.getOutputs();
 
         if (outputs.get(0).getDim() == 1) {
             outputdim = 1;
@@ -1294,12 +1287,11 @@ public class LaunchAlgorithm {
      * 
      * @param g
      *            Graph to analyze
-     * @param info
-     *            information file to update.
      * @return updated information file.
      */
-    public CInfo fullPartitionTotal(Graph g, CInfo info) {
+    public CInfo fullPartitionTotal(Graph g) {
         System.out.println("-------Checking graph for full memory partitioning-----------");
+        CInfo info = g.getAttribute("info");
         Algorithm part = new FullPartitionNotLevel(g.getAttribute("levelgraph"), info, false);
         part.init(g);
         part.compute();
@@ -1307,7 +1299,7 @@ public class LaunchAlgorithm {
 
         System.out.println("---Printing partition factors-------");
 
-        for (VarIO io : info.io_info) {
+        for (VarIO io : info.getInputs()) {
             io.printPartitionFactors();
         }
 
@@ -1404,28 +1396,24 @@ public class LaunchAlgorithm {
      */
     public CInfo io_fromGson(CInfo info, Config config) {
         if (config.outputs.contains("["))
-            output_name = new String(config.outputs.substring(0,
-                    config.outputs.indexOf("[")));
+            output_name = config.outputs.substring(0, config.outputs.indexOf("["));
         else
-            output_name = new String(config.outputs);
+            output_name = config.outputs;
         List<Integer> indexes = new ArrayList<>();
         int dim = getIndexes(config.outputs, indexes);
         VarIO out = new VarIO(config.output_type, output_name, config.outputs.contains("["), dim, indexes);
-        out.setOutput(true);
-        info.io_info.add(out);
+        info.addOutput(out);
         for (int i = 0; i < config.inputs.size(); i++) {
             String in_name;
             if (config.inputs.get(i).contains("["))
-                in_name = new String(config.inputs.get(i).substring(0,
-                        config.inputs.get(i).indexOf("[")));
+                in_name = config.inputs.get(i).substring(0, config.inputs.get(i).indexOf("["));
             else
-                in_name = new String(config.inputs.get(i));
+                in_name = config.inputs.get(i);
             indexes = new ArrayList<>();
             dim = getIndexes(config.inputs.get(i), indexes);
 
-            VarIO in = new VarIO(config.output_type, in_name, config.inputs.get(i).contains("["), dim, indexes);
-            in.setInput(true);
-            info.io_info.add(in);
+            VarIO in = new VarIO(config.input_types.get(i), in_name, config.inputs.get(i).contains("["), dim, indexes);
+            info.addInput(in);
         }
         return info;
     }
