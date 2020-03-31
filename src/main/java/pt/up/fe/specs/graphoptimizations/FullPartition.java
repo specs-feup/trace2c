@@ -17,12 +17,15 @@ public class FullPartition implements Algorithm {
     private List<List<Node>> levelGraph;
     private CInfo info;
     private HashMap<String, List<Edge>> ioMap = new HashMap<>();
+    private ArrayList<VarIO> inputsAndOutputs = new ArrayList<>();
 
     public FullPartition(List<List<Node>> levelgraph, CInfo info) {
         // TODO Auto-generated constructor stub
         this.levelGraph = levelgraph;
         this.info = info;
-        for (VarIO io : info.io_info) {
+        inputsAndOutputs.addAll(info.getInputs());
+        inputsAndOutputs.addAll(info.getOutputs());
+        for (VarIO io : inputsAndOutputs) {
             ioMap.put(io.getName(), new ArrayList<>());
         }
     }
@@ -75,7 +78,7 @@ public class FullPartition implements Algorithm {
                 List<List<Integer>> allIndexes = new ArrayList<>();
                 List<Integer> accesses = new ArrayList<>();
                 VarIO ioComp = null;
-                for (VarIO io : info.io_info) {
+                for (VarIO io : inputsAndOutputs) {
                     if (io.getName().equals(pair.getKey()))
                         ioComp = io;
                 }
@@ -111,7 +114,6 @@ public class FullPartition implements Algorithm {
     }
 
     public CInfo getInfo() {
-        info.full_part = true;
         return info;
     }
 

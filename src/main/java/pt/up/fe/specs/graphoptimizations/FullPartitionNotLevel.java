@@ -25,6 +25,7 @@ public class FullPartitionNotLevel implements Algorithm {
     private CInfo info;
     private HashMap<String, List<Edge>> ioList = new HashMap<>();
     private boolean isToUnroll;
+    private ArrayList<VarIO> inputsAndOutputs = new ArrayList<>();
 
     
     /**
@@ -38,7 +39,9 @@ public class FullPartitionNotLevel implements Algorithm {
         this.isToUnroll = isToUnroll;
         this.levelGraph = levelGraph;
         this.info = info;
-        for (VarIO io : info.io_info) {
+        inputsAndOutputs.addAll(info.getInputs());
+        inputsAndOutputs.addAll(info.getOutputs());
+        for (VarIO io : inputsAndOutputs) {
             ioList.put(io.getName(), new ArrayList<>());
         }
     }
@@ -115,7 +118,7 @@ public class FullPartitionNotLevel implements Algorithm {
             List<List<Integer>> allIndexes = new ArrayList<>();
             List<Integer> accesses = new ArrayList<>();
             VarIO ioComp = null;
-            for (VarIO io : info.io_info) {
+            for (VarIO io : inputsAndOutputs) {
                 if (io.getName().equals(pair.getKey()))
                     ioComp = io;
             }
@@ -159,7 +162,6 @@ public class FullPartitionNotLevel implements Algorithm {
      * @return
      */
     public CInfo getInfo() {
-        info.full_part = true;
         return info;
     }
 
