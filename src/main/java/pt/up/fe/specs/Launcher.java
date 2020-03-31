@@ -27,13 +27,8 @@ public class Launcher {
         System.out.println("Framework");
         // variables used for optimizations before configuration file
         int loadstore = 1;
-        boolean pruned = true;
-        boolean pipe = true;
-        boolean simple = false;
-        boolean parallel = true;
         boolean arithmetic = false;
         boolean access = false;
-        boolean full_part = false;
 
         // Clock timer
         long startTime = System.currentTimeMillis();
@@ -79,9 +74,9 @@ public class Launcher {
         fs.readAll(path + "\\" + config.graph);
 
         mainGraph = launch.Initializations(mainGraph);
-        CInfo info = launch.InfoInit(mainGraph, config);
+        launch.InfoInit(mainGraph, config);
 
-        FunctionWrapper functionWrapper = new FunctionWrapper(2,"*a_1");
+        FunctionWrapper functionWrapper = new FunctionWrapper(2,"op1");
         functionWrapper.init(mainGraph);
         functionWrapper.compute();
         graphsWrapper.addGraph(functionWrapper.getNewGraph());
@@ -90,12 +85,11 @@ public class Launcher {
             launch.Prune(graph);
         }
 
-        info.print();
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
         if (config.folding.equals("high") || config.folding.equals("medium")) {
-            mainGraph = launch.separateGraph(mainGraph, info, "s");
+            mainGraph = launch.separateGraph(mainGraph, "s");
             long sepTime = System.currentTimeMillis();
             System.out.println("Separate time:" + (sepTime - startTime));
             mainGraph = launch.separeteFoldExt(mainGraph, true);
@@ -118,18 +112,16 @@ public class Launcher {
 
 
 
-
-
         for (Graph graph: graphsWrapper.getAllGraphs()) {
-            launch.InfoUpdate(mainGraph, info);
+            launch.InfoUpdate(graph);
             launch.Leveling(graph);
         }
 
         if (config.full_part == true) {
-            info = launch.fullPartitionTotal(mainGraph, info);
+            launch.fullPartitionTotal(mainGraph);
         }
 
-        launch.writeC(graphsWrapper, info, path, loadstore);
+        launch.writeC(graphsWrapper, path, loadstore);
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
