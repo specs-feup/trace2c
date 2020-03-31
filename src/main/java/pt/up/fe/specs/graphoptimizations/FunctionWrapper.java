@@ -6,9 +6,13 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.Graphs;
+import pt.up.fe.specs.CInfo;
+import pt.up.fe.specs.VarIO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Wraps a sub-graph into a new graph that represents a new function
@@ -22,8 +26,7 @@ public class FunctionWrapper implements Algorithm {
     private Graph functionGraph;
     private int totalLevels;
     private static int functionsCounter = 1;
-    private List<String> inputParameters = new ArrayList<>();
-    private List<Node> nodesThatConnectToFunction = new ArrayList<>();
+    private HashMap<Node, Node> nodesThatConnectToFunction = new HashMap<>(); //Maps nodes to it's respective input parameters
     private List<Node> nodesThatFunctionConnectsTo = new ArrayList<>();
 
     public FunctionWrapper(Integer levels, String endNodeId) {
@@ -48,17 +51,35 @@ public class FunctionWrapper implements Algorithm {
         removeAndCopyNodesToNewGraph(endNode, 1);
         addCallNodeToMainGraph();
         addStartAndEnd(functionGraph);
+        addInputsAndOutputsToFunctionGraph();
+    }
 
+
+    private void addInputsAndOutputsToFunctionGraph() {
+        CInfo info = new CInfo();
+        for (Node param : nodesThatConnectToFunction.values()) {
+            VarIO input = new VarIO(param.getAttribute("att3"), param.getAttribute("label"), false, 0, new ArrayList<>());
+            info.addInput(input);
+            if (param.getAttribute("att2").equals("loc")) {
+                Node nodeInFunc = functionGraph.getNode(param.getId());
+                nodeInFunc.setAttribute("att2", "inte");
+            }
+        }
+        for (Node entry : nodesThatFunctionConnectsTo) {
+            VarIO output = new VarIO(entry.getAttribute("att3"), entry.getAttribute("label"), false, 0, new ArrayList<>());
+            info.addOutput(output);
+        }
+        functionGraph.setAttribute("info", info);
     }
 
     private void addCallNodeToMainGraph() {
         Node callNode = mainGraph.addNode("call_"+functionName);
         callNode.setAttribute("att1", "call");
         callNode.setAttribute("att2", functionName);
-        for (int i = 0; i < nodesThatConnectToFunction.size() ; i++) {
-            Node previousNode = nodesThatConnectToFunction.get(i);
-            Edge inEdge = mainGraph.addEdge("in_"+i+"_"+functionName, previousNode, callNode, true); // this edge should contain the call parameters
-            inEdge.addAttribute("params", inputParameters);
+
+        callNode.setAttribute("label", "call_"+functionName);
+        for (Map.Entry<Node, Node> entry : nodesThatConnectToFunction.entrySet()) {
+            mainGraph.addEdge("in_"+entry.getKey().getAttribute("label")+"_"+functionName, entry.getKey(), callNode, true); // this edge should contain the call parameters
         }
         for (int i = 0; i < nodesThatFunctionConnectsTo.size(); i++) {
             Node nextNode = nodesThatFunctionConnectsTo.get(i);
@@ -69,24 +90,18 @@ public class FunctionWrapper implements Algorithm {
 
     private void removeAndCopyNodesToNewGraph(Node n, int currentLevel) {
         if (currentLevel > this.totalLevels) {
-            nodesThatConnectToFunction.add(n);
+            nodesThatConnectToFunction.put(n, n.getLeavingEdge(0).getTargetNode());
             return;
         }
-        if (n.hasAttribute("att1") && n.getAttribute("att1").equals("var")) {
-            if (n.hasAttribute("att2") && n.getAttribute("att2").equals("inte")) {
-                String paramName = n.getAttribute("name");
-                boolean isPointer = paramName.charAt(0) == '*';
-                if (isPointer) {
-                    paramName = paramName.substring(1);
-                }
-                inputParameters.add(paramName);
-            }
-        }
-
 
         Node currentNodeInFunc = functionGraph.addNode(n.getId());
         Graphs.copyAttributes(n, currentNodeInFunc);
-        for(Edge e : n.getEachEnteringEdge()){
+
+        // This conversion from iterable to list was necessary due to a bug caused by using the iterable
+        List<Edge> enteringEdges = new ArrayList<>();
+        n.getEachEnteringEdge().forEach(enteringEdges::add);
+
+        enteringEdges.forEach(e -> {
             Node prevNodeInMain = e.getSourceNode();
             removeAndCopyNodesToNewGraph(prevNodeInMain, currentLevel+1);
             if (currentLevel < this.totalLevels) {
@@ -94,8 +109,8 @@ public class FunctionWrapper implements Algorithm {
                 Edge edgeInFunc = functionGraph.addEdge(e.getId(), prevNodeInFunc, currentNodeInFunc, true);
                 Graphs.copyAttributes(e, edgeInFunc);
             }
+        });
 
-        }
         mainGraph.removeNode(n);
 
     }
@@ -129,9 +144,6 @@ public class FunctionWrapper implements Algorithm {
                 g.addEdge("begin to:" + n.getId(), startNode, n, true);
             else if (n.getOutDegree() == 0 && !n.equals(endNode) && !n.equals(startNode))
                 g.addEdge("end from:" + n.getId(), n, endNode, true);
-
-
-
         }
     }
 }
