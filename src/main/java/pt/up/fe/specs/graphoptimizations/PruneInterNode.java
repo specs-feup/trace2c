@@ -47,15 +47,14 @@ public class PruneInterNode implements Algorithm {
      */
     public void compute() {
         // TODO Auto-generated method stub
-        List<Node> io = new ArrayList<>();
+        List<Node> inputs = new ArrayList<>();
         for (Node n : graph) {
             String a = n.getAttribute("att1").toString();
 
             if (!a.equals("nop") && !a.equals("call") && !a.equals("op")) {
 
-                if (n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start") ||
-                        n.getLeavingEdge(0).getTargetNode().getAttribute("label").equals("end")) {
-                    io.add(n);
+                if (n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start")) {
+                    inputs.add(n);
                 }
                 if (!n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start"))
                     removelist.add(n);
@@ -66,7 +65,7 @@ public class PruneInterNode implements Algorithm {
         for (Node n : removelist)
             removeIntermediate(n);
 
-        for (Node n : io) {
+        for (Node n : inputs) {
             for (Edge e : n.getEachEdge()) {
                 Graphs.copyAttributes(n, e);
             }
