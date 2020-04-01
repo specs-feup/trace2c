@@ -23,6 +23,7 @@ public class Config {
     boolean full_part;
     String graph;
     boolean full_connect;
+    List<WrapConfig> wraps = new ArrayList<>();
 
     public Config() {
         // TODO Auto-generated constructor stub
