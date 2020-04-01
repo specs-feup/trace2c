@@ -8,6 +8,7 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.Graphs;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.VarIO;
+import pt.up.fe.specs.WrapConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,9 +30,9 @@ public class FunctionWrapper implements Algorithm {
     private HashMap<Node, Node> nodesThatConnectToFunction = new HashMap<>(); //Maps nodes to it's respective input parameters
     private List<Node> nodesThatFunctionConnectsTo = new ArrayList<>();
 
-    public FunctionWrapper(Integer levels, String endNodeId) {
-       this.endNodeId = endNodeId;
-       this.totalLevels = levels;
+    public FunctionWrapper(WrapConfig wrapConfig) {
+       this.endNodeId = wrapConfig.getEndNode();
+       this.totalLevels = wrapConfig.getLevels();
        this.functionName = "func"+ functionsCounter++;
 
     }
@@ -58,15 +59,21 @@ public class FunctionWrapper implements Algorithm {
     private void addInputsAndOutputsToFunctionGraph() {
         CInfo info = new CInfo();
         for (Node param : nodesThatConnectToFunction.values()) {
-            VarIO input = new VarIO(param.getAttribute("att3"), param.getAttribute("label"), false, 0, new ArrayList<>());
-            info.addInput(input);
-            if (param.getAttribute("att2").equals("loc")) {
-                Node nodeInFunc = functionGraph.getNode(param.getId());
-                nodeInFunc.setAttribute("att2", "inte");
+            if (!param.getAttribute("att1").equals("const")) {
+                VarIO input = new VarIO(param.getAttribute("att3"), param.getAttribute("label"), false, 0, new ArrayList<>());
+                info.addInput(input);
+                if (param.getAttribute("att2").equals("loc")) {
+                    Node nodeInFunc = functionGraph.getNode(param.getId());
+                    nodeInFunc.setAttribute("att2", "inte");
+                }
             }
+
         }
-        for (Node entry : nodesThatFunctionConnectsTo) {
-            VarIO output = new VarIO(entry.getAttribute("att3"), entry.getAttribute("label"), false, 0, new ArrayList<>());
+        for (Edge entry : functionGraph.getNode("End").getEachEnteringEdge()) {
+            Node sourceNode = entry.getSourceNode();
+            String outputType = sourceNode.getAttribute("att3");
+            String outputName = sourceNode.getAttribute("label");
+            VarIO output = new VarIO(outputType, outputName, false, 0, new ArrayList<>());
             info.addOutput(output);
         }
         functionGraph.setAttribute("info", info);
@@ -79,7 +86,8 @@ public class FunctionWrapper implements Algorithm {
 
         callNode.setAttribute("label", "call_"+functionName);
         for (Map.Entry<Node, Node> entry : nodesThatConnectToFunction.entrySet()) {
-            mainGraph.addEdge("in_"+entry.getKey().getAttribute("label")+"_"+functionName, entry.getKey(), callNode, true); // this edge should contain the call parameters
+            Edge inEdge = mainGraph.addEdge("in_"+entry.getKey().getAttribute("label")+"_"+functionName, entry.getKey(), callNode, true); // this edge should contain the call parameters
+            inEdge.setAttribute("att2", "inte");
         }
         for (int i = 0; i < nodesThatFunctionConnectsTo.size(); i++) {
             Node nextNode = nodesThatFunctionConnectsTo.get(i);
@@ -142,8 +150,13 @@ public class FunctionWrapper implements Algorithm {
         for (Node n : g.getEachNode()) {
             if (n.getInDegree() == 0 && !n.equals(startNode) && !n.equals(endNode))
                 g.addEdge("begin to:" + n.getId(), startNode, n, true);
-            else if (n.getOutDegree() == 0 && !n.equals(endNode) && !n.equals(startNode))
+            else if (n.getOutDegree() == 0 && !n.equals(endNode) && !n.equals(startNode)) {
+
                 g.addEdge("end from:" + n.getId(), n, endNode, true);
+
+            }
+
+
         }
     }
 }
