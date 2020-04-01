@@ -4,12 +4,17 @@
    ],
    "input_types":[
    ],
-   "outputs":"*a",
+   "outputs":"a",
    "output_type": "int",
    "folding" : "false",
    "arithmetic" : false,
    "acc" : false,
    "full_part" : false,
    "full_connect" : false,
-   "graph" : "singleStatement.dot"
+   "graph" : "singleStatement.dot",
+   "wraps" : [
+      {
+         "end_node": "a_1",
+         "levels": 2
+      }]
 }
