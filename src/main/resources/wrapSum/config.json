@@ -11,5 +11,10 @@
    "acc" : false,
    "full_part" : false,
    "full_connect" : false,
-   "graph" : "wrapSum.dot"
+   "graph" : "wrapSum.dot",
+   "wraps" : [
+      {
+         "end_node": "op1",
+         "levels": 2
+      }]
 }
