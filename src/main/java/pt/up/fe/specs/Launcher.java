@@ -76,10 +76,13 @@ public class Launcher {
         mainGraph = launch.Initializations(mainGraph);
         launch.InfoInit(mainGraph, config);
 
-        FunctionWrapper functionWrapper = new FunctionWrapper(2,"op1");
-        functionWrapper.init(mainGraph);
-        functionWrapper.compute();
-        graphsWrapper.addGraph(functionWrapper.getNewGraph());
+        for (WrapConfig wrap : config.wraps) {
+            FunctionWrapper functionWrapper = new FunctionWrapper(wrap);
+            functionWrapper.init(mainGraph);
+            functionWrapper.compute();
+            graphsWrapper.addGraph(functionWrapper.getNewGraph());
+        }
+
 
         for (Graph graph: graphsWrapper.getAllGraphs()) {
             launch.Prune(graph);
