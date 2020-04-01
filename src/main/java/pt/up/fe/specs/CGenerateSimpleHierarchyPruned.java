@@ -67,10 +67,8 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
 
             outBuffer.append("\n\n\n\n// Step 3: write code by level\n");
             outBuffer.append("// Currently we write attributions and simple operations between two variables\n");
-            for (List<Node> list : levelGraph) {
-                // out_c.append("// Start of Level " + levelgraph.indexOf(list) + ":\n");
-
-                if (levelGraph.indexOf(list) > 0) {
+            for (int i = 1; i < levelGraph.size() -1; i++) {
+                List<Node> list = levelGraph.get(i);
                     for (Node n : list) {
                         String att1 = n.getAttribute("att1");
                         if (att1.equals("op") && levelGraph.indexOf(list) > 1) {
@@ -81,17 +79,14 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
                                 n.addAttribute("done", true);
                             }
 
-                        } else if (att1.equals("call")) {
-                            if (!n.getLeavingEdge(0).getAttribute("label").equals("=")){
+                        } else if (att1.equals("call") && n.getLeavingEdge(0).hasAttribute("label")) {
+                            if (!n.getLeavingEdge(0).getTargetNode().getAttribute("label").equals("=")){
                                 // write only if the return value is not assigned, otherwise write as an operation
                                 writeCall(n);
                             }
 
                         }
                     }
-
-
-                }
                 outBuffer.append("\n");
             }
             writeReturn();
@@ -106,8 +101,16 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
     private void writeReturn() throws IOException {
         Node endNode = graph.getNode("End");
         Node previousNode = endNode.getEnteringEdge(0).getSourceNode();
-        if (previousNode.getAttribute("att1").equals("op") && !previousNode.getAttribute("label").equals("=")) {
-            outBuffer.append("return " + getOperationInC(previousNode) + ";\n");
+        if (previousNode.getAttribute("att1").equals("op")) {
+            if (!previousNode.getAttribute("label").equals("=")) {
+                outBuffer.append("return " + getOperationInC(previousNode) + ";\n");
+            } else {
+                outBuffer.append("return " + endNode.getEnteringEdge(0).getAttribute("label") + ";\n");
+            }
+        } else if (previousNode.getAttribute("att1").equals("call")) {
+            outBuffer.append("return ");
+            writeCall(previousNode);
+            outBuffer.append("\n");
         } else {
             CInfo info =  graph.getAttribute("info");
             List<VarIO> outputs = info.getOutputs();
@@ -162,13 +165,15 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         outBuffer.append("(");
         boolean isFirstParam = true;
         for (Edge e : n.getEachEnteringEdge()) {
-            String param = e.getAttribute("label").toString();
+            if (e.hasAttribute("label")) {
+                String param = e.getAttribute("label").toString();
                 if (isFirstParam) {
                     outBuffer.append(param);
                     isFirstParam = false;
                 } else {
                     outBuffer.append("," + param);
                 }
+            }
         }
         outBuffer.append(");");
     }
@@ -205,18 +210,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
 
     }
 
-    /**
-     * Creates the output function header and the lines of code that initialize the local variables in the
-     * output  C code.
-     *
-     * @throws IOException
-     */
-    private void initFunction() throws IOException {
-        CInfo info = this.graph.getAttribute("info");
-        String outputType = info.getOutputs().isEmpty() ? "void" : info.getOutputs().get(0).getType();
-        outBuffer.append("\n"+ outputType + " " + this.graph.getNode("Start").getAttribute("att2") + "(");
-
-        // write function parameters
+    private void writeFunctionParameters(CInfo info) throws IOException {
         boolean isFirstParam = true;
         for (VarIO var : info.getInputs()) {
             if (!isFirstParam) {
@@ -235,6 +229,21 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
             }
         }
         outBuffer.append("){\n");
+    }
+
+    /**
+     * Creates the output function header and the lines of code that initialize the local variables in the
+     * output  C code.
+     *
+     * @throws IOException
+     */
+    private void initFunction() throws IOException {
+        CInfo info = this.graph.getAttribute("info");
+        String outputType = info.getOutputs().isEmpty() ? "void" : info.getOutputs().get(0).getType();
+        outBuffer.append("\n"+ outputType + " " + this.graph.getNode("Start").getAttribute("att2") + "(");
+
+        writeFunctionParameters(info);
+
         if (info.isFullPartition()) {
             for (VarIO var : info.getInputs()) {
                 List<Integer> part = var.getPartFactor();
@@ -301,7 +310,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
                     }
 
                 } else if (enteringEdge.getSourceNode().getAttribute("att1").equals("call")) {
-                    outBuffer.append(leavingEdge.getAttribute("name") + "= ");
+                    outBuffer.append(leavingEdge.getAttribute("label") + "= ");
                     writeCall(enteringEdge.getSourceNode());
                 }
                 else {
@@ -314,9 +323,9 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         }
         String operationInC = getOperationInC(n);
 
-        for (Edge res : n.getEachLeavingEdge()) {
-            if (!res.getTargetNode().getAttribute("label").equals("end")) {
-                String name = res.getAttribute("label").toString();
+        for (Edge leaveEdge : n.getEachLeavingEdge()) {
+            if (!leaveEdge.getTargetNode().getAttribute("label").equals("end")) {
+                String name = leaveEdge.getAttribute("label").toString();
                 outBuffer.append(name + "=" + operationInC + ";\n");
             }
         }
