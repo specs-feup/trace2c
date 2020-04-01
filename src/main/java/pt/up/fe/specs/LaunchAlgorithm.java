@@ -63,8 +63,8 @@ public class LaunchAlgorithm {
     }
 
     /**
-     * Method that applies the initialization algorithms for the graph before the pruning. Currently the only applied
-     * algorithm is removing local vectors and adding the start and end nodes.
+     * Method that applies the initialization algorithms for the graph before the pruning. 
+     * Currently adds the start and end nodes, removes local vectors, and sets att3 on operations. 
      * 
      * @param graph
      *            Graph to be manipulated
@@ -75,7 +75,9 @@ public class LaunchAlgorithm {
         Algorithm lvecprun = new LocalVectorPruning();
         lvecprun.init(graph);
         lvecprun.compute();
-
+        Algorithm setOpTypesAlgo = new SetOperationTypes();
+        setOpTypesAlgo.init(graph);
+        setOpTypesAlgo.compute();
         return graph;
 
     }
