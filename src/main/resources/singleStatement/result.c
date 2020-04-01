@@ -1,7 +1,7 @@
 // Step by step description of process
 // Step 1: create function header
 
-void main_func( int *a){
+int main_func(){
 // Step 2: Initialize local variables
 // Initialization done
 
@@ -11,14 +11,14 @@ void main_func( int *a){
 // Step 3: write code by level
 // Currently we write attributions and simple operations between two variables
 
-func1();
-
+return func1();
 }
 // Step by step description of process
 // Step 1: create function header
 
-void func1( int *a){
+int func1(){
 // Step 2: Initialize local variables
+int a;
 // Initialization done
 
 
@@ -27,8 +27,7 @@ void func1( int *a){
 // Step 3: write code by level
 // Currently we write attributions and simple operations between two variables
 
+a=10.0;
 
-*a=10.0;
-
-
+return a;
 }
