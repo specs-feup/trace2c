@@ -1,12 +1,9 @@
 // Step by step description of process
 // Step 1: create function header
 
-void main_func( int c){
+int main_func(){
 // Step 2: Initialize local variables
-int c_w0;
-int a_w1;
-int b;
-int b_w2;
+int c;
 // Initialization done
 
 
@@ -16,12 +13,22 @@ int b_w2;
 // Currently we write attributions and simple operations between two variables
 
 
-a_w1=10.0;
-b_w2=20.0;
+c= func1(20.0,10.0);
+return c;
+}
+// Step by step description of process
+// Step 1: create function header
 
-c_w0=a_w1 + b_w2;
+int func1(int b,int a){
+// Step 2: Initialize local variables
+// Initialization done
 
-c=c_w0;
 
 
+
+// Step 3: write code by level
+// Currently we write attributions and simple operations between two variables
+
+
+return a + b;
 }

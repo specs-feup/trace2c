@@ -27,7 +27,7 @@ int sumTwoLocalVars() {
 
     int b = 20;
 
-    fprintf(f, "c_%d [label=c, att1=var, att2=loc, att3=int ];\n", ++n_c);
+    fprintf(f, "\"c_%d\" [label=\"c\", att1=var, att2=loc, att3=int ];\n", ++n_c);
     n_op++;
     fprintf(f, "op%d [label=\"+\", att1=op ];\n", n_op);
     ne++;
@@ -35,17 +35,18 @@ int sumTwoLocalVars() {
     ne++;
     fprintf(f, "b_%d->op%d [label=%d, ord=%d, pos=r];\n", n_b, n_op, ne, ne);
     ne++;
-    fprintf(f, "op%d->c_%d [label=%d, ord=%d];\n", n_op, n_c, ne, ne);
+    fprintf(f, "op%d->\"c_%d\" [label=%d, ord=%d];\n", n_op, n_c, ne, ne);
 
 
     int c = a + b; // the objective is to wrap the sum in a function and get something like "int c = func1(a,b);"
-
+    
     fprintf(f, "}");
     fclose(f);
     return c;
 }
 
 int main() {
+    
     int c = sumTwoLocalVars();
     printf("c=%d", c);
     return 0;
