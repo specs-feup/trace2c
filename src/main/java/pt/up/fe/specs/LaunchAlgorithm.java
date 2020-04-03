@@ -333,7 +333,7 @@ public class LaunchAlgorithm {
      * @return matched graph.
      * @throws IOException
      */
-    public Graph separeteFoldExt(Graph graph, boolean opt) throws IOException {
+    public Graph separateFoldExt(Graph graph, boolean opt) throws IOException {
         boolean full = true;
         if (separated) {
             System.out.println("");
