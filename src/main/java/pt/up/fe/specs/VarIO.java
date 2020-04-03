@@ -9,7 +9,6 @@ import java.util.List;
  *
  */
 public class VarIO extends VarLoc {
-    private List<Integer> size = new ArrayList<>();
     private List<Integer> partitionFactor = new ArrayList<>();
 
     /**
