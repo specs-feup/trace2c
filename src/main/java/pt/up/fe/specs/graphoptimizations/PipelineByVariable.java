@@ -20,26 +20,26 @@ public class PipelineByVariable implements Algorithm {
 
     String variable;
     Graph graph;
-    List<Edge> pipelineoutputs = new ArrayList<>();
-    public Graph subgraph;;
-    List<List<List<Node>>> nodestomatchlist = new ArrayList<>();
-    List<List<Node>> nodestomatch = new ArrayList<>();
-    List<List<Node>> inputnodes = new ArrayList<>();
+    List<Edge> pipelineOutputs = new ArrayList<>();
+    public Graph subGraph;;
+    List<List<List<Node>>> nodesToMatchList = new ArrayList<>();
+    List<List<Node>> nodesToMatch = new ArrayList<>();
+    List<List<Node>> inputNodes = new ArrayList<>();
     HashMap<Node, Boolean> conflictNodes = new HashMap<>();
-    String loopname = "pipeline";
+    String loopName = "pipeline";
     String n_id;
-    int endlevel = 0;
-    int startlevel = 0;
-    int currlevel = 0;
-    int npipelines = 0;
+    int endLevel = 0;
+    int startLevel = 0;
+    int currLevel = 0;
+    int nPipelines = 0;
     boolean loop = true;
     boolean traversal = false;
-    List<List<Node>> templist;
+    List<List<Node>> tempList;
     boolean cut_top = false;
     boolean cut_bottom = false;
-    boolean unsuccsefull = false;
-    List<Integer> prevloopsize = new ArrayList<>();
-    List<String> prevloopnames = new ArrayList<>();
+    boolean unsuccessful = false;
+    List<Integer> prevLoopSize = new ArrayList<>();
+    List<String> prevLoopNames = new ArrayList<>();
 
     /**
      * 
@@ -58,9 +58,9 @@ public class PipelineByVariable implements Algorithm {
         this.variable = variable;
         this.loop = hierarchy;
         this.traversal = traversal;
-        this.currlevel = level;
-        subgraph = new DefaultGraph("subgraph_" + level);
-        loopname = loopname.concat(id);
+        this.currLevel = level;
+        subGraph = new DefaultGraph("subgraph_" + level);
+        loopName = loopName.concat(id);
         n_id = id;
     }
 
@@ -73,7 +73,7 @@ public class PipelineByVariable implements Algorithm {
     public void init(Graph graph) {
         // TODO Auto-generated method stub
         this.graph = graph;
-        Graphs.copyAttributes(graph, subgraph);
+        Graphs.copyAttributes(graph, subGraph);
         // get all writes of variable
         Node n0 = graph.getNode("End");
         List<Node> templist_2 = new ArrayList<>();
@@ -84,29 +84,29 @@ public class PipelineByVariable implements Algorithm {
         while (!templist_2.isEmpty()) {
             for (Node n : templist_2) {
                 if (n.getAttribute("att1").toString().equals("hyper") && traversal) {
-                    Algorithm pipe = new PipelineByVariable(variable, true, true, currlevel + 1, n_id);
+                    Algorithm pipe = new PipelineByVariable(variable, true, true, currLevel + 1, n_id);
                     List<Graph> temp = null;
                     temp = graph.getAttribute(n.getId());
                     pipe.init(temp.get(temp.size() - 1));
-                    if (unsuccsefull == true)
+                    if (unsuccessful == true)
                         return;
                     pipe.compute();
 
                     // subgraph = ((PipelineByVariable) pipe).getSubGraph();
                     // npipelined += ((PipelineByVariable) pipe).getNPipelined();
-                    prevloopnames = ((PipelineByVariable) pipe).getMatchedLoopname();
-                    prevloopsize = ((PipelineByVariable) pipe).getMatchedLoopsize();
-                    nodestomatch = ((PipelineByVariable) pipe).getInputs();
-                    startlevel = ((PipelineByVariable) pipe).getStartLevel();
-                    pipelineoutputs = ((PipelineByVariable) pipe).getOutputs();
+                    prevLoopNames = ((PipelineByVariable) pipe).getMatchedLoopname();
+                    prevLoopSize = ((PipelineByVariable) pipe).getMatchedLoopsize();
+                    nodesToMatch = ((PipelineByVariable) pipe).getInputs();
+                    startLevel = ((PipelineByVariable) pipe).getStartLevel();
+                    pipelineOutputs = ((PipelineByVariable) pipe).getOutputs();
                     String tempid = null;
-                    subgraph.addNode(n.getId());
+                    subGraph.addNode(n.getId());
 
-                    Graphs.copyAttributes(n, subgraph.getNode(n.getId()));
+                    Graphs.copyAttributes(n, subGraph.getNode(n.getId()));
                     // ((PipelineByVariable) pipe).getSubGraph().display();
-                    subgraph.getNode(n.getId()).addAttribute("merge", ((PipelineByVariable) pipe).getSubGraph());
+                    subGraph.getNode(n.getId()).addAttribute("merge", ((PipelineByVariable) pipe).getSubGraph());
 
-                    for (List<Node> list : nodestomatch) {
+                    for (List<Node> list : nodesToMatch) {
                         for (Node nn : list) {
                             tempid = nn.getId();
                             Node aux = graph.getNode(tempid);
@@ -115,39 +115,41 @@ public class PipelineByVariable implements Algorithm {
                         }
                     }
 
-                    for (Node nn : nodestomatch.get(0)) {
+                    for (Node nn : nodesToMatch.get(0)) {
                         // System.out.println("Cont " + nn.getId());
-                        subgraph.addNode(nn.getId());
-                        Graphs.copyAttributes(nn, subgraph.getNode(nn.getId()));
+                        subGraph.addNode(nn.getId());
+                        Graphs.copyAttributes(nn, subGraph.getNode(nn.getId()));
 
-                        subgraph.addEdge(nn.getLeavingEdge(0).getId().toString(),
-                                subgraph.getNode(nn.getId()).getIndex(),
-                                subgraph.getNode(n.getId()).getIndex(), true);
+                        subGraph.addEdge(nn.getLeavingEdge(0).getId(),
+                                subGraph.getNode(nn.getId()).getIndex(),
+                                subGraph.getNode(n.getId()).getIndex(), true);
                         Graphs.copyAttributes(nn.getLeavingEdge(0),
-                                subgraph.getEdge(nn.getLeavingEdge(0).getId().toString()));
+                                subGraph.getEdge(nn.getLeavingEdge(0).getId()));
 
                     }
-                    nodestomatchlist.add(nodestomatch);
+                    nodesToMatchList.add(nodesToMatch);
                     conflictNodes = ((PipelineByVariable) pipe).getConflictNodes();
 
                 }
 
                 for (Edge e : n.getEachEnteringEdge()) {
+                    if (!n.getId().equals("End")) {
+                        if (e.hasAttribute("name")) {
+                            if (e.getNode0().getAttribute("att1").toString().equals("op")
+                                    && e.getAttribute("name").toString().equals(variable)) {
+                                pipelineOutputs.add(e);
 
-                    if (e.hasAttribute("name")) {
-                        if (e.getNode0().getAttribute("att1").toString().equals("op")
-                                && e.getAttribute("name").toString().equals(variable)) {
-                            pipelineoutputs.add(e);
+                            }
+                        } else if (e.hasAttribute("label")) {
+                            if (e.getNode0().getAttribute("att1").toString().equals("op")
+                                    && e.getAttribute("label").toString().equals(variable)) {
+                                pipelineOutputs.add(e);
+
+                            }
 
                         }
-                    } else if (e.hasAttribute("label")) {
-                        if (e.getNode0().getAttribute("att1").toString().equals("op")
-                                && e.getAttribute("label").toString().equals(variable)) {
-                            pipelineoutputs.add(e);
-
-                        }
-
                     }
+
 
                     if (!e.getNode0().getAttribute("att1").toString().equals("nop")) {
                         addlist.add(e.getNode0());
@@ -163,22 +165,22 @@ public class PipelineByVariable implements Algorithm {
 
         }
 
-        if (nodestomatch.isEmpty()) {
-            Collections.reverse(pipelineoutputs);
-            for (Edge e : pipelineoutputs) {
+        if (nodesToMatch.isEmpty()) {
+            Collections.reverse(pipelineOutputs);
+            for (Edge e : pipelineOutputs) {
 
                 List<Node> temp = new ArrayList<>();
                 temp.add(e.getNode0());
-                nodestomatch.add(temp);
+                nodesToMatch.add(temp);
 
             }
             // System.out.println("Nodes to match " + nodestomatch.size());
             // compareEdge(nodestomatch.get(0).get(0).getLeavingEdge(0), nodestomatch.get(1).get(0).getLeavingEdge(0));
         }
-        nodestomatchlist.add(nodestomatch);
+        nodesToMatchList.add(nodesToMatch);
 
-        if (subgraph.getNodeCount() == 0 && !nodestomatch.isEmpty()) {
-            startlevel = currlevel;
+        if (subGraph.getNodeCount() == 0 && !nodesToMatch.isEmpty()) {
+            startLevel = currLevel;
             // subgraph.addNode(pipelineoutputs.get(0).getNode0().getId());
             // Graphs.copyAttributes(pipelineoutputs.get(0).getNode0(),
             // subgraph.getNode(pipelineoutputs.get(0).getNode0().getId()));
@@ -194,18 +196,18 @@ public class PipelineByVariable implements Algorithm {
     public void compute() {
         // TODO Auto-generated method stub
         // Start by checking succes of matching of lower levels
-        if (unsuccsefull == true)
+        if (unsuccessful == true)
             return;
         int t = 0;
 
         boolean localmatch = true;
         List<Node> tempadd = new ArrayList<>();
-        templist = new ArrayList<>();
-        for (int i = 0; i < nodestomatch.size(); i++) {
+        tempList = new ArrayList<>();
+        for (int i = 0; i < nodesToMatch.size(); i++) {
             List<Node> list1 = new ArrayList<>();
             List<Node> list2 = new ArrayList<>();
-            templist.add(list1);
-            inputnodes.add(list2);
+            tempList.add(list1);
+            inputNodes.add(list2);
         }
 
         int i;
@@ -213,18 +215,18 @@ public class PipelineByVariable implements Algorithm {
         boolean end = false;
         // graph.display();
         // System.out.println("nodestomatchlist " + nodestomatchlist.size());
-        while (!nodestomatchlist.get(0).get(0).isEmpty() && !end) {
-            for (int k = 0; k < nodestomatchlist.size(); k++) {
-                for (int j = 0; j < nodestomatchlist.get(k).get(0).size(); j++) {
+        while (!nodesToMatchList.get(0).get(0).isEmpty() && !end) {
+            for (int k = 0; k < nodesToMatchList.size(); k++) {
+                for (int j = 0; j < nodesToMatchList.get(k).get(0).size(); j++) {
 
                     tempadd = new ArrayList<>();
-                    tempadd.add(nodestomatchlist.get(k).get(0).get(j));
-                    for (i = 0; i < nodestomatchlist.get(k).size() - 1; i++) {
+                    tempadd.add(nodesToMatchList.get(k).get(0).get(j));
+                    for (i = 0; i < nodesToMatchList.get(k).size() - 1; i++) {
 
-                        tempadd.add(nodestomatchlist.get(k).get(i + 1).get(j));
-                        n = nodestomatchlist.get(k).get(i).get(j);
+                        tempadd.add(nodesToMatchList.get(k).get(i + 1).get(j));
+                        n = nodesToMatchList.get(k).get(i).get(j);
                         if (n.getAttribute("att1").toString().equals("op")) {
-                            localmatch &= match(n, nodestomatchlist.get(k).get(i + 1).get(j), i);
+                            localmatch &= match(n, nodesToMatchList.get(k).get(i + 1).get(j), i);
                         }
                         if (!localmatch) {
                             // System.out.println(n.getId() + "local");
@@ -234,51 +236,51 @@ public class PipelineByVariable implements Algorithm {
                     }
                     if (!localmatch) {
                         if (i == 0) {
-                            for (Node n_conf : nodestomatch.get(0)) {
+                            for (Node n_conf : nodesToMatch.get(0)) {
                                 conflictNodes.put(n_conf, false);
                             }
                             // conflictnodes.addAll(nodestomatch.get(0)); To revert change confilctnodes to list of just
                             // nodes and not pair
-                            nodestomatchlist.get(k).remove(0);
-                            templist.remove(0);
-                            inputnodes.remove(0);
+                            nodesToMatchList.get(k).remove(0);
+                            tempList.remove(0);
+                            inputNodes.remove(0);
                             // System.out.println("remove here 0 " + i + " " + nodestomatchlist.get(k).get(0).size());
 
                             // subgraph.clear();
                             j = -1;
 
-                        } else if (i > nodestomatchlist.get(k).size() / 2) {
-                            for (int p = nodestomatchlist.get(k).size() - 1; p > i; p--) {
+                        } else if (i > nodesToMatchList.get(k).size() / 2) {
+                            for (int p = nodesToMatchList.get(k).size() - 1; p > i; p--) {
                                 // conflictnodes.addAll(nodestomatch.get(p));
-                                for (Node n_conf : nodestomatch.get(p)) {
+                                for (Node n_conf : nodesToMatch.get(p)) {
                                     conflictNodes.put(n_conf, true);
                                 }
-                                nodestomatchlist.get(k).remove(p);
-                                templist.remove(p);
-                                inputnodes.remove(p);
+                                nodesToMatchList.get(k).remove(p);
+                                tempList.remove(p);
+                                inputNodes.remove(p);
                                 // System.out.println("remove from upper " + i);
                                 // cut_top = true;
                             }
                         } else {
                             for (int p = 0; p < i; p++) {
                                 // Multiple mismatch at bottom.
-                                for (Node n_conf : nodestomatch.get(p)) {
+                                for (Node n_conf : nodesToMatch.get(p)) {
                                     conflictNodes.put(n_conf, false);
                                 }
                                 // conflictnodes.addAll(nodestomatch.get(p));
-                                nodestomatchlist.get(k).remove(p);
-                                templist.remove(p);
-                                inputnodes.remove(p);
-                                System.out.println("remove here" + i + " " + nodestomatchlist.get(k).get(0).size());
+                                nodesToMatchList.get(k).remove(p);
+                                tempList.remove(p);
+                                inputNodes.remove(p);
+                                System.out.println("remove here" + i + " " + nodesToMatchList.get(k).get(0).size());
 
-                                subgraph.clear();
+                                subGraph.clear();
                                 j--;
                             }
 
                         }
-                        if (nodestomatchlist.get(k).size() == 1) {
+                        if (nodesToMatchList.get(k).size() == 1) {
                             System.out.println("Failed matching");
-                            unsuccsefull = true;
+                            unsuccessful = true;
                             return;
                         }
                         localmatch = true;
@@ -286,22 +288,22 @@ public class PipelineByVariable implements Algorithm {
 
                 }
 
-                for (int r = 0; r < nodestomatchlist.get(k).size(); r++) {
-                    nodestomatchlist.get(k).get(r).clear();
-                    for (Node nn : templist.get(r)) {
-                        nodestomatchlist.get(k).get(r).add(nn);
+                for (int r = 0; r < nodesToMatchList.get(k).size(); r++) {
+                    nodesToMatchList.get(k).get(r).clear();
+                    for (Node nn : tempList.get(r)) {
+                        nodesToMatchList.get(k).get(r).add(nn);
                     }
-                    templist.get(r).clear();
+                    tempList.get(r).clear();
                 }
 
             }
 
         }
         if (graph.hasAttribute("Loopname"))
-            prevloopnames.add(graph.getAttribute("Loopname"));
+            prevLoopNames.add(graph.getAttribute("Loopname"));
         if (graph.hasAttribute("size"))
-            prevloopsize.add(graph.getAttribute("size"));
-        System.out.println("End of pipelining Level: " + currlevel);
+            prevLoopSize.add(graph.getAttribute("size"));
+        System.out.println("End of pipelining Level: " + currLevel);
     }
 
     /**
@@ -324,14 +326,14 @@ public class PipelineByVariable implements Algorithm {
 
         }
 
-        if (n0.getEnteringEdge(0).getNode0().getId().toString().equals("Start")) {
+        if (n0.getEnteringEdge(0).getNode0().getId().equals("Start")) {
 
             matchInputs(n0, n1, i);
             return true;
         }
 
         if (n0.getAttribute("label").toString().equals("=")) {
-            if (n0.getEnteringEdge(0).getNode0().getId().toString().equals("Start"))
+            if (n0.getEnteringEdge(0).getNode0().getId().equals("Start"))
                 return true;
             Edge input00 = n0.getEnteringEdge(0);
             Edge input10 = n1.getEnteringEdge(0);
@@ -341,14 +343,14 @@ public class PipelineByVariable implements Algorithm {
                     not0 = true;
 
             if (compareEdge(input00, input10)) {
-                if (!templist.get(i)
+                if (!tempList.get(i)
                         .contains(input00.getNode0())) {
                     if (!not0)
-                        templist.get(i)
+                        tempList.get(i)
                                 .add(input00.getNode0());
                 }
                 if (!not0)
-                    templist.get(i + 1).add(input10.getNode0());
+                    tempList.get(i + 1).add(input10.getNode0());
                 return true;
             }
             return false;
@@ -399,66 +401,66 @@ public class PipelineByVariable implements Algorithm {
             if (input00.getAttribute("pos").equals(input10.getAttribute("pos"))) {
                 if (compareEdge(input00, input10) && compareEdge(input01, input11)) {
 
-                    if (!templist.get(i)
+                    if (!tempList.get(i)
                             .contains(input00.getNode0())
-                            || !templist.get(i)
+                            || !tempList.get(i)
                                     .contains(input01.getNode0())) {
-                        if (not00 && subgraph.getEdge(input00.getId()) != null) {
-                            subgraph.getNode(input00.getNode0().getId()).addAttribute("connect", variable);
+                        if (not00 && subGraph.getEdge(input00.getId()) != null) {
+                            subGraph.getNode(input00.getNode0().getId()).addAttribute("connect", variable);
                             // System.out.println("connect1 " + input00.getNode0().getId());
                         }
 
-                        if (not01 && subgraph.getEdge(input01.getId()) != null) {
-                            subgraph.getNode(input01.getNode0().getId()).addAttribute("connect", variable);
+                        if (not01 && subGraph.getEdge(input01.getId()) != null) {
+                            subGraph.getNode(input01.getNode0().getId()).addAttribute("connect", variable);
                             // System.out.println("connect2 " + input01.getNode0().getId());
                         }
 
                         if (!not00 && input00.getNode0().getAttribute("att1").toString().equals("op"))
-                            templist.get(i)
+                            tempList.get(i)
                                     .add(input00.getNode0());
 
                         if (!not01 && input01.getNode0().getAttribute("att1").toString().equals("op"))
-                            templist.get(i)
+                            tempList.get(i)
                                     .add(input01.getNode0());
 
                     }
                     if (!not10 && input10.getNode0().getAttribute("att1").toString().equals("op"))
-                        templist.get(i + 1).add(input10.getNode0());
+                        tempList.get(i + 1).add(input10.getNode0());
                     if (!not11 && input11.getNode0().getAttribute("att1").toString().equals("op"))
-                        templist.get(i + 1).add(input11.getNode0());
+                        tempList.get(i + 1).add(input11.getNode0());
 
                     return true;
                 }
             } else if (input00.getAttribute("pos").equals(input11.getAttribute("pos"))) {
                 if (compareEdge(input00, input11) && compareEdge(input01, input10)) {
-                    if (!templist.get(i)
+                    if (!tempList.get(i)
                             .contains(input00.getNode0())
-                            || !templist.get(i)
+                            || !tempList.get(i)
                                     .contains(input01.getNode0())) {
 
-                        if (not00 && subgraph.getEdge(input00.getId()) != null) {
-                            subgraph.getNode(input00.getNode0().getId()).addAttribute("connect", variable);
+                        if (not00 && subGraph.getEdge(input00.getId()) != null) {
+                            subGraph.getNode(input00.getNode0().getId()).addAttribute("connect", variable);
                             // System.out.println("connect3 " + input00.getNode0().getId());
                         }
 
-                        if (not01 && subgraph.getEdge(input01.getId()) != null) {
-                            subgraph.getNode(input01.getNode0().getId()).addAttribute("connect", variable);
+                        if (not01 && subGraph.getEdge(input01.getId()) != null) {
+                            subGraph.getNode(input01.getNode0().getId()).addAttribute("connect", variable);
                             // System.out.println("connect4 " + input01.getNode0().getId());
                         }
 
                         if (!not00 && input00.getNode0().getAttribute("att1").toString().equals("op"))
-                            templist.get(i)
+                            tempList.get(i)
                                     .add(input00.getNode0());
                         if (!not01 && input01.getNode0().getAttribute("att1").toString().equals("op"))
-                            templist.get(i)
+                            tempList.get(i)
                                     .add(input01.getNode0());
 
                     }
 
                     if (!not11 && input11.getNode0().getAttribute("att1").toString().equals("op"))
-                        templist.get(i + 1).add(input11.getNode0());
+                        tempList.get(i + 1).add(input11.getNode0());
                     if (!not10 && input00.getNode0().getAttribute("att1").toString().equals("op"))
-                        templist.get(i + 1).add(input10.getNode0());
+                        tempList.get(i + 1).add(input10.getNode0());
                     return true;
                 }
             }
@@ -506,21 +508,21 @@ public class PipelineByVariable implements Algorithm {
                     e1.addAttribute("reproducable", e0.getId());
 
                     add = e0.getNode0();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e0.getNode0(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e0.getNode0(), subGraph.getNode(add.getId()));
                     }
 
                     add = e0.getNode1();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e0.getNode1(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e0.getNode1(), subGraph.getNode(add.getId()));
                     }
 
-                    subgraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
+                    subGraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
                     for (String a : e0.getEachAttributeKey())
-                        subgraph.getEdge(e0.getId()).addAttribute(a, e0.getAttribute(a).toString());
-                    subgraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
+                        subGraph.getEdge(e0.getId()).addAttribute(a, e0.getAttribute(a).toString());
+                    subGraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
                 }
 
                 return true;
@@ -559,7 +561,7 @@ public class PipelineByVariable implements Algorithm {
 
                 if (e0.hasAttribute("reproducable")) {
 
-                    List<Loopinfo> temp = subgraph.getEdge(e0.getAttribute("reproducable")).getAttribute("loop");
+                    List<Loopinfo> temp = subGraph.getEdge(e0.getAttribute("reproducable")).getAttribute("loop");
                     for (int i = 0; i < temp.get(temp.size() - 1).dim; i++) {
                         if ((indexes1.get(i) - indexes0.get(i)) != temp.get(temp.size() - 1).increments.get(i))
                             return false;
@@ -569,39 +571,39 @@ public class PipelineByVariable implements Algorithm {
                 } else {
 
                     add = e0.getNode0();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e0.getNode0(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e0.getNode0(), subGraph.getNode(add.getId()));
                     }
 
                     add = e0.getNode1();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e1.getNode1(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e1.getNode1(), subGraph.getNode(add.getId()));
                     }
 
-                    subgraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
-                    Graphs.copyAttributes(e0, subgraph.getEdge(e0.getId()));
-                    subgraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
+                    subGraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
+                    Graphs.copyAttributes(e0, subGraph.getEdge(e0.getId()));
+                    subGraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
 
                     List<Integer> increments = new ArrayList<Integer>();
                     for (int j = 0; j < dim; j++)
                         increments.add(indexes1.get(j) - indexes0.get(j));
 
-                    Loopinfo loopinfo = new Loopinfo(loopname, new ArrayList<>(increments), dim);
+                    Loopinfo loopinfo = new Loopinfo(loopName, new ArrayList<>(increments), dim);
                     List<Loopinfo> list = new ArrayList<>();
-                    if (!subgraph.getEdge(e0.getId()).hasAttribute("loop"))
-                        subgraph.getEdge(e0.getId()).addAttribute("loop", new ArrayList<Loopinfo>());
+                    if (!subGraph.getEdge(e0.getId()).hasAttribute("loop"))
+                        subGraph.getEdge(e0.getId()).addAttribute("loop", new ArrayList<Loopinfo>());
 
                     if (!e0.hasAttribute("loop"))
-                        list.addAll(subgraph.getEdge(e0.getId()).getAttribute("loop"));
+                        list.addAll(subGraph.getEdge(e0.getId()).getAttribute("loop"));
 
                     else
                         list.addAll(e0.getAttribute("loop"));
 
                     // loopinfo.print();
                     list.add(loopinfo);
-                    subgraph.getEdge(e0.getId()).setAttribute("loop", list);
+                    subGraph.getEdge(e0.getId()).setAttribute("loop", list);
 
                     e0.addAttribute("reproducable", e0.getId());
                     e1.addAttribute("reproducable", e0.getId());
@@ -617,21 +619,21 @@ public class PipelineByVariable implements Algorithm {
                 } else {
 
                     add = e0.getNode0();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e0.getNode0(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e0.getNode0(), subGraph.getNode(add.getId()));
                     }
 
                     add = e0.getNode1();
-                    if (subgraph.getNode(add.getId()) == null) {
-                        subgraph.addNode(add.getId());
-                        Graphs.copyAttributes(e0.getNode1(), subgraph.getNode(add.getId()));
+                    if (subGraph.getNode(add.getId()) == null) {
+                        subGraph.addNode(add.getId());
+                        Graphs.copyAttributes(e0.getNode1(), subGraph.getNode(add.getId()));
                     }
 
-                    subgraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
+                    subGraph.addEdge(e0.getId(), e0.getNode0().getId(), e0.getNode1().getId(), true);
                     for (String a : e0.getEachAttributeKey())
-                        subgraph.getEdge(e0.getId()).addAttribute(a, e0.getAttribute(a).toString());
-                    subgraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
+                        subGraph.getEdge(e0.getId()).addAttribute(a, e0.getAttribute(a).toString());
+                    subGraph.getEdge(e0.getId()).addAttribute("marked", "pipe");
                     e0.addAttribute("reproducable", e0.getId());
                     e1.addAttribute("reproducable", e0.getId());
                 }
@@ -667,14 +669,14 @@ public class PipelineByVariable implements Algorithm {
 
         if (n0.getAttribute("att1").toString().equals("op")) {
             if (n0.getAttribute("label").toString().equals(n1.getAttribute("label").toString())) {
-                if (!inputnodes.get(i)
+                if (!inputNodes.get(i)
                         .contains(n0)) {
 
-                    inputnodes.get(i)
+                    inputNodes.get(i)
                             .add(n0);
                 }
 
-                inputnodes.get(i + 1).add(n1);
+                inputNodes.get(i + 1).add(n1);
             }
         }
         return true;
@@ -717,9 +719,9 @@ public class PipelineByVariable implements Algorithm {
         Graph pipeline = new DefaultGraph("pipeline");
         Graphs.copyAttributes(graph, pipeline);
         System.out.println("Pipeline detected. Restructuring dataflow");
-        System.out.println("Start level of matching " + startlevel + " || End level of matching" + currlevel);
+        System.out.println("Start level of matching " + startLevel + " || End level of matching" + currLevel);
 
-        if (startlevel != currlevel || startlevel == 0) {
+        if (startLevel != currLevel || startLevel == 0) {
 
             pipeline.addNode("HyperNode");
             pipeline.getNode("HyperNode").addAttribute("label", "hyper2");
@@ -739,10 +741,10 @@ public class PipelineByVariable implements Algorithm {
                     // Unrolling to upper level with Top method not based on mirror nodes
                     // Top method better. Should be extend to unroll forwards. and imprved to scale with upper levels.
 
-                    if (prevloopsize.size() > 0 && currlevel == 0) {// Check if nodes placed at upper level need
+                    if (prevLoopSize.size() > 0 && currLevel == 0) {// Check if nodes placed at upper level need
                                                                     // unrolling
-                        pipeline = unrollBackwardsTop(pipeline, n_pair.getKey(), "Start", prevloopsize.get(0),
-                                prevloopnames.get(0));
+                        pipeline = unrollBackwardsTop(pipeline, n_pair.getKey(), "Start", prevLoopSize.get(0),
+                                prevLoopNames.get(0));
                     } else
                         unrollBackwards(pipeline, n_pair.getKey(), "Start");
 
@@ -753,7 +755,7 @@ public class PipelineByVariable implements Algorithm {
 
             }
 
-            Node remainder = pipelineoutputs.get(pipelineoutputs.size() - 1).getNode1();
+            Node remainder = pipelineOutputs.get(pipelineOutputs.size() - 1).getNode1();
             Node nxtremainder = remainder.getLeavingEdge(0).getNode1();
 
             if (!nxtremainder.getAttribute("att1").toString().equals("nop")) {
@@ -782,7 +784,7 @@ public class PipelineByVariable implements Algorithm {
 
             List<Graph> graphlist = new ArrayList<>();
             graphlist.add(graph);
-            graphlist.add(subgraph);
+            graphlist.add(subGraph);
             pipeline.addAttribute("HyperNode", graphlist);
 
             List<String> temp = new ArrayList<>();
@@ -795,22 +797,22 @@ public class PipelineByVariable implements Algorithm {
             temp.clear();
             temp.add("HyperNode");
             pipeline.setAttribute("hierarchy", temp);
-            subgraph.addAttribute("Loopname", loopname);
-            subgraph.addAttribute("initv", 0);
-            subgraph.addAttribute("+incr", 1);
-            subgraph.addAttribute("size", nodestomatch.size());
-            subgraph.addAttribute("plus_fold", 0);
-            subgraph.addAttribute("mult_fold", 1);
-            subgraph.addAttribute("connect", variable);
-            subgraph.addAttribute("Pipeline", true);
-            if (subgraph.hasAttribute("hyper_type")) {
-                subgraph.setAttribute("hyper_type", "pipeline");
+            subGraph.addAttribute("Loopname", loopName);
+            subGraph.addAttribute("initv", 0);
+            subGraph.addAttribute("+incr", 1);
+            subGraph.addAttribute("size", nodesToMatch.size());
+            subGraph.addAttribute("plus_fold", 0);
+            subGraph.addAttribute("mult_fold", 1);
+            subGraph.addAttribute("connect", variable);
+            subGraph.addAttribute("Pipeline", true);
+            if (subGraph.hasAttribute("hyper_type")) {
+                subGraph.setAttribute("hyper_type", "pipeline");
             } else
-                subgraph.addAttribute("hyper_type", "pipeline");
+                subGraph.addAttribute("hyper_type", "pipeline");
 
             add_start_end(pipeline);
 
-            absorbHierarchy(subgraph);
+            absorbHierarchy(subGraph);
 
             return pipeline;
         } else {// Here the loop is inner
@@ -827,20 +829,20 @@ public class PipelineByVariable implements Algorithm {
                 else
                     unrollForwards_conflict(pipeline, n_pair.getKey());
 
-            Node remainder = pipelineoutputs.get(pipelineoutputs.size() - 1).getNode1();
+            Node remainder = pipelineOutputs.get(pipelineOutputs.size() - 1).getNode1();
             Node nxtremainder = remainder.getLeavingEdge(0).getNode1();
             if (!nxtremainder.getAttribute("att1").toString().equals("nop")) {
-                appendOperation(remainder, pipelineoutputs.get(pipelineoutputs.size() - 1), pipeline, "HyperNode");
+                appendOperation(remainder, pipelineOutputs.get(pipelineOutputs.size() - 1), pipeline, "HyperNode");
                 // System.out.println("unroll this " + remainder);
                 // System.out.println("unroll forwards " + nxtremainder);
                 unrollForwards(pipeline, nxtremainder);
                 unrollBackwards(pipeline, remainder,
-                        pipelineoutputs.get(pipelineoutputs.size() - 1).getNode0().getId());
+                        pipelineOutputs.get(pipelineOutputs.size() - 1).getNode0().getId());
 
             }
             List<Graph> graphlist = new ArrayList<>();
             graphlist.add(graph);
-            graphlist.add(subgraph);
+            graphlist.add(subGraph);
             pipeline.addAttribute("HyperNode", graphlist);
 
             List<String> temp = new ArrayList<>();
@@ -852,24 +854,24 @@ public class PipelineByVariable implements Algorithm {
             temp = pipeline.getAttribute("hierarchy");
             temp.add("HyperNode");
             pipeline.setAttribute("hierarchy", temp);
-            subgraph.addAttribute("Loopname", loopname);
-            subgraph.addAttribute("initv", 0);
-            subgraph.addAttribute("+incr", 1);
-            subgraph.addAttribute("size", nodestomatch.size());
-            subgraph.addAttribute("plus_fold", 0);
-            subgraph.addAttribute("mult_fold", 1);
-            subgraph.addAttribute("Pipeline", true);
-            subgraph.addAttribute("connect", variable);
+            subGraph.addAttribute("Loopname", loopName);
+            subGraph.addAttribute("initv", 0);
+            subGraph.addAttribute("+incr", 1);
+            subGraph.addAttribute("size", nodesToMatch.size());
+            subGraph.addAttribute("plus_fold", 0);
+            subGraph.addAttribute("mult_fold", 1);
+            subGraph.addAttribute("Pipeline", true);
+            subGraph.addAttribute("connect", variable);
             if (pipeline.hasAttribute("Pipeline"))
                 pipeline.removeAttribute("Pipeline");
             if (graph.hasAttribute("level"))
-                subgraph.addAttribute("level", true);
-            if (subgraph.hasAttribute("hyper_type")) {
-                subgraph.setAttribute("hyper_type", "pipeline");
+                subGraph.addAttribute("level", true);
+            if (subGraph.hasAttribute("hyper_type")) {
+                subGraph.setAttribute("hyper_type", "pipeline");
             } else
-                subgraph.addAttribute("hyper_type", "pipeline");
+                subGraph.addAttribute("hyper_type", "pipeline");
             add_start_end(pipeline);
-            absorbHierarchy(subgraph);
+            absorbHierarchy(subGraph);
 
             // graph.display();
             // pipeline.display();
@@ -940,7 +942,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public Graph getSubGraph() {
-        return subgraph;
+        return subGraph;
     }
 
     /**
@@ -958,7 +960,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public List<List<Node>> getNodesToMatch() {
-        return nodestomatch;
+        return nodesToMatch;
     }
 
     /**
@@ -967,7 +969,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public List<List<List<Node>>> getNodesToMatchList() {
-        return nodestomatchlist;
+        return nodesToMatchList;
     }
 
     /**
@@ -976,7 +978,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public List<List<Node>> getInputs() {
-        return inputnodes;
+        return inputNodes;
     }
 
     /**
@@ -985,7 +987,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public int getNPipelines() {
-        return npipelines;
+        return nPipelines;
     }
 
     /**
@@ -994,7 +996,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public List<Edge> getOutputs() {
-        return pipelineoutputs;
+        return pipelineOutputs;
     }
 
     /**
@@ -1002,8 +1004,8 @@ public class PipelineByVariable implements Algorithm {
      * 
      * @return
      */
-    public String getLoopname() {
-        return loopname;
+    public String getLoopName() {
+        return loopName;
     }
 
     /**
@@ -1012,7 +1014,7 @@ public class PipelineByVariable implements Algorithm {
      * @return
      */
     public int getStartLevel() {
-        return startlevel;
+        return startLevel;
     }
 
     /**
@@ -1337,15 +1339,15 @@ public class PipelineByVariable implements Algorithm {
     }
 
     public boolean getSuccess() {
-        return !unsuccsefull;
+        return !unsuccessful;
     }
 
     public List<Integer> getMatchedLoopsize() {
-        return prevloopsize;
+        return prevLoopSize;
     }
 
     public List<String> getMatchedLoopname() {
-        return prevloopnames;
+        return prevLoopNames;
     }
 
 }
