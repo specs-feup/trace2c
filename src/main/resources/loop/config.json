@@ -1,0 +1,16 @@
+{
+   "loadstores":2,
+   "inputs":["a[10]"
+   ],
+   "input_types":["int"
+   ],
+   "outputs":"sum",
+   "output_type": "int",
+   "folding" : "false",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : false,
+   "full_connect" : false,
+   "graph" : "loop.dot",
+   "wraps" : []
+}
