@@ -20,7 +20,6 @@ import java.util.List;
 public class SeparatePruned implements Algorithm {
     List<Graph> separategraphlist;
     List<List<List<Node>>> listlevelgraph = new ArrayList<>();
-    Graph graph;
     Graph commongraph = new DefaultGraph("commongraph");
 
     /**
@@ -38,7 +37,6 @@ public class SeparatePruned implements Algorithm {
      */
     public void init(Graph graph) {
         // TODO Auto-generated method stub
-        graph = this.graph;
         Algorithm level;
 
         for (Graph temg : separategraphlist) {
@@ -46,13 +44,6 @@ public class SeparatePruned implements Algorithm {
             level.init(temg);
             level.compute();
             listlevelgraph.add((((LevelingAlgorithmExt) level).getLevelGraph()));
-        }
-
-        for (List<List<Node>> list : listlevelgraph) {
-            Node out = list.get(list.size() - 1).get(0).getEnteringEdge(0).getNode0();
-            String name;
-            name = out.getAttribute("label").toString();
-
         }
 
     }
