@@ -125,7 +125,7 @@ public class EdgeInfoUpdateFlat implements Algorithm {
                         for (Edge e : nn.getEachEnteringEdge()) {
                             if (e.hasAttribute("att1")
                                     && !nn.getEnteringEdge(0).getNode0().getAttribute("att1").equals("nop")) {
-                                boolean isConst = e.getAttribute("att1").equals("const");
+                                boolean isConst = e.getAttribute("att1").equals("const") && e.hasAttribute("name");
                                 if (e.getAttribute("att1").equals("var") || isConst) {
 
                                     int dim = 0;
