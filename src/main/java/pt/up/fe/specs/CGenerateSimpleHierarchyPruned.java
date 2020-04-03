@@ -82,7 +82,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
                         } else if (att1.equals("call") && n.getLeavingEdge(0).hasAttribute("label")) {
                             if (!n.getLeavingEdge(0).getTargetNode().getAttribute("label").equals("=")){
                                 // write only if the return value is not assigned, otherwise write as an operation
-                                writeCall(n);
+                                outBuffer.append(getCallStr(n)+";");
                             }
 
                         }
@@ -109,7 +109,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
             }
         } else if (previousNode.getAttribute("att1").equals("call")) {
             outBuffer.append("return ");
-            writeCall(previousNode);
+            outBuffer.append(getCallStr(previousNode) + ";");
             outBuffer.append("\n");
         } else {
             CInfo info =  graph.getAttribute("info");
@@ -120,13 +120,22 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         }
     }
 
-    private String getOperationInC(Node n) {
+    private String getOperationInC(Node n) throws IOException {
         StringBuffer buffer = new StringBuffer();
         Edge in0 = n.getEnteringEdge(0);
         Edge in1 = n.getEnteringEdge(1);
-
-        String name0 = in0.getAttribute("label").toString();
-        String name1 = in1.getAttribute("label").toString();
+        String name0;
+        String name1;
+        if (in0.getSourceNode().getAttribute("att1").equals("call")) {
+            name0 = getCallStr(in0.getSourceNode());
+        } else {
+            name0 = in0.getAttribute("label").toString();
+        }
+        if (in1.getSourceNode().getAttribute("att1").equals("call")) {
+            name1 = getCallStr(in1.getSourceNode());
+        } else {
+            name1 = in1.getAttribute("label").toString();
+        }
 
         String append = null;
         if (in0.hasAttribute("cast")) {
@@ -160,22 +169,24 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         return buffer.toString();
     }
 
-    private void writeCall(Node n) throws IOException {
-        outBuffer.append(n.getAttribute("att2"));
-        outBuffer.append("(");
+    private String getCallStr(Node n) throws IOException {
+        StringBuffer callBuffer = new StringBuffer();
+        callBuffer.append(n.getAttribute("att2").toString());
+        callBuffer.append("(");
         boolean isFirstParam = true;
         for (Edge e : n.getEachEnteringEdge()) {
             if (e.hasAttribute("label")) {
                 String param = e.getAttribute("label").toString();
                 if (isFirstParam) {
-                    outBuffer.append(param);
+                    callBuffer.append(param);
                     isFirstParam = false;
                 } else {
-                    outBuffer.append("," + param);
+                    callBuffer.append("," + param);
                 }
             }
         }
-        outBuffer.append(");");
+        callBuffer.append(")");
+        return callBuffer.toString();
     }
 
     /**
@@ -311,7 +322,7 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
 
                 } else if (enteringEdge.getSourceNode().getAttribute("att1").equals("call")) {
                     outBuffer.append(leavingEdge.getAttribute("label") + "= ");
-                    writeCall(enteringEdge.getSourceNode());
+                    outBuffer.append(getCallStr(enteringEdge.getSourceNode()) + ";");
                 }
                 else {
                     outBuffer.append(leavingEdge.getAttribute("label").toString() + "=" +
@@ -324,7 +335,8 @@ public class CGenerateSimpleHierarchyPruned implements Algorithm {
         String operationInC = getOperationInC(n);
 
         for (Edge leaveEdge : n.getEachLeavingEdge()) {
-            if (!leaveEdge.getTargetNode().getAttribute("label").equals("end")) {
+            if (!leaveEdge.getTargetNode().getAttribute("label").equals("end") &&
+            !leaveEdge.getTargetNode().getAttribute("att1").equals("call")) {
                 String name = leaveEdge.getAttribute("label").toString();
                 outBuffer.append(name + "=" + operationInC + ";\n");
             }
