@@ -73,6 +73,9 @@ public class Launcher {
 
         fs.readAll(path + "\\" + config.graph);
 
+        long initTime = System.currentTimeMillis();
+        System.out.println("init time:" + (initTime - startTime));
+
         mainGraph = launch.Initializations(mainGraph);
         launch.InfoInit(mainGraph, config);
 
@@ -85,40 +88,35 @@ public class Launcher {
 
 
         for (Graph graph: graphsWrapper.getAllGraphs()) {
+            String graphId = graph.getId();
             launch.Prune(graph);
-        }
 
-        long initTime = System.currentTimeMillis();
-        System.out.println("init time:" + (initTime - startTime));
+            if (config.folding.equals("high") || config.folding.equals("medium")) {
+                graph = launch.separateGraph(graph, "s");
+                long sepTime = System.currentTimeMillis();
+                System.out.println("Separate time:" + (sepTime - startTime));
+                graph = launch.separateFoldExt(graph, true);
+                System.out.println("separate done");
 
-        if (config.folding.equals("high") || config.folding.equals("medium")) {
-            mainGraph = launch.separateGraph(mainGraph, "s");
-            long sepTime = System.currentTimeMillis();
-            System.out.println("Separate time:" + (sepTime - startTime));
-            mainGraph = launch.separeteFoldExt(mainGraph, true);
-            System.out.println("separate done");
+                long matchTime = System.currentTimeMillis();
+                System.out.println("Match time:" + (matchTime - startTime));
 
-            long matchTime = System.currentTimeMillis();
-            System.out.println("Match time:" + (matchTime - startTime));
+                graph = launch.parallelAccessOptimization(graph, access, arithmetic);
 
-            mainGraph = launch.parallelAccessOptimization(mainGraph, access, arithmetic);
+                HierarchyHandling hierarchy = new HierarchyHandling();
+                graph = hierarchy.trimHierarchy(graph);
+                if (config.folding.equals("high"))
+                    graph = launch.pipeline(graph, "s", true);
 
-            HierarchyHandling hierarchy = new HierarchyHandling();
-            mainGraph = hierarchy.trimHierarchy(mainGraph);
-            if (config.folding.equals("high"))
-                mainGraph = launch.pipeline(mainGraph, "s", true);
+                launch.setFoldingByLoadStore(loadstore, null, graph, true);
 
-            launch.setFoldingByLoadStore(loadstore, null, mainGraph, true);
-
-            mainGraph = launch.unfoldAllandArithmeticOPt(mainGraph, 0, true, true, config);
-        }
-
-
-
-        for (Graph graph: graphsWrapper.getAllGraphs()) {
+                graph = launch.unfoldAllandArithmeticOPt(graph, 0, true, true, config);
+                graphsWrapper.setGraph(graphId, graph);
+            }
             launch.InfoUpdate(graph);
             launch.Leveling(graph);
         }
+
 
         if (config.full_part == true) {
             launch.fullPartitionTotal(mainGraph);
@@ -128,8 +126,8 @@ public class Launcher {
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
-        //shapeGraph(g, false);
-        //g.display();
+        //shapeGraph(mainGraph, false);
+        //mainGraph.display();
     }
 
     /**

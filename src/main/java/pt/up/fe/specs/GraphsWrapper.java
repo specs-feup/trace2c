@@ -32,4 +32,8 @@ public class GraphsWrapper {
     public Collection<Graph> getAllGraphs() {
         return graphs.values();
     }
+
+    public void setGraph(String id, Graph g) {
+        graphs.put(id, g);
+    }
 }
