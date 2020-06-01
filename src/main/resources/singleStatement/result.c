@@ -27,7 +27,7 @@ int a;
 // Step 3: write code by level
 // Currently we write attributions and simple operations between two variables
 
-a=10.0;
+a = 10.0;
 
 return a;
 }

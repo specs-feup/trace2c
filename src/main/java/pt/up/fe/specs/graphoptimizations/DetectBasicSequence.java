@@ -6,15 +6,15 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.Graphs;
+import org.graphstream.graph.implementations.MultiGraph;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Algorithm that detects a sequence that generates a given output.
- * 
- * @author Afonso
  *
+ * @author Afonso
  */
 public class DetectBasicSequence implements Algorithm {
 
@@ -24,9 +24,9 @@ public class DetectBasicSequence implements Algorithm {
     private boolean complete;
     private List<Node> addlist;
     private List<Node> tempaddlist;
-    
+
     /**
-     * 
+     *
      */
     public DetectBasicSequence() {
         complete = false;
@@ -41,7 +41,7 @@ public class DetectBasicSequence implements Algorithm {
         // TODO Auto-generated method stub
 
         this.graph = graph;
-        basicgraph = new DefaultGraph("basicgraph");
+        basicgraph = new MultiGraph("basicgraph");
         for (String a : graph.getEachAttributeKey()) {
             basicgraph.addAttribute(a, graph.getAttribute(a));
         }
@@ -105,6 +105,7 @@ public class DetectBasicSequence implements Algorithm {
 
     /**
      * Returns the most recent separated sequence.
+     *
      * @return
      */
     public Graph getGraph() {
@@ -113,6 +114,7 @@ public class DetectBasicSequence implements Algorithm {
 
     /**
      * Copies a node to the subgraph representing the most recent separated sequence.
+     *
      * @param n1 Node that is connected to n2 by edge e. Necessary to copy edge e to the new graph. n1 must have been already added.
      * @param n2 Node to copy to new subgraph.
      * @param e  Edge to copy to new subgragh.
@@ -137,6 +139,7 @@ public class DetectBasicSequence implements Algorithm {
 
     /**
      * Returns true if all outputs have been separated.
+     *
      * @return
      */
     public boolean isComplete() {

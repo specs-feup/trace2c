@@ -2,18 +2,12 @@ package pt.up.fe.specs;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.DefaultGraph;
-import org.graphstream.graph.implementations.Graphs;
-import org.graphstream.stream.file.FileSinkDOT;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
-import pt.up.fe.specs.graphoptimizations.FunctionWrapper;
-import pt.up.fe.specs.graphoptimizations.HierarchyHandling;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * pt.up.fe.specs.Launcher of application. Call the stages of the tool
@@ -26,14 +20,15 @@ public class Launcher {
     public static void main(String args[]) throws IOException {
         System.out.println("Framework");
         // variables used for optimizations before configuration file
-        int loadstore = 1;
-        boolean arithmetic = false;
-        boolean access = false;
+        int loadStores;
+        boolean arithmetic ;
+        boolean access;
 
         // Clock timer
         long startTime = System.currentTimeMillis();
         // Creating Graph
-        Graph mainGraph = new DefaultGraph("mainGraph");
+        Graph mainGraph = new MultiGraph("mainGraph");
+
         GraphsWrapper graphsWrapper = new GraphsWrapper(mainGraph);
         // Getting config file
 
@@ -53,22 +48,13 @@ public class Launcher {
         // Creating main part of tool and reading config file
         LaunchAlgorithm launch = new LaunchAlgorithm();
         Config config = launch.getConfiguration(configFile);
-        loadstore = config.loadstores;
+        loadStores = config.loadstores;
         arithmetic = config.arithmetic;
         access = config.acc;
         // Getting Graph
         FileSource fs = FileSourceFactory
                 .sourceFor(path + "\\" + config.graph);
-        ;
-        // "..\\work\\filter_subband\\fsubba_graph2.dot"
-        // "..\\work\\Autocorr\\graph_autcor.dot"
-        // "..\\work\\dotprod\\dotprod_graph.dot"
-        // "..\\work\\UTDSP_test_suite\\graphs\\fir_graph.dot"
-        // "..\\work\\UTDSP_test_suite\\graphs\\fir_big_graph.dot"
-        // "..\\work\\UTDSP_test_suite\\graphs\\latnrm_graph.dot"
-        // "..\\work\\fir_basic\\fir_basic.dot"
-        // "..\\work\\Sobbel\\edge_detect.dot"
-        // "..\\work\\SVM\\svm_simp.dot"
+
         fs.addSink(mainGraph);
 
         fs.readAll(path + "\\" + config.graph);
@@ -76,98 +62,39 @@ public class Launcher {
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
-        mainGraph = launch.Initializations(mainGraph);
+        mainGraph = launch.Initializations(mainGraph, config);
         launch.InfoInit(mainGraph, config);
-
-        for (WrapConfig wrap : config.wraps) {
-            FunctionWrapper functionWrapper = new FunctionWrapper(wrap);
-            functionWrapper.init(mainGraph);
-            functionWrapper.compute();
-            graphsWrapper.addGraph(functionWrapper.getNewGraph());
-        }
-
+        mainGraph.addAttribute("functionName", config.outputFile);
 
         for (Graph graph: graphsWrapper.getAllGraphs()) {
-            String graphId = graph.getId();
             launch.Prune(graph);
+            launch.parallelizeSums(graph);
+            launch.leveling(graph);
 
             if (config.folding.equals("high") || config.folding.equals("medium")) {
-                graph = launch.separateGraph(graph, "s");
-                long sepTime = System.currentTimeMillis();
-                System.out.println("Separate time:" + (sepTime - startTime));
-                graph = launch.separateFoldExt(graph, true);
-                System.out.println("separate done");
+                launch.runWeightAlgorithm(graph);
+                long graphsMatchTime = System.currentTimeMillis();
+                System.out.println("Starting parallel Matching");
+                launch.runParallelMatching(graph);
+                launch.runSequencialMatching(graph);
 
-                long matchTime = System.currentTimeMillis();
-                System.out.println("Match time:" + (matchTime - startTime));
+                System.out.println("Subgraphs clustering time:" + (graphsMatchTime - startTime));
+                launch.runFolding(graph);
+                launch.leveling(graph);
 
-                graph = launch.parallelAccessOptimization(graph, access, arithmetic);
-
-                HierarchyHandling hierarchy = new HierarchyHandling();
-                graph = hierarchy.trimHierarchy(graph);
-                if (config.folding.equals("high"))
-                    graph = launch.pipeline(graph, "s", true);
-
-                launch.setFoldingByLoadStore(loadstore, null, graph, true);
-
-                graph = launch.unfoldAllandArithmeticOPt(graph, 0, true, true, config);
-                graphsWrapper.setGraph(graphId, graph);
             }
-            launch.InfoUpdate(graph);
-            launch.Leveling(graph);
         }
 
-
-        if (config.full_part == true) {
-            launch.fullPartitionTotal(mainGraph);
-        }
-
-        launch.writeC(graphsWrapper, path, loadstore);
+        launch.updateVarLabels(mainGraph);
+        //Update vars names with wire numbers before writing the code
+        launch.writeC(graphsWrapper, path.concat("\\"+config.outputFile + ".c"), config);
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
-        //shapeGraph(mainGraph, false);
-        //mainGraph.display();
+        shapeGraph(mainGraph, false);
+        mainGraph.display();
     }
 
-    /**
-     * Prints out dot description of a graph. If stay true only highest level printed. If false all lower level
-     * subgraphs also printed.
-     * 
-     * @param g
-     *            Graph to print out
-     * @param name
-     *            name of file for the dot description
-     * @param stay
-     *            boolean, if true lower levels are not printed out
-     * @param l
-     *            integer value used to separate the description of each level
-     * @throws IOException
-     */
-    public static void write_out_graphdot(Graph g, String name, boolean stay, int l) throws IOException {
-        FileSinkDOT output_dot = new FileSinkDOT(true);
-        String filename = "..\\work\\Graph_snapshot\\";
-        filename = filename.concat(name + "_" + l + ".dot");
-        Graph snapshot = Graphs.clone(g);
-        if (snapshot.hasAttribute("size"))
-            snapshot.removeAttribute("size");
-        shapeGraph(snapshot, false);
-        snapshot.write(output_dot, filename);
-        if (stay)
-            return;
-        else if (g.hasAttribute("hierarchy")) {
-            List<String> hire = new ArrayList<>();
-            hire = g.getAttribute("hierarchy");
-
-            for (String s : hire) {
-                List<Graph> graphlist = g.getAttribute(s);
-                Graph temg = graphlist.get(graphlist.size() - 1);
-                write_out_graphdot(temg, name, stay, l + 1);
-            }
-        }
-
-        return;
-    }
 
     /**
      * Inserts shape attributes in nodes based on node types.

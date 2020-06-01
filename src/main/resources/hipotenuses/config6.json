@@ -1,0 +1,20 @@
+{
+  "loadstores": 2,
+  "inputs": [
+    "first_array[10000]",
+    "second_array[10000]"
+  ],
+  "input_types": [
+    "unsigned int",
+    "unsigned int"
+  ],
+  "outputs": ["hypotenuse_array[10000]"],
+  "output_types": ["unsigned int"],
+  "graph": "triangles_hypotenuse.dot",
+  "folding": "high",
+  "arithmetic": true,
+  "acc": true,
+  "full_part": false,
+  "full_connect": false,
+  "outputFile": "hipotenuses_lvl6"
+}

@@ -1,0 +1,15 @@
+{
+   "loadstores":2,
+   "inputs":["image[128][128]", "histogram[254]", "gray_level_mapping[256]"
+   ],
+   "input_types":["int", "int", "int"
+   ],
+   "outputs":"histogram[254]",
+   "output_type": "int",
+   "folding" : "high",
+   "arithmetic" : true,
+   "acc" : false,
+   "full_part" : false,
+   "full_connect" : false,
+   "graph" : "histogram.dot"
+}

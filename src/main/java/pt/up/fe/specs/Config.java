@@ -15,8 +15,8 @@ public class Config {
     int loadstores;
     List<String> inputs = new ArrayList<>();
     List<String> input_types = new ArrayList<>();
-    String outputs;
-    String output_type;
+    List<String> outputs;
+    List<String> output_types;
     boolean arithmetic;
     String folding;
     boolean acc;
@@ -24,9 +24,13 @@ public class Config {
     String graph;
     boolean full_connect;
     List<WrapConfig> wraps = new ArrayList<>();
+    String outputFile;
 
     public Config() {
         // TODO Auto-generated constructor stub
     }
 
+    public int getLoadstores() {
+        return loadstores;
+    }
 }

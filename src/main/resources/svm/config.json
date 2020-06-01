@@ -1,21 +1,22 @@
 {
    "loadstores":2,
    "inputs":[
-      "test_vector[18]",
-	  "sup_vectors[18][1248]",
-	  "sv_coeff[1248]"
+      "test_vector[4]",
+	  "sup_vectors[4][4]",
+	  "sv_coeff[4]"
    ],
    "input_types":[
       "float",
 	  "float",
 	  "float"
    ],
-   "outputs":"*sum",
-   "output_type": "float",
-   "folding" : "high",
-   "arithmetic" : true,
-   "acc" : true,
-   "full_part" : true,
+   "outputs":["*sum"],
+   "output_types": ["float"],
+   "folding" : "false",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : false,
    "full_connect" : false,
-   "graph" : "svm_simp.dot"
+   "graph" : "svm_simp_4.dot",
+   "outputFile": "svm_lvl2"
 }

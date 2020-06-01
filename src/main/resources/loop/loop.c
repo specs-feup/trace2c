@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-#define SIZE 10
+#define SIZE 11
 
 int sumArray(int a[SIZE]) {
     FILE *f = fopen("loop.dot", "w");
@@ -20,7 +20,7 @@ int sumArray(int a[SIZE]) {
     int sum = 0;
 
     for (int i = 0; i < SIZE; i++) {
-        fprintf(f, "\"a[%d]_%d\" [label=\"a[%d]\", att1=var, att2=loc, att3=int ];\n", i, n_a[i], i);
+        fprintf(f, "\"a[%d]_%d\" [label=\"a[%d]\", att1=var, att2=inte, att3=int ];\n", i, n_a[i], i);
         n_op++;
         fprintf(f, "op_%d [label=\"+\", att1=op ];\n", n_op);
         ne++;

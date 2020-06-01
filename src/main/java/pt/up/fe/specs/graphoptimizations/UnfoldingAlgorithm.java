@@ -605,9 +605,9 @@ public class UnfoldingAlgorithm implements Algorithm {
      */
     public void shiftIndex(Edge e, int i) {
 
-        List<Loopinfo> looplist = e.getAttribute("loop");
+        List<LoopInfo> looplist = e.getAttribute("loop");
         if (looplist != null) {
-            for (Loopinfo loop : looplist) {
+            for (LoopInfo loop : looplist) {
 
                 if (loopname.equals(loop.name)) {
 
@@ -616,7 +616,7 @@ public class UnfoldingAlgorithm implements Algorithm {
                     List<Integer> off = new ArrayList<>();
                     int dim = getIndexes(offset, off);
                     for (int j = 0; j < dim; j++) {
-                        Integer shift = (loop.increments.get(j) * (i + 1) + off.get(j));
+                        Integer shift = (loop.ratios.get(j) * (i + 1) + off.get(j));
                         label = replaceIndex(label, j + 1, shift, off.get(j).toString());
                         off.set(j, shift);
 

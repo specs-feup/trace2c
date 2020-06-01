@@ -55,7 +55,7 @@ public class RedundantAccessOptimization implements Algorithm {
             if (e.hasAttribute("array") && e.hasAttribute("loop")
                     && e.getNode0().getEnteringEdge(0).getNode0().getId().toString().equals("Start")) {
 
-                List<Loopinfo> looplist = new ArrayList<>();
+                List<LoopInfo> looplist = new ArrayList<>();
                 List<Integer> indexes = new ArrayList<>();
                 int dim = getIndexes(e.getAttribute("label"), indexes);
                 String oldlabel = new String(e.getAttribute("label").toString());
@@ -69,14 +69,14 @@ public class RedundantAccessOptimization implements Algorithm {
                 String label = new String(oldlabel);
 
                 looplist = e.getAttribute("loop");
-                for (Loopinfo loop : looplist) {
+                for (LoopInfo loop : looplist) {
                     if (loopname.equals(loop.name)) {
 
                         for (int j = 0; j < dim; j++) {
-                            if (loop.increments.get(j) != 0) {
+                            if (loop.ratios.get(j) != 0) {
 
-                                Integer shift = (loop.increments.get(j) + indexes.get(j));
-                                shift_perm = loop.increments.get(j);
+                                Integer shift = (loop.ratios.get(j) + indexes.get(j));
+                                shift_perm = loop.ratios.get(j);
                                 label = replaceIndex(label, j + 1, shift, indexes.get(j).toString());
                                 // label = label.replace(indexes.get(j).toString(), shift.toString());
                                 indexes.set(j, shift);

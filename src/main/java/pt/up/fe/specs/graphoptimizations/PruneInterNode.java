@@ -6,9 +6,14 @@ import org.graphstream.graph.EdgeRejectedException;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
+import org.graphstream.graph.implementations.MultiGraph;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+
+import static java.util.stream.Collectors.toCollection;
 
 
 /**
@@ -20,7 +25,6 @@ import java.util.List;
 public class PruneInterNode implements Algorithm {
 
     Graph graph;
-    List<Node> removelist = new ArrayList<>();
     int ne;
 
     public PruneInterNode() {
@@ -35,8 +39,8 @@ public class PruneInterNode implements Algorithm {
     public void init(Graph graph) {
         // TODO Auto-generated method stub
         this.graph = graph;
-        removelist = new ArrayList<>();
         ne = 0;
+        System.out.println("Initializing pruning - node count: " + graph.getNodeCount());
     }
 
     @Override
@@ -47,29 +51,19 @@ public class PruneInterNode implements Algorithm {
      */
     public void compute() {
         // TODO Auto-generated method stub
-        List<Node> inputs = new ArrayList<>();
-        for (Node n : graph) {
+        List<Node> nodes = graph.getNodeSet().stream().collect(toCollection(ArrayList::new));
+
+
+        for (Node n: nodes) {
             String a = n.getAttribute("att1").toString();
-
-            if (!a.equals("nop") && !a.equals("call") && !a.equals("op")) {
-
-                if (n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start")) {
-                    inputs.add(n);
-                }
-                if (!n.getEnteringEdge(0).getSourceNode().getAttribute("label").equals("start"))
-                    removelist.add(n);
+            if (!a.equals("nop") && !a.equals("call") && !a.equals("op") && !a.equals("mux")) {
+                removeIntermediate(n);
             }
 
         }
+        System.out.println("Pruning finished - node count: " + graph.getNodeCount());
 
-        for (Node n : removelist)
-            removeIntermediate(n);
 
-        for (Node n : inputs) {
-            for (Edge e : n.getEachEdge()) {
-                Graphs.copyAttributes(n, e);
-            }
-        }
 
     }
 
@@ -82,48 +76,51 @@ public class PruneInterNode implements Algorithm {
      * @param n Node to handled.
      */
     public void removeIntermediate(Node n) {
-        Node prev1 = n.getEnteringEdge(0).getSourceNode();
-        Node nxt = n.getLeavingEdge(0).getTargetNode();
-        boolean not_remove = false;
+        if (n.getInDegree() == 0 || n.getOutDegree() == 0) {
+            safeRemoveNode(n);
+        }
+        else if (n.getInDegree() <= 1) {
+            Node prev = n.getEnteringEdge(0).getSourceNode();
+            String mod = getModAttribute(n);
+            for (Edge edgeToTarget: n.getEachLeavingEdge()) {
+                Node nxt = edgeToTarget.getTargetNode();
 
-        if (prev1.getAttribute("att1").equals("op") && nxt.getAttribute("att1").equals("op")) {
-
-            for (Edge e : n.getEachLeavingEdge()) {
-                if (e.getTargetNode().getAttribute("att1").equals("var"))
-                    System.out.println("name " + n.getId() + " next " + e.getTargetNode().getId());
-                ne++;
-                try {
-                    Edge newEdge = graph.addEdge(prev1.getId() + "->" + e.getTargetNode().getId() + "_" + ne, prev1, e.getTargetNode(),
-                            true);
-                    Graphs.copyAttributes(e, newEdge);
+                if (n.getAttribute("att1").equals("const") && nxt.getAttribute("att1").equals("var")) {
+                    for (Edge nxtLeaveEdge: nxt.getEachLeavingEdge()) {
+                        Node target = nxtLeaveEdge.getTargetNode();
+                        Edge newEdge = graph.addEdge(prev.getId() + "->" + target.getId(), prev, target, true);
+                        Graphs.copyAttributes(nxtLeaveEdge, newEdge);
+                        Graphs.copyAttributes(n, newEdge);
+                    }
+                    safeRemoveNode(nxt);
+                } else {
+                    Edge newEdge = graph.addEdge(prev.getId() + "->" + nxt.getId() + "_" + ne++, prev, nxt, true);
+                    Graphs.copyAttributes(n.getLeavingEdge(0), newEdge);
                     Graphs.copyAttributes(n, newEdge);
-                } catch (EdgeRejectedException ex) {
-                    //Very rare exception for some input DFGs. In principle should not occur if input graph is correct
-                    System.out.println("Pruning: already exist edge between op node");
-                    if (prev1.hasEdgeBetween(e.getNode1().getId())) {
-                        Graphs.copyAttributes(n, e);
-                        not_remove = true;
+                    if (!mod.isEmpty()) {
+                        newEdge.addAttribute("mod", mod);
                     }
                 }
             }
-            if (!not_remove)
-                graph.removeNode(n);
-            else {
-                n.clearAttributes();
-                n.addAttribute("att1", "op");
-                n.addAttribute("label", "=");
-            }
+            safeRemoveNode(n);
         }
-        else{
-            Graphs.copyAttributes(n, n.getEnteringEdge(0));
-            for (Edge e : n.getEachLeavingEdge()) {
-                Graphs.copyAttributes(n, e);
-            }
-            n.clearAttributes();
-            n.addAttribute("att1", "op");
-            n.addAttribute("label", "=");
+    }
 
+    private void safeRemoveNode(Node n) {
+        if (graph.getNode(n.getId()) != null) {
+            graph.removeNode(n);
         }
+    }
+
+    private String getModAttribute(Node n) {
+        String mod = new String();
+        if (n.getLeavingEdge(0).hasAttribute("mod")) {
+            mod = mod.concat(n.getLeavingEdge(0).getAttribute("mod"));
+        }
+        if (n.getEnteringEdge(0).hasAttribute("mod")) {
+            mod = mod.concat(n.getEnteringEdge(0).getAttribute("mod"));
+        }
+        return mod;
     }
 
 }

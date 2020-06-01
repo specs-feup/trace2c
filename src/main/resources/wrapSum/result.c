@@ -13,7 +13,8 @@ int c;
 // Currently we write attributions and simple operations between two variables
 
 
-c= func1(20.0,10.0);
+c = func1(20.0,10.0);
+
 return c;
 }
 // Step by step description of process

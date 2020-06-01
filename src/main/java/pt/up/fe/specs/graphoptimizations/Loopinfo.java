@@ -1,5 +1,7 @@
 package pt.up.fe.specs.graphoptimizations;
 
+import pt.up.fe.specs.utils.ProgressionType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,22 +10,27 @@ import java.util.List;
  * @author CPU TOSH
  *
  */
-public class Loopinfo {
+public class LoopInfo {
 
-    public String name = new String();
-    public List<Integer> increments = new ArrayList<>();
+    // loop name
+    public String name;
+    // ratios of the arithmetic or geometric progression per dimension
+    public List<Integer> ratios;
+    // progressionTypes per dimension
+    public List<ProgressionType> progressionTypes = new ArrayList<>();
     public int dim;
 
     /**
      * 
      * @param name       name of loop.
-     * @param increments List of increments per loop iteration for each separate dimension.
-     * @param dim        dimension of array access.
+     * @param ratios List of ratios per loop iteration for each dimension.
+     * @param progressionTypes List of the progression types for each dimension
      */
-    public Loopinfo(String name, List<Integer> increments, int dim) {
-        this.dim = dim;
-        this.increments = increments;
+    public LoopInfo(String name, List<Integer> ratios, List<ProgressionType> progressionTypes) {
+        this.dim = ratios.size();
+        this.ratios = ratios;
         this.name = name;
+        this.progressionTypes = progressionTypes;
     }
 
     /**
@@ -32,7 +39,7 @@ public class Loopinfo {
     public void print() {
         System.out.println("Loopname " + name + " dim " + dim);
         for (int i = 0; i < dim; i++) {
-            System.out.println(" index " + i + " : " + increments.get(i));
+            System.out.println(" index " + i + " : " + ratios.get(i));
         }
     }
 

@@ -12,9 +12,32 @@
       <ProjectState />
     </projectState>
   </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="trace2c" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="trace2c" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
@@ -22,29 +45,31 @@
   <component name="ProjectId" id="1ZAdXpySmaDv1NCKrh6OgBokbat" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/singleStatement2Params" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../diss_compiling2fpgas_20" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\test\resources\hypotenuses" />
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\loop" />
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\ternaryCondition" />
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\Loop" />
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement2Params" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ineeve\Documents\trace2c\src\test\resources\hypotenuses" />
       <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement" />
       <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\svm" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement2Params" />
-      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\singleStatement" />
-      <recent name="C:\Users\ineeve\Documents\trace2c\src\main\resources\3statements" />
-    </key>
   </component>
-  <component name="RunManager" selected="Application.wrapSum">
+  <component name="RunManager" selected="Application.SVM Launcher">
     <configuration name="3statements" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
@@ -63,12 +88,118 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="hipotenuses1" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config1.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses2" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config2.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses4" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config4.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses5" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config5.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses6" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config6.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses7" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config7.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="hipotenuses8" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\hipotenuses\config8.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="loop" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\loop\config.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mult10_1" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\instrumented_mult_10_10\config1.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="mult10_2" type="Application" factoryName="Application">
+      <option name="ALTERNATIVE_JRE_PATH" value="11" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\instrumented_mult_10_10\config2.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="singleStatement" type="Application" factoryName="Application">
       <option name="ALTERNATIVE_JRE_PATH" value="11" />
       <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
       <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
       <module name="trace2c.main" />
       <option name="PROGRAM_PARAMETERS" value="src\main\resources\singleStatement\config.json" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ternary" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
+      <module name="trace2c.main" />
+      <option name="PROGRAM_PARAMETERS" value="src\main\resources\ternary\config.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -83,14 +214,65 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Triangles" type="CompoundRunConfigurationType">
+      <toRun name="hipotenuses2" type="Application" />
+      <toRun name="hipotenuses7" type="Application" />
+      <toRun name="hipotenuses1" type="Application" />
+      <toRun name="hipotenuses8" type="Application" />
+      <toRun name="hipotenuses4" type="Application" />
+      <toRun name="hipotenuses6" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="CompoundRunConfigurationType">
+      <toRun name="hipotenuses2" type="Application" />
+      <toRun name="hipotenuses7" type="Application" />
+      <toRun name="hipotenuses1" type="Application" />
+      <toRun name="hipotenuses8" type="Application" />
+      <toRun name="hipotenuses4" type="Application" />
+      <toRun name="hipotenuses6" type="Application" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Tester.hypothenusesLvl1" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="--tests &quot;Tester.hypothenusesLvl1&quot;" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value=":test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Application.3statements" />
+      <item itemvalue="Application.mult10_1" />
+      <item itemvalue="Application.mult10_2" />
+      <item itemvalue="Application.hipotenuses1" />
+      <item itemvalue="Application.hipotenuses2" />
+      <item itemvalue="Application.hipotenuses4" />
+      <item itemvalue="Application.hipotenuses5" />
+      <item itemvalue="Application.hipotenuses6" />
+      <item itemvalue="Application.hipotenuses7" />
+      <item itemvalue="Application.hipotenuses8" />
+      <item itemvalue="Application.loop" />
+      <item itemvalue="Application.ternary" />
       <item itemvalue="Application.wrapSum" />
       <item itemvalue="Application.singleStatement" />
       <item itemvalue="Application.SVM Launcher" />
+      <item itemvalue="Compound.Triangles" />
+      <item itemvalue="Gradle.Tester.hypothenusesLvl1" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.Tester.hypothenusesLvl1" />
         <item itemvalue="Application.SVM Launcher" />
       </list>
     </recent_temporary>
@@ -104,82 +286,98 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="178" key="#Project_Structure/0.0.1920.1040@0.0.1920.1040" timestamp="1584286090496" />
-    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585240474493">
+    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1590756836231">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585240474493" />
-    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1585751559978">
+    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1590756836231" />
+    <state x="731" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586711810636">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1585751559978" />
-    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585060897784">
+    <state x="731" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1586711810636" />
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1590583571995">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585060897784" />
+    <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1590583571995" />
+    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog" timestamp="1585757733571">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="845" y="479" key="#com.intellij.ide.util.TreeClassChooserDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585757733571" />
     <state x="808" y="409" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog" timestamp="1584369408656">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="808" y="409" key="#com.intellij.ide.util.projectWizard.JdkChooserPanel.MyDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584369408656" />
-    <state x="664" y="203" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog" timestamp="1585666333947">
+    <state x="664" y="203" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog" timestamp="1587573578697">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="664" y="203" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585666333947" />
+    <state x="664" y="203" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587573578697" />
     <state x="623" y="445" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog" timestamp="1584286964625">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="445" key="#com.intellij.refactoring.move.MoveHandler.SelectRefactoringDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1584286964625" />
-    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1585219957315">
+    <state x="743" y="389" width="433" height="268" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1589553668793">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585219957315" />
+    <state x="743" y="389" width="433" height="268" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1920.1040@0.0.1920.1040" timestamp="1589553668793" />
+    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1589736656105">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="452" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589736656105" />
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1589739929680">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="690" y="267" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1589739929680" />
     <state x="715" y="223" key="#xdebugger.evaluate" timestamp="1585501752088">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="715" y="223" key="#xdebugger.evaluate/0.0.1920.1040@0.0.1920.1040" timestamp="1585501752088" />
+    <state x="689" y="377" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1588346682060">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="689" y="377" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1588346682060" />
     <state width="433" height="466" key="DebuggerActiveHint" timestamp="1584459052905">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="433" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1584459052905" />
-    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1584560765429">
+    <state x="740" y="274" key="FileChooserDialogImpl" timestamp="1590591142254">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1584560765429" />
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1585754749593">
+    <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1590591142254" />
+    <state width="1877" height="394" key="GridCell.Tab.0.bottom" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585754749593" />
-    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1585754749593">
+    <state width="1877" height="394" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.0.center" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585754749593" />
-    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1585754749593">
+    <state width="1877" height="394" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.0.left" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585754749593" />
-    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1585754749593">
+    <state width="1877" height="394" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.0.right" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585754749593" />
-    <state width="1877" height="315" key="GridCell.Tab.1.bottom" timestamp="1585754190091">
+    <state width="1877" height="394" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.1.bottom" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1585754190091" />
-    <state width="1877" height="315" key="GridCell.Tab.1.center" timestamp="1585754190091">
+    <state width="1877" height="394" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.1.center" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1585754190091" />
-    <state width="1877" height="315" key="GridCell.Tab.1.left" timestamp="1585754190090">
+    <state width="1877" height="394" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.1.left" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1585754190090" />
-    <state width="1877" height="315" key="GridCell.Tab.1.right" timestamp="1585754190091">
+    <state width="1877" height="394" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state width="1877" height="394" key="GridCell.Tab.1.right" timestamp="1591004352228">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="315" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1585754190091" />
-    <state x="440" y="94" key="SettingsEditor" timestamp="1584369378690">
+    <state width="1877" height="394" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1591004352228" />
+    <state x="440" y="94" key="SettingsEditor" timestamp="1590584917123">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1584369378690" />
+    <state x="440" y="94" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1590584917123" />
     <state x="776" y="298" key="chooseDestDirectoryDialog" timestamp="1584286210843">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -188,76 +386,164 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="92" y="92" width="1736" height="856" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585481094362" />
-    <state x="661" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1585746957660">
+    <state x="661" y="344" key="com.intellij.ide.util.TipDialog" timestamp="1587568073811">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="661" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1585746957660" />
-    <state x="1043" y="131" width="737" height="909" key="find.popup" timestamp="1585222761852">
+    <state x="661" y="344" key="com.intellij.ide.util.TipDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1587568073811" />
+    <state x="479" y="249" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1589735660570">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="1043" y="131" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1585222761852" />
+    <state x="479" y="249" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2/0.0.1920.1040@0.0.1920.1040" timestamp="1589735660570" />
+    <state x="1043" y="131" width="737" height="909" key="find.popup" timestamp="1589727628202">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="1043" y="131" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1589727628202" />
     <state x="342" y="132" key="new project wizard" timestamp="1584560759170">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="342" y="132" key="new project wizard/0.0.1920.1040@0.0.1920.1040" timestamp="1584560759170" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1585246843934">
+    <state x="616" y="240" key="run.anything.popup" timestamp="1590606013740">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1585246843934" />
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1590606013740" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1587988485942">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1587988485942" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/PipelineByVariable.java</url>
-          <line>1267</line>
-          <option name="timeStamp" value="9" />
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/ParallelizeSums.java</url>
+          <line>49</line>
+          <option name="timeStamp" value="243" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/CGenerateSimpleHierarchyPruned.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="124" />
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/FoldingAlgorithm.java</url>
+          <line>83</line>
+          <option name="timeStamp" value="266" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/CGenerateSimpleHierarchyPruned.java</url>
-          <line>306</line>
-          <option name="timeStamp" value="178" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/CGenerateSimpleHierarchyPruned.java</url>
-          <line>316</line>
-          <option name="timeStamp" value="179" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/FunctionWrapper.java</url>
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/FoldingAlgorithm.java</url>
           <line>89</line>
-          <option name="timeStamp" value="195" />
+          <option name="timeStamp" value="267" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CFunctionPrinter.java</url>
+          <line>138</line>
+          <option name="timeStamp" value="276" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CLoopPrinter.java</url>
+          <line>111</line>
+          <option name="timeStamp" value="293" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CLoopPrinter.java</url>
+          <line>134</line>
+          <option name="timeStamp" value="295" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/LaunchAlgorithm.java</url>
+          <line>182</line>
+          <option name="timeStamp" value="343" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CFunctionPrinter.java</url>
+          <line>66</line>
+          <option name="timeStamp" value="356" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CFunctionPrinter.java</url>
+          <line>60</line>
+          <option name="timeStamp" value="357" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/utils/SubgraphSearchAux.java</url>
+          <line>33</line>
+          <option name="timeStamp" value="366" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Launcher.java</url>
+          <line>69</line>
+          <option name="timeStamp" value="379" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/LaunchAlgorithm.java</url>
+          <line>113</line>
+          <option name="timeStamp" value="381" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/LaunchAlgorithm.java</url>
+          <line>114</line>
+          <option name="timeStamp" value="382" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/AllSubgraphsAlgorithm.java</url>
+          <line>94</line>
+          <option name="timeStamp" value="383" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/AllSubgraphsAlgorithm.java</url>
+          <line>93</line>
+          <option name="timeStamp" value="384" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/AllSubgraphsAlgorithm.java</url>
+          <line>66</line>
+          <option name="timeStamp" value="388" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/AllSubgraphsAlgorithm.java</url>
+          <line>115</line>
+          <option name="timeStamp" value="389" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/graphoptimizations/AllSubgraphsAlgorithm.java</url>
+          <line>127</line>
+          <option name="timeStamp" value="395" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Launcher.java</url>
+          <line>71</line>
+          <option name="timeStamp" value="397" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Remote">
+        <watch expression="((MultiNode)((AbstractEdge[])((MultiNode)nodes.get(0)).edges)[1].target).edges" custom="org.graphstream.graph.implementations.AbstractEdge[],org.graphstream.graph.implementations.MultiNode" />
         <watch expression="graph" />
-        <watch expression="levelGraph" language="JAVA" />
-        <watch expression="levelgraph.get(15)" />
+        <watch expression="((HashMap)((MultiGraph)graph).attributes).entrySet().toArray()[4]" custom="org.graphstream.graph.implementations.MultiGraph,java.util.HashMap" />
+        <watch expression="((HashMap.Node)((HashMap)((MultiGraph)graph).attributes).entrySet().toArray()[0]).getValue()" custom="org.graphstream.graph.implementations.MultiGraph,java.util.HashMap.Node,java.util.HashMap" />
         <watch expression="n" />
         <watch expression="n" language="JAVA" />
-        <watch expression="n" language="JAVA" />
-        <watch expression="levelGraph.get(1)" />
+        <watch expression="struct" />
+        <watch expression="this" />
+        <watch expression="this" language="JAVA" />
+        <watch expression="levelGraph.get(0)" />
+        <watch expression="indexes" />
+        <watch expression="e" />
+        <watch expression="((MultiNode)node).attributes" custom="org.graphstream.graph.implementations.MultiNode" />
         <watch expression="graph" />
         <watch expression="graph" language="JAVA" />
         <watch expression="graph" language="JAVA" />
-        <watch expression="mainGraph" />
-        <watch expression="graphsWrapper.graphs" />
-        <watch expression="nodesThatFunctionConnectsTo" language="JAVA" />
+        <watch expression="hyperNode" />
+        <watch expression="graph" language="JAVA" />
+        <watch expression="((HashMap.Node)((HashMap)((MultiGraph)graph).attributes).entrySet().toArray()[0]).getValue()" custom="org.graphstream.graph.implementations.MultiGraph,java.util.HashMap.Node,java.util.HashMap" />
+        <watch expression="((HashMap.Node)((HashMap)((MultiGraph)graph).attributes).entrySet().toArray()[0]).getValue()" language="JAVA" custom="org.graphstream.graph.implementations.MultiGraph,java.util.HashMap.Node,java.util.HashMap" />
+        <watch expression="((HashMap.Node)((HashMap)((MultiGraph)graph).attributes).entrySet().toArray()[0]).getValue()" language="JAVA" custom="org.graphstream.graph.implementations.MultiGraph,java.util.HashMap.Node,java.util.HashMap" />
+        <watch expression="subgraphs.get(2)" />
+        <watch expression="indexes1" />
         <watch expression="n" />
-        <watch expression="((HashMap)((DefaultGraph)graph).nodeMap).entrySet().toArray()[0]" custom="org.graphstream.graph.implementations.DefaultGraph,java.util.HashMap" />
-        <watch expression="n" />
-        <watch expression="n" language="JAVA" />
-        <watch expression="((HashMap)((DefaultGraph)graph).nodeMap).entrySet().toArray()[1]" custom="org.graphstream.graph.implementations.DefaultGraph,java.util.HashMap" />
-        <watch expression="((AbstractEdge[])((SingleNode)((HashMap.Node)((HashMap)((DefaultGraph)mainGraph).nodeMap).entrySet().toArray()[3]).getValue()).edges)[0].attributes" custom="org.graphstream.graph.implementations.AbstractEdge[],org.graphstream.graph.implementations.DefaultGraph,java.util.HashMap.Node,org.graphstream.graph.implementations.SingleNode,java.util.HashMap" />
-        <watch expression="((SingleNode)n).edges" custom="org.graphstream.graph.implementations.SingleNode" />
-        <watch expression="((FileWriter)outBuffer.out).se" custom="java.io.FileWriter" />
+        <watch expression="nodeop" />
+        <watch expression="graph" language="JAVA" />
+        <watch expression="graph" language="JAVA" />
+        <watch expression="((HashMap.Node)allSequentialSubgraphs.entrySet().toArray()[0]).getValue()" custom="java.util.HashMap.Node" />
+        <watch expression="mostRepeatableSubgraph" />
+        <watch expression="mostRepeatableSubgraph" language="JAVA" />
+        <watch expression="g" />
       </configuration>
     </watches-manager>
   </component>

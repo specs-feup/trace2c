@@ -6,6 +6,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.graph.implementations.Graphs;
+import org.graphstream.graph.implementations.MultiGraph;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.VarIO;
 import pt.up.fe.specs.WrapConfig;
@@ -40,7 +41,7 @@ public class FunctionWrapper implements Algorithm {
     @Override
     public void init(Graph graph) {
         this.mainGraph = graph;
-        this.functionGraph = new DefaultGraph(functionName+"Graph");
+        this.functionGraph = new MultiGraph(functionName+"Graph");
         this.endNode = this.mainGraph.getNode(endNodeId);
         for(Edge e: this.endNode.getEachLeavingEdge()) {
             this.nodesThatFunctionConnectsTo.add(e.getTargetNode());
