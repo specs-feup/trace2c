@@ -98,7 +98,7 @@ void svm_predict_graph(float test_vector[D_sv], float *sum)
 			fprintf(f, "\"norma_%d\" [label=\"norma\", att1=var, att2=loc, att3=float ];\n", n_norma);
 			n_op++;
 			fprintf(f, "op%d [label=\"+\", att1=op ];\n", n_op); //nc-1
-			fprintf(f, "\"norma_%d\" [label=\"norma\", att1=var, att2=loc, att3=int ];\n", n_norma + 1);
+			fprintf(f, "\"norma_%d\" [label=\"norma\", att1=var, att2=loc, att3=float ];\n", n_norma + 1);
 
 			ne++;
 			fprintf(f, "diff_%d->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_diff, n_op, ne, ne);

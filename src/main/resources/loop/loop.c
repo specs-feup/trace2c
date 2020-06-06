@@ -1,6 +1,6 @@
 #include<stdio.h>
 
-#define SIZE 11
+#define SIZE 100
 
 int sumArray(int a[SIZE]) {
     FILE *f = fopen("loop.dot", "w");

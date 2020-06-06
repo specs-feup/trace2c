@@ -17,12 +17,14 @@ public class VarLoc {
     protected List<Integer> size = new ArrayList<>();
     protected int dim;
 
-    public VarLoc(String type, String name, boolean array, int dim, List<Integer> indexes) {
-        if (indexes == null)
+    public VarLoc(String type, String name, boolean array, List<Integer> indexes) {
+        if (indexes == null) {
             this.size.add(0);
-        else
+            this.dim = 0;
+        } else {
             this.size = indexes;
-        this.dim = dim;
+            this.dim = indexes.size();
+        }
         this.name = name;
         this.type = type;
         this.array = array;

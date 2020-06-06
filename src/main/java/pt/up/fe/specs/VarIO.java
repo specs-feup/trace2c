@@ -19,8 +19,8 @@ public class VarIO extends VarLoc {
      * @param dim   dim of variable.
      * @param indexes indexes of array access.
      */
-    public VarIO(String type, String name, boolean array, int dim, List<Integer> indexes) {
-        super(type, name,array,dim,indexes);
+    public VarIO(String type, String name, boolean array, List<Integer> indexes) {
+        super(type, name,array,indexes);
         for (int i = 0; i < dim; i++) {
             partitionFactor.add(0);
         }

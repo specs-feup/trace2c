@@ -25,12 +25,15 @@ public class Config {
     boolean full_connect;
     List<WrapConfig> wraps = new ArrayList<>();
     String outputFile;
+    Integer parallelFunctions;
 
     public Config() {
         // TODO Auto-generated constructor stub
     }
 
-    public int getLoadstores() {
+    public int getLoadStores() {
         return loadstores;
     }
+
+    public int getParallelFunctions() {return parallelFunctions; }
 }

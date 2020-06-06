@@ -20,6 +20,7 @@ public class CFunctionPrinter extends CPrinter {
     List<List<Node>> levelGraph;
     int maxLevel;
     int loadStores;
+    String graphType;
 
     /**
      *
@@ -29,9 +30,10 @@ public class CFunctionPrinter extends CPrinter {
         this.maxLevel = graph.getAttribute("maxlevel");
         this.levelGraph = graph.getAttribute("levelgraph");
         if (this.loadStores < 17)
-            this.loadStores = config.getLoadstores();
+            this.loadStores = config.getLoadStores();
         else
             this.loadStores = 16;
+        this.graphType = graph.hasAttribute("type") ? graph.getAttribute("type") : "normal";
     }
 
     @Override
@@ -44,9 +46,14 @@ public class CFunctionPrinter extends CPrinter {
 
         try {
             writeFunctionHeader();
-            outBuffer.append("{\n");
-            writeCodeByLevel(levelGraph, 0);
-            //writeReturnStatement(graph);
+            if (graphType.equals("parallel")) {
+                CParallelLoopPrinter parallelLoopPrinter = new CParallelLoopPrinter(outBuffer, graph, config, 0);
+                parallelLoopPrinter.print();
+            } else {
+                writeCodeByLevel(levelGraph, 0);
+            }
+
+
             outBuffer.append("}\n");
 
         } catch (IOException e) {
@@ -61,7 +68,7 @@ public class CFunctionPrinter extends CPrinter {
             throw new IOException("Edge without att1");
         }
         if (edge.getAttribute("att1").equals("call")) {
-            name = getCallStatement(edge.getSourceNode());
+            name = getCallStatement(edge);
         } else {
             if (!edge.hasAttribute("label")) {
                 throw new IOException("No label on edge");
@@ -80,34 +87,6 @@ public class CFunctionPrinter extends CPrinter {
     @Override
     protected String getAssignmentLabel(Edge edge) throws IOException {
         return edge.getAttribute("label").toString();
-    }
-
-    /**
-     * Out of use at the moment, because return variables are passed as input parameters
-     * @param graph
-     * @throws IOException
-     */
-    public void writeReturnStatement(Graph graph) throws IOException {
-        Node endNode = graph.getNode("End");
-        if (endNode.getInDegree() == 1) {
-            Node previousNode = endNode.getEnteringEdge(0).getSourceNode();
-            if (previousNode.getAttribute("att1").equals("op")) {
-                outBuffer.append("return ");
-                String label = getLabel(endNode.getEnteringEdge(0));
-                outBuffer.append(label + ";\n");
-
-            } else if (previousNode.getAttribute("att1").equals("call")) {
-                outBuffer.append("return " + getCallStatement(previousNode) + ";\n");
-
-            } else {
-                CInfo info = graph.getAttribute("info");
-                List<VarIO> outputs = info.getOutputs();
-                if (outputs.size() == 1) {
-                    outBuffer.append("return " + outputs.get(0).getName() + ";\n");
-                }
-            }
-        }
-
     }
 
 
@@ -143,14 +122,14 @@ public class CFunctionPrinter extends CPrinter {
      *
      * @throws IOException
      */
-    private void writeFunctionHeader() throws IOException {
+    public void writeFunctionHeader() throws IOException {
         CInfo info = this.graph.getAttribute("info");
         String functionName = graph.getAttribute("functionName");
         String outputType = "void";
         outBuffer.append("\n" + outputType + " " + functionName + "(");
 
         outBuffer.append(getFunctionParameters(info));
-        outBuffer.append(")\n");
+        outBuffer.append(") {\n");
 
         if (info.isFullPartition()) {
             for (VarIO var : info.getInputs()) {
@@ -180,15 +159,26 @@ public class CFunctionPrinter extends CPrinter {
                 }
             }
         }
+        Node hyperNode = graph.getNode("HyperNode");
+        if (hyperNode != null && hyperNode.getAttribute("type").equals("parallel")) {
+            outBuffer.append("#pragma HLS dataflow\n");
+        }
         outBuffer.append("// Step 2: Initialize local variables\n");
         for (VarLoc var : info.getLocalInfo()) {
             if (var.getType().equals("global")) {
                 continue;
             }
-            if (var.isArray())
-                outBuffer.append(var.getType() + " " + var.getName() + "[" + var.getSize() + "];\n");
-            else
+            if (var.isArray()) {
+                outBuffer.append(var.getType() + " " + var.getName());
+                for (int size: var.getSize()) {
+                    outBuffer.append("[" + size + "]");
+                }
+                outBuffer.append(";\n");
+            }
+            else {
                 outBuffer.append(var.getType() + " " + var.getName() + ";\n");
+            }
+
 
         }
         outBuffer.append("// Initialization done\n");

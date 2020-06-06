@@ -18,5 +18,5 @@
    "full_part" : false,
    "full_connect" : false,
    "graph" : "svm_simp_4.dot",
-   "outputFile": "svm_lvl2"
+   "outputFile": "svm_lvl1"
 }

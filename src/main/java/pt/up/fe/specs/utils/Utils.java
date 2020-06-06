@@ -36,4 +36,12 @@ public class Utils {
     public boolean isEndNode(Node node) {
         return node.getId().equals("End");
     }
+
+    public String varNameFromLabel(String label) {
+        if (label.contains("[")) {
+            return label.substring(0, label.indexOf("["));
+        } else {
+            return label;
+        }
+    }
 }

@@ -22,6 +22,34 @@ public class CInfo {
         inputs.add(input);
     }
 
+    public VarIO getInput(String varName) {
+        for (VarIO input: inputs ) {
+            if (input.getName().equals(varName)) {
+                return input;
+            }
+        }
+        return null;
+    }
+
+    public VarIO getOutput(String varName) {
+        for (VarIO output: outputs ) {
+            if (output.getName().equals(varName)) {
+                return output;
+            }
+        }
+        return null;
+    }
+
+    public VarLoc getLocalVar(String varName) {
+        for (VarLoc varLoc: localInfo) {
+            if (varLoc.getName().equals(varName)) {
+                return varLoc;
+            }
+        }
+        return null;
+    }
+
+
     public void addOutput(VarIO output) {
         this.outputs.add(output);
     }

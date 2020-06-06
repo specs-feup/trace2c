@@ -5,7 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.Config;
 import pt.up.fe.specs.LoopNameAndIterator;
-import pt.up.fe.specs.graphoptimizations.LoopInfo;
+import pt.up.fe.specs.algorithms.LoopInfo;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,12 +21,12 @@ import java.util.List;
 public class CLoopPrinter extends CPrinter {
     Graph subgraph;
     List<List<Node>> levelGraph = new ArrayList<>();
-    int plus_fold;
-    int mult_fold;
-    int total_its;
+    int plusFold;
+    int multFold;
+    int totalIterations;
     int maxLevel;
-    int initv;
-    int incr;
+    int loopVarInitialValue;
+    int loopVarIncrement;
     int loopLevel; // loop level in the nested loop hierarchy (starts in 0)
     ArrayList<LoopNameAndIterator> loopVariables = new ArrayList<LoopNameAndIterator>();
     boolean isToFold = true;
@@ -43,14 +43,14 @@ public class CLoopPrinter extends CPrinter {
      * Initialize the algorithm.
      *
      */
-    private void init() {
+    protected void init() {
         Node hyperNode = graph.getNode("HyperNode");
         loopVariables.add(new LoopNameAndIterator(hyperNode.getAttribute("loopname"), Character.toString((char)(105 + loopLevel))));
-        plus_fold = hyperNode.getAttribute("plus_fold");
-        mult_fold = hyperNode.getAttribute("mult_fold");
-        initv = hyperNode.getAttribute("initv");
-        incr = hyperNode.getAttribute("+incr");
-        total_its = hyperNode.getAttribute("size");
+        plusFold = hyperNode.getAttribute("plus_fold");
+        multFold = hyperNode.getAttribute("mult_fold");
+        loopVarInitialValue = hyperNode.getAttribute("initv");
+        loopVarIncrement = hyperNode.getAttribute("+incr");
+        totalIterations = hyperNode.getAttribute("size");
         this.subgraph = ((ArrayList<Graph>) graph.getAttribute("HyperNode")).get(0);
         maxLevel = subgraph.getAttribute("maxlevel");
         this.levelGraph = subgraph.getAttribute("levelgraph");
@@ -81,7 +81,7 @@ public class CLoopPrinter extends CPrinter {
     protected String getLabel(Edge edge) throws IOException {
         String name;
         if (edge.getAttribute("att1").equals("call")) {
-            name = getCallStatement(edge.getSourceNode());
+            name = getCallStatement(edge);
         } else {
             name = indexArrayOnLoop(edge);
         }
@@ -106,7 +106,7 @@ public class CLoopPrinter extends CPrinter {
      * @param e    Edge containing the variable.
      * @return label of the access with updated indexes.
      */
-    private String indexArrayOnLoop(Edge e) {
+    protected String indexArrayOnLoop(Edge e) {
         String name = e.getAttribute("label").toString();
         String temp;
         if (name.contains("[")) {
@@ -162,14 +162,14 @@ public class CLoopPrinter extends CPrinter {
      *
      * @throws IOException
      */
-    private void initLoop() throws IOException {
+    protected void initLoop() throws IOException {
         // TODO Auto-generated method stub
-        int incr = this.incr;
+        int incr = this.loopVarIncrement;
         int plus_fold;
         int mult_fold;
         if (isToFold) {
-            plus_fold = this.plus_fold;
-            mult_fold = this.mult_fold;
+            plus_fold = this.plusFold;
+            mult_fold = this.multFold;
         } else {
             plus_fold = 0;
             mult_fold = 1;
@@ -177,9 +177,9 @@ public class CLoopPrinter extends CPrinter {
         String loopIterator = loopVariables.get(loopLevel).getIterator();
         incr += plus_fold;
         outBuffer.append(
-                "for( int " + loopIterator + " =" + initv + "; "
+                "for( int " + loopIterator + " =" + loopVarInitialValue + "; "
                         + loopIterator + " < "
-                        + total_its / (mult_fold) + "; "
+                        + totalIterations / (mult_fold) + "; "
                         + loopIterator + "=" + loopIterator + "+"
                         + incr + "){\n");
 

@@ -33,17 +33,15 @@ abstract public class CPrinter {
                 if (att1.equals("op")) {
                     writeAssignment(n);
                 } else if (att1.equals("hyper")) {
-                    if (!n.hasAttribute("done")) {
+                    if (n.getAttribute("type").equals("parallel")) {
+                        for (Edge edge: n.getEachEnteringEdge()) {
+                            outBuffer.append(getCallStatement(edge) + ";\n");
+                        }
+                    } else {
                         CLoopPrinter cLoopPrinter = new CLoopPrinter(outBuffer, graph, config, loopLevel);
                         cLoopPrinter.print();
-                        n.addAttribute("done", true);
                     }
-
-                } else if (att1.equals("call") && n.getLeavingEdge(0).hasAttribute("label")) {
-                    if (!n.getLeavingEdge(0).getTargetNode().getAttribute("label").equals("=")) {
-                        // write only if the return value is not assigned, otherwise write as an operation
-                        outBuffer.append(getCallStatement(n) + ";\n");
-                    }
+                    n.addAttribute("done", true);
                 }
             }
             outBuffer.append( "\n");
@@ -57,9 +55,7 @@ abstract public class CPrinter {
 
     protected void writeExpression(Node n, Edge leavingEdge) throws IOException {
         String att1 = n.getAttribute("att1");
-        if (att1.equals("call")) {
-            outBuffer.append(getCallStatement(n));
-        } else if (att1.equals("mux")) {
+        if (att1.equals("mux")) {
             writeTernaryStatement(n);
         } else if (att1.equals("op")) {
             writeOperation(n, leavingEdge);
@@ -104,26 +100,25 @@ abstract public class CPrinter {
         outBuffer.append(operation);
     }
 
-    protected String getCallStatement(Node n) throws IOException {
+    protected String getCallStatement(Edge edge) {
         StringBuffer buffer = new StringBuffer();
-        String functionName = n.getAttribute("att2");
-        buffer.append(functionName);
-        buffer.append("(");
-        boolean isFirstParam = true;
-        for (Edge e : n.getEachEnteringEdge()) {
-            if (e.hasAttribute("label")) {
-                String param = getLabel(e);
+        if (edge.getAttribute("att1").equals("call")) {
+            String functionName = edge.getAttribute("att2");
+            buffer.append(functionName);
+            buffer.append("(");
+            boolean isFirstParam = true;
+            ArrayList<String> params = edge.getAttribute("att3");
+            for (String param : params) {
                 if (isFirstParam) {
                     buffer.append(param);
                     isFirstParam = false;
                 } else {
                     buffer.append("," + param);
                 }
-            } else {
-                throw new IOException("Found param without label in call to function " + functionName);
             }
+            buffer.append(")");
         }
-        buffer.append(")");
+
         return buffer.toString();
     }
 

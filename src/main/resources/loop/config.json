@@ -1,10 +1,10 @@
 {
    "loadstores":2,
-   "inputs":["a[11]"
+   "inputs":["a[100]"
    ],
    "input_types":["int"
    ],
-   "outputs":["sum"],
+   "outputs":["*sum"],
    "output_types": ["int"],
    "folding" : "medium",
    "arithmetic" : false,
@@ -12,5 +12,6 @@
    "full_part" : false,
    "full_connect" : false,
    "graph" : "loop.dot",
-   "outputFile": "loopResult"
+   "outputFile": "loopResult",
+   "parallelFunctions": 2
 }

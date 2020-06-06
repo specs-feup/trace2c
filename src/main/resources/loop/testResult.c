@@ -1,46 +1,64 @@
 #include<stdio.h>
 
-#define SIZE 5
+#define SIZE 1000
 
-// Step by step description of process
-// Step 1: create function header
-
-int main_func(int a[SIZE]){
+void parallelFunction0(int a[21], int offset, int size, int sum_array[4]) {
 // Step 2: Initialize local variables
-int sum;
-int sum_w0;
+int sum_w1;
+int sum_w2;
+// Initialization done
+// starting Loop
+    for( int i = offset; i < offset + size;i=i+1){
+        sum_w1 = a[(4)*i+3] + a[(4)*i+4];
+        sum_w2 = a[(4)*i+5] + a[(4)*i+6];
+        sum_array[i] = sum_w1 + sum_w2;
+    }
+}
+
+void loopResult(int a[21], int *sum) {
+#pragma HLS dataflow
+// Step 2: Initialize local variables
+int sum_array[4];
 int sum_w1;
 int sum_w2;
 int sum_w3;
 int sum_w4;
 int sum_w5;
+int sum_w6;
+int sum_w7;
+int sum_w8;
 // Initialization done
+parallelFunction0(a,0,2,sum_array);
+parallelFunction0(a,2,2,sum_array);
+sum_w2 = 0.0 + a[0];
+sum_w5 = a[19] + a[20];
+sum_w4 = a[1] + a[2];
 
+sum_w8 = sum_array[3] + sum_w5;
+sum_w6 = sum_w2 + sum_w4;
+sum_w1 = sum_array[1] + sum_array[2];
 
+sum_w7 = sum_w6 + sum_array[0];
 
+sum_w3 = sum_w7 + sum_w1;
 
-// Step 3: write code by level
-// Currently we write attributions and simple operations between two variables
+*sum = sum_w3 + sum_w8;
 
-sum_w0 = 0.0;
-sum_w2=a[2] + a[1];
-sum_w5=a[4] + a[3];
-
-sum_w1=sum_w0 + a[0];
-
-sum_w4=sum_w1 + sum_w2;
-
-sum = sum_w4 + sum_w5;
-
-return sum;
 }
+
+
+
+
+
+
 
 int main() {
     int a[SIZE] = {};
     for (int i = 0; i < SIZE; i++) {
         a[i] = i % 7;
     };
-    int sum = main_func(a);
+    int sum;
+    loopResult(a, &sum);
     printf("sum=%d", sum);
     return 0;
 }

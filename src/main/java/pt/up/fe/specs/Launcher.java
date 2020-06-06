@@ -68,6 +68,7 @@ public class Launcher {
 
         for (Graph graph: graphsWrapper.getAllGraphs()) {
             launch.Prune(graph);
+            launch.leveling(graph);
             launch.parallelizeSums(graph);
             launch.leveling(graph);
 
@@ -75,11 +76,12 @@ public class Launcher {
                 launch.runWeightAlgorithm(graph);
                 long graphsMatchTime = System.currentTimeMillis();
                 System.out.println("Starting parallel Matching");
-                launch.runParallelMatching(graph);
-                launch.runSequencialMatching(graph);
+                Graph functionGraph = launch.foldParallel(graph, config);
+                graphsWrapper.addGraph(functionGraph);
+
+                launch.runSequentialMatching(graph);
 
                 System.out.println("Subgraphs clustering time:" + (graphsMatchTime - startTime));
-                launch.runFolding(graph);
                 launch.leveling(graph);
 
             }

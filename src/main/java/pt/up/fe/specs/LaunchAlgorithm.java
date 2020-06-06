@@ -16,14 +16,14 @@ import com.google.gson.GsonBuilder;
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import pt.up.fe.specs.graphoptimizations.*;
+import pt.up.fe.specs.algorithms.*;
 import pt.up.fe.specs.utils.AddStartAndEnd;
 import pt.up.fe.specs.printers.CFunctionPrinter;
 import pt.up.fe.specs.printers.CPrinter;
-import pt.up.fe.specs.utils.GraphComparator;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -77,9 +77,6 @@ public class LaunchAlgorithm {
         Algorithm lvecprun = new LocalVectorPruning();
         lvecprun.init(graph);
         lvecprun.compute();
-        Algorithm setOpTypesAlgo = new SetOperationTypes();
-        setOpTypesAlgo.init(graph);
-        setOpTypesAlgo.compute();
         return graph;
 
     }
@@ -98,10 +95,10 @@ public class LaunchAlgorithm {
         CInfo info;
         // Potential alternative Info method tested (not used)
 
-        Algorithm getinfo = new CInfoAlgorithm();
-        getinfo.init(graph);
-        getinfo.compute();
-        info = ((CInfoAlgorithm) getinfo).getInfo();
+        Algorithm getInfo = new CInfoAlgorithm();
+        getInfo.init(graph);
+        getInfo.compute();
+        info = ((CInfoAlgorithm) getInfo).getInfo();
 
         info = ioFromGson(info, config);
         graph.setAttribute("info", info);
@@ -109,15 +106,15 @@ public class LaunchAlgorithm {
 
     }
 
-    public Graph runParallelMatching(Graph graph) {
-        Node endNode = graph.getNode("End");
-        runAllSubgraphsAlgorithm(graph);
-        orderSubgraphs(graph);
-
-        return graph;
+    public Graph foldParallel(Graph graph, Config config) {
+        List<HashSet<Node>> parallelSubgraphs = runAllSubgraphsAlgorithm(graph);
+        FoldParallelSubgraphs foldParallelAlgorithm = new FoldParallelSubgraphs(parallelSubgraphs, config);
+        foldParallelAlgorithm.init(graph);
+        foldParallelAlgorithm.compute();
+        return foldParallelAlgorithm.getFunctionGraph();
     }
 
-    public Graph runSequencialMatching(Graph graph) {
+    public Graph runSequentialMatching(Graph graph) {
         return graph;
     }
 
@@ -128,11 +125,11 @@ public class LaunchAlgorithm {
         return graph;
     }
 
-    public Graph runAllSubgraphsAlgorithm(Graph graph) {
-        Algorithm allSubgraphs = new AllSubgraphsAlgorithm();
+    public  List<HashSet<Node>> runAllSubgraphsAlgorithm(Graph graph) {
+        AllSubgraphsAlgorithm allSubgraphs = new AllSubgraphsAlgorithm();
         allSubgraphs.init(graph);
         allSubgraphs.compute();
-        return graph;
+        return allSubgraphs.getMostRepeatableParallelSubgraph();
     }
 
     /**
@@ -178,10 +175,6 @@ public class LaunchAlgorithm {
         foldingAlgorithm.compute();
     }
 
-    public void orderSubgraphs(Graph graph) {
-        ArrayList<Graph> subgraphs = graph.getAttribute("HyperNode");
-        subgraphs.sort(new GraphComparator());
-    }
 
 
 
@@ -317,7 +310,7 @@ public class LaunchAlgorithm {
             String inputVarName = parseVarName(input);
             indexes = new ArrayList<>();
             dim = getIndexes(input, indexes);
-            VarIO in = new VarIO(config.input_types.get(i), inputVarName, dim > 0, dim, indexes);
+            VarIO in = new VarIO(config.input_types.get(i), inputVarName, dim > 0, indexes);
             info.addInput(in);
         }
         for (int i = 0; i < config.outputs.size(); i++) {
@@ -325,7 +318,7 @@ public class LaunchAlgorithm {
             String outputVarName = parseVarName(output);
             indexes = new ArrayList<>();
             dim = getIndexes(output, indexes);
-            VarIO out = new VarIO(config.output_types.get(i), outputVarName, dim > 0, dim, indexes);
+            VarIO out = new VarIO(config.output_types.get(i), outputVarName, dim > 0, indexes);
             info.addOutput(out);
         }
 
