@@ -4,10 +4,13 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import pt.up.fe.specs.Config;
 import pt.up.fe.specs.LoopNameAndIterator;
-import pt.up.fe.specs.algorithms.LoopInfo;
+import pt.up.fe.specs.utils.FoldInfo;
+import pt.up.fe.specs.utils.LoopInfo;
+import pt.up.fe.specs.utils.SpecificLoopInfo;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CParallelLoopPrinter extends CLoopPrinter {
@@ -20,16 +23,13 @@ public class CParallelLoopPrinter extends CLoopPrinter {
 
     @Override
     protected void init() {
-        String loopName = graph.getAttribute("functionName");
-        graph.setAttribute("loopName", loopName);
-        loopVariables.add(new LoopNameAndIterator(loopName, Character.toString((char)(105 + loopLevel))));
+        ArrayList<String> loopNames = graph.getAttribute("loopNames");
+        for (String loopName: loopNames) {
+            loopVariables.add(new LoopNameAndIterator(loopName, Character.toString((char)(105 + loopLevel))));
+        }
         this.maxLevel = graph.getAttribute("maxlevel");
         this.levelGraph = graph.getAttribute("levelgraph");
-        this.plusFold = graph.getAttribute("plus_fold");
-        this.multFold = graph.getAttribute("mult_fold");
-        this.totalIterations = graph.getAttribute("size");
-        this.loopVarInitialValue = graph.getAttribute("initv");
-        this.loopVarIncrement = graph.getAttribute("+incr");
+        this.foldInfo = graph.getAttribute("foldInfo");
     }
 
 
@@ -41,54 +41,61 @@ public class CParallelLoopPrinter extends CLoopPrinter {
      */
     @Override
     protected String indexArrayOnLoop(Edge e) {
-        String name = e.getAttribute("label").toString();
+        String label = e.getAttribute("label").toString();
         String temp;
-        if (name.contains("[")) {
-            temp = e.getAttribute("label").toString();
-            List<Integer> indexes = utils.getIndexes(temp);
-            String offset;
-            offset = e.getAttribute("label").toString().substring(name.indexOf("["));
-            String newIndex = new String();
-            int novar = 0;
+        if (e.hasAttribute("loopinfo")) {
+            if (label.contains("[")) {
+                temp = e.getAttribute("label").toString();
+                List<Integer> indexes = utils.getIndexes(temp);
+                String offset;
+                offset = e.getAttribute("label").toString().substring(label.indexOf("["));
+                String newIndex = new String();
+                int novar = 0;
 
-            LoopInfo loopInfo = e.getAttribute("loopinfo");
 
-            for (int i = 0; i < indexes.size(); i++) {
+                LoopInfo loopInfo = e.getAttribute("loopinfo");
 
-                newIndex = newIndex.concat("[");
 
-                for (LoopNameAndIterator entry : loopVariables) {
-                    String loopName = entry.getLoopName();
-                    String loopIterator = entry.getIterator();
-                    if (loopInfo.name.equals(loopName)) {
-                        if (loopInfo.ratios.get(i) == 0) {
-                            novar++;
-                            break;
+
+
+                for (int i = 0; i < indexes.size(); i++) {
+
+                    newIndex = newIndex.concat("[");
+
+                    for (LoopNameAndIterator entry : loopVariables) {
+                        String loopName = entry.getLoopName();
+                        String loopIterator = entry.getIterator();
+                        SpecificLoopInfo specificLoopInfo = loopInfo.getLoopWithName(loopName);
+                        if (specificLoopInfo != null) {
+                            if (specificLoopInfo.ratios.get(i) == 0) {
+                                novar++;
+                                break;
+                            }
+                            if (specificLoopInfo.ratios.get(i) == 1) {
+                                newIndex = newIndex.concat(loopIterator + "+");
+                            } else {
+                                newIndex = newIndex.concat("(" + specificLoopInfo.ratios.get(i) + ")" + "*" + loopIterator + "+");
+                            }
+
+
                         }
-                        if (loopInfo.ratios.get(i) == 1) {
-                            newIndex = newIndex.concat(loopIterator + "+");
-                        } else {
-                            newIndex = newIndex.concat("(" + loopInfo.ratios.get(i) + ")" + "*" + loopIterator + "+");
-                        }
-
-
                     }
+
+
+
+                    if (indexes.get(i) != 0 || (novar == loopVariables.size()))
+                        newIndex = newIndex.concat(indexes.get(i).toString());
+                    else
+                        newIndex = newIndex.substring(0, newIndex.length() - 1);
+                    novar = 0;
+                    newIndex = newIndex.concat("]");
                 }
 
-
-
-                if (indexes.get(i) != 0 || (novar == loopVariables.size()))
-                    newIndex = newIndex.concat(indexes.get(i).toString());
-                else
-                    newIndex = newIndex.substring(0, newIndex.length() - 1);
-                novar = 0;
-                newIndex = newIndex.concat("]");
+                label = label.replace(offset, newIndex);
             }
-
-            name = name.replace(offset, newIndex);
         }
 
-        return name;
+        return label;
     }
 
     /**
@@ -99,17 +106,15 @@ public class CParallelLoopPrinter extends CLoopPrinter {
     @Override
     protected void initLoop() throws IOException {
         // TODO Auto-generated method stub
-        int incr = this.loopVarIncrement;
+        FoldInfo foldInfo = graph.getAttribute("foldInfo");
         String loopIterator = loopVariables.get(loopLevel).getIterator();
-        incr += plusFold;
         outBuffer.append(
-                "for( int " + loopIterator + " = offset; "
-                        + loopIterator + " < offset + size;"
+                "for( int " + loopIterator + " = " + foldInfo.getInitialValue() +"; "
+                        + loopIterator + " < width;"
                         + loopIterator + "=" + loopIterator + "+"
-                        + incr + "){\n");
+                        + foldInfo.getIncrement() + "){\n");
 
-        if (graph.hasAttribute("Pipeline"))
-            outBuffer.append("#pragma HLS pipeline");
+        outBuffer.append("#pragma HLS pipeline");
         outBuffer.append("\n");
         outBuffer.append("\n\n");
 

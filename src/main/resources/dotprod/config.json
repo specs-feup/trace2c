@@ -1,0 +1,29 @@
+{
+   "loadstores":2,
+   "inputs":[
+      "x[2000]",
+      "y[2000]"
+   ],
+   "input_types":[
+      "short",
+      "short"
+   ],
+   "outputs":["*out"],
+   "output_types": ["int"],
+   "folding" : "medium",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : false,
+   "full_connect" : false,
+   "graph" : "dotprod_graph.dot",
+   "outputFile": "dotprod_parallel3",
+   "parallelFunctions": 3,
+   "maxNodesPerSubgraph": 1000,
+   "varsToPartition": [{
+      "var": "x",
+      "dim": 0
+   }, {
+      "var": "y",
+      "dim": 0
+   }]
+}

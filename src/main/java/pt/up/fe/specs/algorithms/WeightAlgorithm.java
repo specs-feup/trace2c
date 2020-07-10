@@ -13,6 +13,7 @@ public class WeightAlgorithm implements Algorithm {
     private HashMap<String, Integer> operationTypeToInt = new HashMap<>();
     private HashMap<String, Integer> nodeTypeToInt = new HashMap<>();
     private HashMap<String, Integer> edgeTypeToInt = new HashMap<>();
+    private HashMap<String, Integer> positionToInt = new HashMap<>();
 
     @Override
     public void init(Graph graph) {
@@ -23,26 +24,31 @@ public class WeightAlgorithm implements Algorithm {
         operationTypeToInt.put("-", 4);
         operationTypeToInt.put("*", 8);
         operationTypeToInt.put("/", 16);
+        operationTypeToInt.put(">", 32);
+        operationTypeToInt.put("<", 64);
 
         nodeTypeToInt.put("nop", 0);
         nodeTypeToInt.put("mux", 32);
         nodeTypeToInt.put("call", 64);
 
+        edgeTypeToInt.put(null, 0);
         edgeTypeToInt.put("var", 10);
         edgeTypeToInt.put("const", 1);
+
+        positionToInt.put(null, 0);
+        positionToInt.put("l", 1);
+        positionToInt.put("r", 2);
+        positionToInt.put("sel", 4);
+        positionToInt.put("t", 8);
+        positionToInt.put("f", 16);
     }
 
     @Override
     public void compute() {
         final int k1 = 1000;
         final int k2 = 100;
-        Collection<Node> nodeSet = graph.getNodeSet();
-        int nodeCount = graph.getNodeCount();
 
         for (Node n : graph) {
-            if (n.getId().equals("op1801")) {
-                System.out.println("Say hello");
-            }
             String nodeType = n.getAttribute("att1");
             Integer typeWeight = nodeType.equals("op") ? operationTypeToInt.get(n.getAttribute("label")) : nodeTypeToInt.get(nodeType);
             Integer nodeLevel = n.getAttribute("level");
@@ -50,6 +56,13 @@ public class WeightAlgorithm implements Algorithm {
 
             for (Edge e: n.getEachEnteringEdge()) {
                 Integer edgeWeight = edgeTypeToInt.get(e.getAttribute("att1"));
+                edgeWeight += positionToInt.get(e.getAttribute("pos"));
+                if (e.hasAttribute("array")) {
+                    edgeWeight += Integer.valueOf(e.getAttribute("name").hashCode()) % 67;
+                }
+                if (e.hasAttribute("dim")) {
+                    edgeWeight += (int) e.getAttribute("dim");
+                }
                 sequential_weight += edgeWeight;
             }
             int parallel_weight = k1 * nodeLevel + sequential_weight;

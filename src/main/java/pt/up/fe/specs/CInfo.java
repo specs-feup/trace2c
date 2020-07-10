@@ -12,18 +12,42 @@ import java.util.*;
  */
 
 public class CInfo {
-    private List<VarIO> inputs = new ArrayList<>();
-    private List<VarIO> outputs = new ArrayList<>();
-    private List<VarLoc> localInfo = new ArrayList<>();
+    private List<Var> inputs = new ArrayList<>();
+    private List<Var> outputs = new ArrayList<>();
+    private List<Var> localInfo = new ArrayList<>();
     private HashMap<String, Integer> variablesCounter = new HashMap<>();
     private boolean isFullPartition = false;
 
-    public void addInput(VarIO input) {
+    public Var getVar(String varName) {
+        for (Var input: inputs) {
+            if (input.getName().equals(varName)) return input;
+        }
+        for (Var output: outputs) {
+            if (output.getName().equals(varName)) return output;
+        }
+        for (Var local: localInfo) {
+            if (local.getName().equals(varName)) return local;
+        }
+        return null;
+    }
+
+
+    public void addInput(Var input) {
         inputs.add(input);
     }
 
-    public VarIO getInput(String varName) {
-        for (VarIO input: inputs ) {
+
+    public boolean hasInput(String varName) {
+        for (Var input: inputs ) {
+            if (input.getName().equals(varName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Var getInput(String varName) {
+        for (Var input: inputs ) {
             if (input.getName().equals(varName)) {
                 return input;
             }
@@ -31,8 +55,8 @@ public class CInfo {
         return null;
     }
 
-    public VarIO getOutput(String varName) {
-        for (VarIO output: outputs ) {
+    public Var getOutput(String varName) {
+        for (Var output: outputs ) {
             if (output.getName().equals(varName)) {
                 return output;
             }
@@ -40,17 +64,17 @@ public class CInfo {
         return null;
     }
 
-    public VarLoc getLocalVar(String varName) {
-        for (VarLoc varLoc: localInfo) {
-            if (varLoc.getName().equals(varName)) {
-                return varLoc;
+    public Var getLocalVar(String varName) {
+        for (Var var : localInfo) {
+            if (var.getName().equals(varName)) {
+                return var;
             }
         }
         return null;
     }
 
 
-    public void addOutput(VarIO output) {
+    public void addOutput(Var output) {
         this.outputs.add(output);
     }
 
@@ -61,24 +85,24 @@ public class CInfo {
     public void clearVariablesCounter() {
         this.variablesCounter.clear();
     }
-    public List<VarIO> getInputs() {
+    public List<Var> getInputs() {
         return inputs;
     }
 
-    public void setInputs(List<VarIO> inputs) {
+    public void setInputs(List<Var> inputs) {
         this.inputs = inputs;
     }
 
-    public List<VarIO> getOutputs() {
+    public List<Var> getOutputs() {
         return outputs;
     }
 
 
-    public List<VarLoc> getLocalInfo() {
+    public List<Var> getLocalInfo() {
         return localInfo;
     }
 
-    public void setLocalInfo(List<VarLoc> localInfo) {
+    public void setLocalInfo(List<Var> localInfo) {
         this.localInfo = localInfo;
     }
 

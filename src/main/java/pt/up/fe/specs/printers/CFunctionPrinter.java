@@ -4,6 +4,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.*;
+import pt.up.fe.specs.utils.HLSPartition;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,6 +28,15 @@ public class CFunctionPrinter extends CPrinter {
      */
     public CFunctionPrinter(BufferedWriter outBuffer, Graph graph, Config config) {
         super(outBuffer, graph, config);
+        ArrayList<Graph>  subgraphs = graph.getAttribute("subgraphs");
+        if (subgraphs != null) {
+            for (Graph subgraph: subgraphs) {
+                CPrinter printer = new CFunctionPrinter(outBuffer, subgraph, config);
+                printer.print();
+            }
+        }
+
+
         this.maxLevel = graph.getAttribute("maxlevel");
         this.levelGraph = graph.getAttribute("levelgraph");
         if (this.loadStores < 17)
@@ -92,19 +102,19 @@ public class CFunctionPrinter extends CPrinter {
 
     private String getFunctionParameters(CInfo info) throws IOException {
         String functionParams = new String();
-        ArrayList<VarIO> params = new ArrayList<>();
+        ArrayList<Var> params = new ArrayList<>();
         params.addAll(info.getInputs());
         params.addAll(info.getOutputs());
         boolean isFirstParam = true;
 
-        for (VarIO var : params) {
+        for (Var var : params) {
             if (!isFirstParam) {
                 functionParams += (", ");
             }
             isFirstParam = false;
             if (var.isArray()) {
                 functionParams += (var.getType() + " " + var.getName());
-                List<Integer> indexes = var.getSize();
+                List<Integer> indexes = var.getSizes();
                 for (int i = 0; i < var.getDim(); i++) {
                     functionParams += ("[" + indexes.get(i) + "]");
                 }
@@ -131,46 +141,15 @@ public class CFunctionPrinter extends CPrinter {
         outBuffer.append(getFunctionParameters(info));
         outBuffer.append(") {\n");
 
-        if (info.isFullPartition()) {
-            for (VarIO var : info.getInputs()) {
-                List<Integer> part = var.getPartFactor();
-                for (int dim = 0; dim < var.getDim(); dim++) {
-                    if (var.isArray()) {
-                        if (part.get(dim) != 0) {
-                            outBuffer.append("#pragma HLS array_partition variable=" + var.getName() + " cyclic factor=");
-                            if (dim < 1)
-                                outBuffer.append((part.get(dim) + 1) / 2 + " dim= " + (dim + 1) + "\n");
-                            else
-                                outBuffer.append((part.get(dim)) + " dim= " + (dim + 1) + "\n");
 
-                        }
-                    }
-                }
-            }
-
-        } else {
-            if (loadStores > 2) {
-                for (VarIO var : info.getInputs()) {
-                    if (var.isArray()) {
-                        outBuffer.append("#pragma HLS array_partition variable=" + var.getName() + " cyclic factor="
-                                        + (loadStores + 2 - 1) / 2 + "\n");
-
-                    }
-                }
-            }
-        }
-        Node hyperNode = graph.getNode("HyperNode");
-        if (hyperNode != null && hyperNode.getAttribute("type").equals("parallel")) {
-            outBuffer.append("#pragma HLS dataflow\n");
-        }
         outBuffer.append("// Step 2: Initialize local variables\n");
-        for (VarLoc var : info.getLocalInfo()) {
+        for (Var var : info.getLocalInfo()) {
             if (var.getType().equals("global")) {
                 continue;
             }
             if (var.isArray()) {
                 outBuffer.append(var.getType() + " " + var.getName());
-                for (int size: var.getSize()) {
+                for (int size: var.getSizes()) {
                     outBuffer.append("[" + size + "]");
                 }
                 outBuffer.append(";\n");
@@ -178,10 +157,22 @@ public class CFunctionPrinter extends CPrinter {
             else {
                 outBuffer.append(var.getType() + " " + var.getName() + ";\n");
             }
-
-
+        }
+        List<Var> allVars = new ArrayList<>();
+        allVars.addAll(info.getInputs());
+        allVars.addAll(info.getLocalInfo());
+        allVars.addAll(info.getOutputs());
+        for (Var var: allVars) {
+            if (var.hasHlsPartition()) {
+                HLSPartition hlsPartition = var.getHlsPartition();
+                outBuffer.append("#pragma HLS ARRAY_PARTITION variable=" + var.getName() +
+                        " cyclic factor=" + hlsPartition.getFactor() + " dim=" + hlsPartition.getDim() + "\n");
+            }
         }
         outBuffer.append("// Initialization done\n");
+        if (graph.hasAttribute("subgraphs")) {
+            outBuffer.append("#pragma HLS dataflow\n");
+        }
     }
 
 

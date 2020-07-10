@@ -1,13 +1,13 @@
 #include<stdio.h>
 
-int ternary(int a) {
+void ternary(int a, int *b) {
     FILE *f = fopen("ternary.dot", "w");
     fprintf(f, "Digraph G{\n");
 
     fprintf(f, "const1 [label=10, att1=const];\n");
     fprintf(f, "const2 [label=0, att1=const];\n");
     fprintf(f, "const3 [label=1, att1=const];\n");
-    fprintf(f, "b_1 [label=b, att1=var, att2=loc, att3=int ];\n");
+    fprintf(f, "b_1 [label=\"*b\", att1=var, att2=inte, att3=int ];\n");
     fprintf(f, "a_0 [label=a, att1=var, att2=inte, att3=int];\n");
 
     fprintf(f, "op1 [label=\">\" , att1=op ];\n");
@@ -23,15 +23,15 @@ int ternary(int a) {
 
     fprintf(f, "mux1->b_1 [label=6, ord=6];\n");
 
-   int b = a > 10 ? 0 : 1;
+   *b = a > 10 ? 0 : 1;
 
    fprintf(f, "}");
    fclose(f);
-   return b;
 }
 
 
 int main() {
-    ternary(20);
+    int b = 20;
+    ternary(20, &b);
     return 0;
 }

@@ -5,8 +5,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
-import pt.up.fe.specs.VarIO;
-import pt.up.fe.specs.VarLoc;
+import pt.up.fe.specs.Var;
+import pt.up.fe.specs.utils.FoldInfo;
 import pt.up.fe.specs.utils.Utils;
 
 public class SetGraphCInfo implements Algorithm {
@@ -15,6 +15,9 @@ public class SetGraphCInfo implements Algorithm {
     private CInfo upperInfo;
     private CInfo info;
     private Utils utils = new Utils();
+    private boolean isParallel = false;
+    private Integer numberOfParallelCalls = 1;
+    private FoldInfo foldInfo;
 
     /**
      *
@@ -24,10 +27,21 @@ public class SetGraphCInfo implements Algorithm {
         this.upperInfo = upperInfo;
     }
 
+    public void setNumberOfParallelCalls(Integer parallelCalls) {
+        this.numberOfParallelCalls = parallelCalls;
+    }
+
     @Override
     public void init(Graph graph) {
         this.graph = graph;
         this.info = new CInfo();
+        this.foldInfo = graph.getAttribute("foldInfo");
+        if (graph.hasAttribute("type")) {
+            if (graph.getAttribute("type").equals("parallel")) {
+                isParallel = true;
+            }
+        }
+
     }
 
     @Override
@@ -37,23 +51,45 @@ public class SetGraphCInfo implements Algorithm {
         graph.setAttribute("info", info);
     }
 
+    private Var getVarFromUpperInfo(String varName) {
+        Var upperInput = upperInfo.getInput(varName);
+        if (upperInput == null) {
+            Var localVar = upperInfo.getLocalVar(varName);
+            if (localVar == null) {
+                return upperInfo.getOutput(varName);
+            } else {
+                return new Var(localVar.getType(),localVar.getName(),localVar.isArray(),localVar.getSizes());
+            }
+        }
+        return upperInput;
+    }
+
     private void addInputs() {
         Node start = graph.getNode("Start");
-        start.getEachLeavingEdge().forEach(edge -> {
+        for (Edge edge: start.getEachLeavingEdge()) {
             String label = edge.getAttribute("label");
             String varName = utils.varNameFromLabel(label);
-            if (info.getInput(varName) == null) {
-                VarIO upperInput = upperInfo.getInput(varName);
-                if ( upperInput != null) {
+
+            if (!info.hasInput(varName)) {
+                Var upperInput = getVarFromUpperInfo(varName);
+                if (upperInput != null) {
+                    upperInput = splitDimensions(upperInput);
                     info.addInput(upperInput);
-                } else {
-                    System.out.println("TODO: Unhandled case");
                 }
             }
 
-        });
-        info.addInput(new VarIO("int", "offset", false, null));
-        info.addInput(new VarIO("int", "size", false, null));
+        }
+        if (isParallel) {
+            info.addInput(new Var("int", "width", false, null));
+        }
+
+    }
+
+    private Var splitDimensions(Var var) {
+        if (numberOfParallelCalls > 1 && (foldInfo.hasVar(var.getName()))) {
+            return utils.splitDimensions(var, numberOfParallelCalls, foldInfo.getDimOfVar(var.getName()));
+        }
+        return var;
     }
 
     private void addOutputs() {
@@ -62,13 +98,13 @@ public class SetGraphCInfo implements Algorithm {
             String label = edge.getAttribute("label");
             String varName = utils.varNameFromLabel(label);
             if (info.getOutput(varName) == null) {
-                VarIO upperOutput = upperInfo.getOutput(varName);
+                Var upperOutput = upperInfo.getOutput(varName);
                 if ( upperOutput != null) {
                     info.addOutput(upperOutput);
                 } else {
-                    VarLoc varLoc = upperInfo.getLocalVar(varName);
-                    if (varLoc != null) {
-                        info.addOutput(new VarIO(varLoc.getType(), varLoc.getName(), varLoc.isArray(), varLoc.getSize()));
+                    Var var = upperInfo.getLocalVar(varName);
+                    if (var != null) {
+                        info.addOutput(splitDimensions(var));
                     } else {
                         info.addOutput(computeOutputVar(edge, varName));
                     }
@@ -77,15 +113,14 @@ public class SetGraphCInfo implements Algorithm {
         });
     }
 
-    private VarIO computeOutputVar(Edge edge, String varName) {
+    private Var computeOutputVar(Edge edge, String varName) {
         Boolean isArray = edge.hasAttribute("array");
         String type = edge.getAttribute("att3");
         String label = edge.getAttribute("label");
         if (isArray) {
-            System.err.println("TODO: Unhandled case in computeOutputVar");
-            return new VarIO(type, varName, true, utils.getIndexes(label));
+            return splitDimensions(new Var(type, varName, true, utils.getIndexes(label)));
         } else {
-            return new VarIO(type, edge.getAttribute("label"), false, null);
+            return new Var(type, edge.getAttribute("label"), false, null);
         }
     }
 

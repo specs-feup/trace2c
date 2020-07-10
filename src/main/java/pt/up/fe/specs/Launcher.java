@@ -1,6 +1,7 @@
 package pt.up.fe.specs;
 
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSource;
@@ -29,7 +30,6 @@ public class Launcher {
         // Creating Graph
         Graph mainGraph = new MultiGraph("mainGraph");
 
-        GraphsWrapper graphsWrapper = new GraphsWrapper(mainGraph);
         // Getting config file
 
         if(args.length < 1) {
@@ -56,9 +56,8 @@ public class Launcher {
                 .sourceFor(path + "\\" + config.graph);
 
         fs.addSink(mainGraph);
-
         fs.readAll(path + "\\" + config.graph);
-
+        
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
@@ -66,30 +65,30 @@ public class Launcher {
         launch.InfoInit(mainGraph, config);
         mainGraph.addAttribute("functionName", config.outputFile);
 
-        for (Graph graph: graphsWrapper.getAllGraphs()) {
-            launch.Prune(graph);
-            launch.leveling(graph);
-            launch.parallelizeSums(graph);
-            launch.leveling(graph);
-
-            if (config.folding.equals("high") || config.folding.equals("medium")) {
-                launch.runWeightAlgorithm(graph);
-                long graphsMatchTime = System.currentTimeMillis();
-                System.out.println("Starting parallel Matching");
-                Graph functionGraph = launch.foldParallel(graph, config);
-                graphsWrapper.addGraph(functionGraph);
-
-                launch.runSequentialMatching(graph);
-
-                System.out.println("Subgraphs clustering time:" + (graphsMatchTime - startTime));
-                launch.leveling(graph);
-
+        launch.Prune(mainGraph);
+        launch.leveling(mainGraph);
+        boolean performedRotations = launch.parallelizeSums(mainGraph);
+        if (performedRotations) {
+            launch.leveling(mainGraph);
+        }
+        if (config.folding.equals("high") || config.folding.equals("medium")) {
+            launch.runWeightAlgorithm(mainGraph);
+            long graphsMatchTime = System.currentTimeMillis();
+            System.out.println("Starting parallel Matching");
+            boolean isFolded = launch.foldParallel(mainGraph, config);
+            System.out.println("Fold parallel time:" + (graphsMatchTime - startTime));
+            //launch.createPrologue(mainGraph);
+            if (isFolded) {
+                Graph epilogue = launch.createEpilogue(mainGraph);
             }
+
         }
 
+        launch.arithmeticOptimizations(mainGraph);
         launch.updateVarLabels(mainGraph);
+        launch.orderLevelGraph(mainGraph);
         //Update vars names with wire numbers before writing the code
-        launch.writeC(graphsWrapper, path.concat("\\"+config.outputFile + ".c"), config);
+        launch.writeC(mainGraph, path.concat("\\"+config.outputFile + ".c"), config);
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));

@@ -32,17 +32,19 @@ abstract public class CPrinter {
                 String att1 = n.getAttribute("att1");
                 if (att1.equals("op")) {
                     writeAssignment(n);
-                } else if (att1.equals("hyper")) {
-                    if (n.getAttribute("type").equals("parallel")) {
-                        for (Edge edge: n.getEachEnteringEdge()) {
-                            outBuffer.append(getCallStatement(edge) + ";\n");
-                        }
-                    } else {
-                        CLoopPrinter cLoopPrinter = new CLoopPrinter(outBuffer, graph, config, loopLevel);
-                        cLoopPrinter.print();
+                } else if (att1.equals("mux")) {
+                    writeTernaryStatement(n);
+                } else if (att1.equals("function")) {
+
+                    for (Edge edge: n.getEachEnteringEdge()) {
+                        outBuffer.append(getCallStatement(edge) + ";\n");
                     }
-                    n.addAttribute("done", true);
+
+                } else if (att1.equals("hyper")) {
+                    CLoopPrinter cLoopPrinter = new CLoopPrinter(outBuffer, graph, config, loopLevel);
+                    cLoopPrinter.print();
                 }
+                n.addAttribute("done", true);
             }
             outBuffer.append( "\n");
         }
@@ -53,12 +55,12 @@ abstract public class CPrinter {
 
 
 
-    protected void writeExpression(Node n, Edge leavingEdge) throws IOException {
+    protected void writeExpression(Node n) throws IOException {
         String att1 = n.getAttribute("att1");
         if (att1.equals("mux")) {
             writeTernaryStatement(n);
         } else if (att1.equals("op")) {
-            writeOperation(n, leavingEdge);
+            writeOperation(n);
         } else {
             outBuffer.append(n.getAttribute("label").toString());
         }
@@ -68,12 +70,12 @@ abstract public class CPrinter {
         for (Edge leavingEdge : n.getEachLeavingEdge()) {
             String label = getAssignmentLabel(leavingEdge);
             outBuffer.append(label + " = ");
-            writeExpression(n, leavingEdge);
+            writeExpression(n);
             outBuffer.append(";\n");
         }
     }
 
-    protected void writeOperation(Node n, Edge leavingEdge) throws IOException {
+    protected void writeOperation(Node n) throws IOException {
 
         ArrayList<Edge> edges = new ArrayList<>();
         edges.add(n.getEnteringEdge(0));
@@ -85,8 +87,6 @@ abstract public class CPrinter {
             operands.add(name);
         }
 
-        boolean hasMod = leavingEdge.hasAttribute("mod");
-
         String operationType = n.getAttribute("label").toString();
         String operation;
         if (edges.get(0).getAttribute("pos").toString().equals("l")) {
@@ -94,9 +94,7 @@ abstract public class CPrinter {
         } else {
             operation = operands.get(1) + " " + operationType + " " + operands.get(0);
         }
-        if (hasMod) {
-            operation = leavingEdge.getAttribute("mod").toString() + operation + ")";
-        }
+
         outBuffer.append(operation);
     }
 
@@ -123,22 +121,27 @@ abstract public class CPrinter {
     }
 
     protected void writeTernaryStatement(Node n) throws IOException {
-        Node selectorNode = null;
-        Node trueNode = null;
-        Node falseNode = null;
+        Edge selectorEdge = null;
+        Edge trueEdge = null;
+        Edge falseEdge = null;
         for (Edge e : n.getEachEnteringEdge()) {
             String position = e.getAttribute("pos");
             if (position.equals("sel")) {
-                selectorNode = e.getSourceNode();
+                selectorEdge = e;
             } else if (position.equals("t")) {
-                trueNode = e.getSourceNode();
+                trueEdge = e;
             } else if (position.equals("f")) {
-                falseNode = e.getSourceNode();
+                falseEdge = e;
             }
         }
-        if (selectorNode == null || trueNode == null || falseNode == null) {
+        if (selectorEdge == null || trueEdge == null || falseEdge == null) {
             throw new IOException("Error in graph: " + n.getAttribute("label"));
         }
-        //outBuffer.append(getOperationStatement(selectorNode) + " ? " + getExpression(trueNode) + " : " + getExpression(falseNode));
+        for (Edge e: n.getEachLeavingEdge()) {
+            outBuffer.append(getLabel(e) + " = ");
+            outBuffer.append(getLabel(selectorEdge) + " ? ");
+            outBuffer.append(getLabel(trueEdge) + ":" + getLabel(falseEdge) + ";\n");
+        }
+
     }
 }

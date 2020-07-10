@@ -20,12 +20,11 @@ public class Config {
     boolean arithmetic;
     String folding;
     boolean acc;
-    boolean full_part;
     String graph;
-    boolean full_connect;
-    List<WrapConfig> wraps = new ArrayList<>();
     String outputFile;
     Integer parallelFunctions;
+    Integer maxNodesPerSubgraph;
+    List<VarAndDim> varsToPartition;
 
     public Config() {
         // TODO Auto-generated constructor stub
@@ -36,4 +35,17 @@ public class Config {
     }
 
     public int getParallelFunctions() {return parallelFunctions; }
+
+    public List<VarAndDim> getVarsToPartition() {
+        return varsToPartition;
+    }
+
+    public Integer getDimToPartition(String var) {
+        for (VarAndDim varAndDim: varsToPartition) {
+            if (var.equals(varAndDim.getVar())) {
+                return varAndDim.getDim();
+            }
+        }
+        return 0;
+    }
 }

@@ -4,13 +4,14 @@
    ],
    "input_types":["int"
    ],
-   "outputs":"b",
-   "output_type": "int",
+   "outputs": ["b"],
+   "output_types": ["int"],
    "folding" : "false",
    "arithmetic" : false,
    "acc" : false,
    "full_part" : false,
    "full_connect" : false,
    "graph" : "ternary.dot",
-   "wraps" : []
+   "outputFile": "ternaryResult",
+   "parallelFunctions": 0
 }

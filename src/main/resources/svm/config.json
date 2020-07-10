@@ -1,22 +1,24 @@
 {
    "loadstores":2,
    "inputs":[
-      "test_vector[4]",
-	  "sup_vectors[4][4]",
-	  "sv_coeff[4]"
+      "test_vector[18]",
+	  "sup_vectors[18][1024]",
+	  "sv_coeff[1024]"
    ],
    "input_types":[
       "float",
 	  "float",
 	  "float"
    ],
-   "outputs":["*sum"],
-   "output_types": ["float"],
-   "folding" : "false",
+   "outputs":["*y"],
+   "output_types": ["int"],
+   "folding" : "medium",
    "arithmetic" : false,
    "acc" : false,
    "full_part" : false,
    "full_connect" : false,
-   "graph" : "svm_simp_4.dot",
-   "outputFile": "svm_lvl1"
+   "graph" : "svm.dot",
+   "outputFile": "svmResult",
+   "parallelFunctions": 1,
+   "maxNodesPerSubgraph": 50
 }

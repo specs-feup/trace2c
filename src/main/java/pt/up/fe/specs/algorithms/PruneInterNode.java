@@ -37,6 +37,7 @@ public class PruneInterNode implements Algorithm {
         this.graph = graph;
         ne = 0;
         System.out.println("Initializing pruning - node count: " + graph.getNodeCount());
+        System.out.println("Initializing pruning - edge count: " + graph.getEdgeCount());
     }
 
     @Override
@@ -51,16 +52,26 @@ public class PruneInterNode implements Algorithm {
 
 
         for (Node n: nodes) {
-            String a = n.getAttribute("att1").toString();
-            if (!a.equals("nop") && !a.equals("call") && !a.equals("op") && !a.equals("mux")) {
+            String att1 = n.getAttribute("att1").toString();
+            if (!att1.equals("nop") && !att1.equals("call") && !att1.equals("op") && !att1.equals("mux")) {
                 removeIntermediate(n);
             }
 
         }
         System.out.println("Pruning finished - node count: " + graph.getNodeCount());
+        System.out.println("Pruning finished - edge count: " + graph.getEdgeCount());
 
 
 
+    }
+
+    private boolean isEndNodeNext(Node n) {
+        for (Edge e: n.getEachLeavingEdge()) {
+            if (e.getTargetNode().getId().equals("End")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -91,7 +102,7 @@ public class PruneInterNode implements Algorithm {
                     safeRemoveNode(nxt);
                 } else {
                     Edge newEdge = graph.addEdge(prev.getId() + "->" + nxt.getId() + "_" + ne++, prev, nxt, true);
-                    Graphs.copyAttributes(n.getLeavingEdge(0), newEdge);
+                    Graphs.copyAttributes(edgeToTarget, newEdge);
                     Graphs.copyAttributes(n, newEdge);
                     if (!mod.isEmpty()) {
                         newEdge.addAttribute("mod", mod);

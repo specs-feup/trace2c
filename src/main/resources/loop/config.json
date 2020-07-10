@@ -1,6 +1,6 @@
 {
    "loadstores":2,
-   "inputs":["a[100]"
+   "inputs":["a[1000]"
    ],
    "input_types":["int"
    ],

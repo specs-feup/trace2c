@@ -30,12 +30,18 @@ public class SubgraphSearchAux {
     }
 
     public void addNode(Node n) {
-        if (n == null || !n.hasAttribute("parallel_weight") || !n.hasAttribute("sequential_weight")) {
+        if (n == null) {
             System.out.println("Subgraph search failing due to null Node");
         }
         temporarySubgraph.add(n);
-        subgraphParallelWeight += (Integer) n.getAttribute("parallel_weight");
-        subgraphSequentialWeight += (Integer) n.getAttribute("sequential_weight");
+        if (n.hasAttribute("parallel_weight")) {
+            subgraphParallelWeight += (Integer) n.getAttribute("parallel_weight");
+            subgraphSequentialWeight += (Integer) n.getAttribute("sequential_weight");
+        } else {
+            subgraphParallelWeight += 1;
+            subgraphSequentialWeight += 1;
+        }
+
         Integer nodeLevel = n.getAttribute("level");
         if (nodeLevel > maxLevelReached) {
             maxLevelReached = nodeLevel;

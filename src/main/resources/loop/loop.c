@@ -1,8 +1,8 @@
 #include<stdio.h>
 
-#define SIZE 100
+#define SIZE 1000
 
-int sumArray(int a[SIZE]) {
+void sumArray(int a[SIZE], int *sum) {
     FILE *f = fopen("loop.dot", "w");
 	fprintf(f, "Digraph G{\n");
 
@@ -14,11 +14,10 @@ int sumArray(int a[SIZE]) {
 
     n_const++;
     fprintf(f, "const%d [label=0, att1=const];\n", n_const);
-    fprintf(f, "sum_%d [label=sum, att1=var, att2=loc, att3=int ];\n", ++n_sum);
+    fprintf(f, "sum_%d [label=\"*sum\", att1=var, att2=loc, att3=int ];\n", ++n_sum);
     ne++;
     fprintf(f, "const%d->sum_%d [label=%d, ord=%d];\n", n_const, n_sum, ne, ne);
-    int sum = 0;
-
+    *sum = 0;
     for (int i = 0; i < SIZE; i++) {
         fprintf(f, "\"a[%d]_%d\" [label=\"a[%d]\", att1=var, att2=inte, att3=int ];\n", i, n_a[i], i);
         n_op++;
@@ -28,14 +27,13 @@ int sumArray(int a[SIZE]) {
         ne++;
         fprintf(f, "\"a[%d]_%d\"->op_%d [label=%d, pos=r, ord=%d];\n",i, n_a[i], n_op, ne, ne);
         n_sum++;
-        fprintf(f, "sum_%d [label=sum, att1=var, att2=loc, att3=int ];\n", n_sum);
+        fprintf(f, "sum_%d [label=\"*sum\", att1=var, att2=loc, att3=int ];\n", n_sum);
         ne++;
         fprintf(f, "op_%d->sum_%d [label=%d, ord=%d];\n", n_op, n_sum, ne, ne);
-        sum = sum + a[i];
+        *sum = *sum + a[i];
     }
     fprintf(f, "}");
     fclose(f);
-    return sum;
 }
 
 int main() {
@@ -43,7 +41,8 @@ int main() {
     for (int i = 0; i < SIZE; i++) {
         a[i] = i % 7;
     };
-    int sum = sumArray(a);
+    int sum = 0;
+    sumArray(a, &sum);
     printf("sum=%d", sum);
     return 0;
 }

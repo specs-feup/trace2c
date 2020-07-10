@@ -13,6 +13,7 @@ public class ParallelizeSums implements Algorithm {
     private final int MIN_COUNT = 3;
     private Graph graph;
     private HashMap<Node, Integer> sumSequences = new HashMap<>();
+    private boolean performedRotations = false;
 
     @Override
     public void init(Graph graph) {
@@ -45,23 +46,27 @@ public class ParallelizeSums implements Algorithm {
             Edge e = currentNode.getLeavingEdge(0);
             Node child = e.getTargetNode();
             int childLevel = child.getAttribute("level");
-            /*
-            if (child.hasAttribute("inSeq")) {
-                continue;
-            }*/
             if (child.getAttribute("att1").equals("op") && child.getAttribute("label").equals("+") && childLevel >= minLevel) {
                 if (count == 0) {
                     sequenceStarter = child;
                 }
-                /*child.setAttribute("inSeq", true);*/
                 detectSequences(child, sequenceStarter, count + 1, minLevel);
             } else if (count >= MIN_COUNT) {
-                sumSequences.put(sequenceStarter, count);
+                if (child.getId().equals("End")) {
+                    sumSequences.put(sequenceStarter, count - 1); //there's no need to rotate if the child is an end node
+                } else {
+                    sumSequences.put(sequenceStarter, count);
+                }
+
                 detectSequences(child, null, 0, minLevel);
             } else {
                 detectSequences(child, null, 0, minLevel);
             }
         }
+    }
+
+    public boolean performedRotations() {
+        return performedRotations;
     }
 
 
@@ -93,6 +98,7 @@ public class ParallelizeSums implements Algorithm {
 
     private void rotateGraph() {
         while(!sumSequences.isEmpty()) {
+            performedRotations = true;
             HashMap<Node, Integer> newMap = new HashMap<>();
             for (Map.Entry<Node, Integer> starterAndCount : sumSequences.entrySet()) {
                 Integer count = starterAndCount.getValue();

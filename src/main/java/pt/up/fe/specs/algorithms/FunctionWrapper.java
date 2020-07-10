@@ -7,7 +7,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.graph.implementations.MultiGraph;
 import pt.up.fe.specs.CInfo;
-import pt.up.fe.specs.VarIO;
+import pt.up.fe.specs.Var;
 import pt.up.fe.specs.WrapConfig;
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public class FunctionWrapper implements Algorithm {
         CInfo info = new CInfo();
         for (Node param : nodesThatConnectToFunction.values()) {
             if (!param.getAttribute("att1").equals("const")) {
-                VarIO input = new VarIO(param.getAttribute("att3"), param.getAttribute("label"), false, null);
+                Var input = new Var(param.getAttribute("att3"), param.getAttribute("label"), false, null);
                 info.addInput(input);
                 if (param.getAttribute("att2").equals("loc")) {
                     Node nodeInFunc = functionGraph.getNode(param.getId());
@@ -73,7 +73,7 @@ public class FunctionWrapper implements Algorithm {
             Node sourceNode = entry.getSourceNode();
             String outputType = sourceNode.getAttribute("att3");
             String outputName = sourceNode.getAttribute("label");
-            VarIO output = new VarIO(outputType, outputName, false, null);
+            Var output = new Var(outputType, outputName, false, null);
             info.addOutput(output);
         }
         functionGraph.setAttribute("info", info);

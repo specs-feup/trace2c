@@ -5,7 +5,9 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.Config;
 import pt.up.fe.specs.LoopNameAndIterator;
-import pt.up.fe.specs.algorithms.LoopInfo;
+import pt.up.fe.specs.utils.LoopInfo;
+import pt.up.fe.specs.utils.SpecificLoopInfo;
+import pt.up.fe.specs.utils.FoldInfo;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,15 +23,10 @@ import java.util.List;
 public class CLoopPrinter extends CPrinter {
     Graph subgraph;
     List<List<Node>> levelGraph = new ArrayList<>();
-    int plusFold;
-    int multFold;
-    int totalIterations;
     int maxLevel;
-    int loopVarInitialValue;
-    int loopVarIncrement;
     int loopLevel; // loop level in the nested loop hierarchy (starts in 0)
     ArrayList<LoopNameAndIterator> loopVariables = new ArrayList<LoopNameAndIterator>();
-    boolean isToFold = true;
+    FoldInfo foldInfo;
 
 
     public CLoopPrinter(BufferedWriter outBuffer, Graph graph, Config config, int loopLevel) {
@@ -46,11 +43,7 @@ public class CLoopPrinter extends CPrinter {
     protected void init() {
         Node hyperNode = graph.getNode("HyperNode");
         loopVariables.add(new LoopNameAndIterator(hyperNode.getAttribute("loopname"), Character.toString((char)(105 + loopLevel))));
-        plusFold = hyperNode.getAttribute("plus_fold");
-        multFold = hyperNode.getAttribute("mult_fold");
-        loopVarInitialValue = hyperNode.getAttribute("initv");
-        loopVarIncrement = hyperNode.getAttribute("+incr");
-        totalIterations = hyperNode.getAttribute("size");
+        foldInfo = hyperNode.getAttribute("foldInfo");
         this.subgraph = ((ArrayList<Graph>) graph.getAttribute("HyperNode")).get(0);
         maxLevel = subgraph.getAttribute("maxlevel");
         this.levelGraph = subgraph.getAttribute("levelgraph");
@@ -126,19 +119,20 @@ public class CLoopPrinter extends CPrinter {
                     for (LoopNameAndIterator entry : loopVariables) {
                         String loopName = entry.getLoopName();
                         String loopIterator = entry.getIterator();
-                        if (loopInfo.name.equals(loopName)) {
-                            if (loopInfo.ratios.get(i) == 0) {
+                        SpecificLoopInfo specificLoopInfo = loopInfo.getLoopWithName(loopName);
+                        if (specificLoopInfo != null) {
+                            if (specificLoopInfo.ratios.get(i) == 0) {
                                 novar++;
                                 break;
                             }
-                            if (loopInfo.ratios.get(i) == 1) {
+                            if (specificLoopInfo.ratios.get(i) == 1) {
                                 newIndex = newIndex.concat(loopIterator + "+");
                             } else {
-                                newIndex = newIndex.concat("(" + loopInfo.ratios.get(i) + ")" + "*" + loopIterator + "+");
+                                newIndex = newIndex.concat("(" + specificLoopInfo.ratios.get(i) + ")" + "*" + loopIterator + "+");
                             }
 
-
                         }
+
                     }
 
 
@@ -164,24 +158,18 @@ public class CLoopPrinter extends CPrinter {
      */
     protected void initLoop() throws IOException {
         // TODO Auto-generated method stub
-        int incr = this.loopVarIncrement;
+        int increment = foldInfo.getIncrement();
         int plus_fold;
         int mult_fold;
-        if (isToFold) {
-            plus_fold = this.plusFold;
-            mult_fold = this.multFold;
-        } else {
-            plus_fold = 0;
-            mult_fold = 1;
-        }
+
         String loopIterator = loopVariables.get(loopLevel).getIterator();
-        incr += plus_fold;
+
         outBuffer.append(
-                "for( int " + loopIterator + " =" + loopVarInitialValue + "; "
+                "for( int " + loopIterator + " =" + foldInfo.getInitialValue() + "; "
                         + loopIterator + " < "
-                        + totalIterations / (mult_fold) + "; "
+                        + foldInfo.getWidth() + "; "
                         + loopIterator + "=" + loopIterator + "+"
-                        + incr + "){\n");
+                        + increment + "){\n");
 
         System.out.println("graph attributes -------");
         for (String s : subgraph.getEachAttributeKey())

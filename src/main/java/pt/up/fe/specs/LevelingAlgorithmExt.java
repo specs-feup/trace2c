@@ -34,6 +34,10 @@ public class LevelingAlgorithmExt implements Algorithm {
         // TODO Auto-generated method stub
         this.graph = graph;
         this.level = 0;
+        this.nodeList = new HashSet<>();
+        tempNodeList = new HashSet<>();
+        clearNodeList = new ArrayList<>();
+        levelGraph = new ArrayList<>();
         // graph.display();
         clearLeveling();
 
