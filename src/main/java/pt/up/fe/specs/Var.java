@@ -47,11 +47,17 @@ public class Var {
     }
 
     public boolean hasEpilogue(int dimToFold) {
-        return partitionsMap.get(dimToFold).size() == 2;
+        if (partitionsMap.containsKey(dimToFold)) {
+            return partitionsMap.get(dimToFold).size() == 2;
+        }
+        return false;
     }
 
     public boolean hasPrologue(int dimToFold) {
-        return partitionsMap.get(dimToFold).size() >= 1;
+        if (partitionsMap.containsKey(dimToFold)) {
+            return partitionsMap.get(dimToFold).size() >= 1;
+        }
+        return false;
     }
 
     public void setHlsPartition(HLSPartition hlsPartition) {

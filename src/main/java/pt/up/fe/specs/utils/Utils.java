@@ -18,7 +18,8 @@ public class Utils {
      * @param totalFoldWidth
      * @return
      */
-    public List<List<Integer>> splitDimensions(Var var, Integer dimToSplit, Integer numberOfParallelCalls, Integer totalFoldWidth) {
+    public static List<List<Integer>> splitDimensions(Var var, Integer dimToSplit, Integer numberOfParallelCalls, Integer totalFoldWidth) {
+        var.setSplit(true);
         List<Integer> sizes = var.getSizes();
 
         List<List<Integer>> allPartitionsSizes = new ArrayList<>();
@@ -39,7 +40,7 @@ public class Utils {
         int parallelizableSize = var.getParallelizableSize(dimToSplit);
         int unrollFactor = parallelizableSize / totalFoldWidth;
         int parallelPartitionsSize = unrollFactor * loopWidth;
-        int lastParallelPartitionSize = totalFoldWidth - (parallelizableSize * (numberOfParallelCalls - 1));
+        int lastParallelPartitionSize = parallelizableSize - (parallelPartitionsSize * (numberOfParallelCalls - 1));
         for (int i = 0; i < numberOfParallelCalls; i++) {
             List<Integer> newSizes = new ArrayList<>();
             for (int dim = 0; dim < sizes.size(); dim++) {
@@ -76,7 +77,7 @@ public class Utils {
      * @param label    label of array access,
      * @return indexes
      */
-    public ArrayList<Integer> getIndexes(String label) {
+    public static ArrayList<Integer> getIndexes(String label) {
         String temp = label;
         ArrayList<Integer> indexes = new ArrayList<>();
         while (temp.lastIndexOf("[") != -1) {
@@ -90,19 +91,31 @@ public class Utils {
         return indexes;
     }
 
-    public boolean isArray(String label) {
+    public static int compareIndexes(List<Integer> indexes1, List<Integer> indexes2) {
+        if (indexes1.size() != indexes2.size()) return indexes1.size() - indexes2.size();
+        for (int dim = 0; dim < indexes1.size(); dim++) {
+            int index1 = indexes1.get(dim);
+            int index2 = indexes2.get(dim);
+            if (index1 != index2) {
+                return index1 - index2;
+            }
+        }
+        return 0;
+    }
+
+    public static boolean isArray(String label) {
         return label.contains("[");
     }
 
-    public boolean isStartNode(Node node) {
+    public static boolean isStartNode(Node node) {
         return node.getId().equals("Start");
     }
 
-    public boolean isEndNode(Node node) {
+    public static boolean isEndNode(Node node) {
         return node.getId().equals("End");
     }
 
-    public String varNameFromLabel(String label) {
+    public static String varNameFromLabel(String label) {
         if (label.contains("[")) {
             return label.substring(0, label.indexOf("["));
         } else {

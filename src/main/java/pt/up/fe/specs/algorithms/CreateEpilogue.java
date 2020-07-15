@@ -77,16 +77,15 @@ public class CreateEpilogue implements Algorithm {
         ArrayList<ArrayList<Node>> levelGraph = mainGraph.getAttribute("levelgraph");
 
         Node callNode = getFirstCallNode(levelGraph);
-        Node functionNode = callNode.getLeavingEdge(0).getTargetNode();
         int callNodeLevel = callNode.getAttribute("level");
         int functionNodeLevel = callNodeLevel + 1;
         for (Node n: levelGraph.get(callNodeLevel)) {
-            if (!n.getId().equals(callNode.getId())) {
+            if (!n.getAttribute("att1").equals("call")) {
                 nodesToMove.add(n);
             }
         }
         for (Node n: levelGraph.get(functionNodeLevel)) {
-            if (!n.getId().equals(functionNode.getId())) {
+            if (!n.getAttribute("att1").equals("function")) {
                 nodesToMove.add(n);
             }
         }

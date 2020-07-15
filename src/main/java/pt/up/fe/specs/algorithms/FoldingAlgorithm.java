@@ -10,6 +10,7 @@ import pt.up.fe.specs.Var;
 import pt.up.fe.specs.utils.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -21,15 +22,15 @@ public class FoldingAlgorithm implements Algorithm {
 
     private static Integer loopCounter = 0;
     private final Config config;
-    private ArrayList<Graph> subgraphList;
+    private List<Graph> subgraphList;
     private Graph graph;
-    private Utils utils = new Utils();
     private String loopName = "parallelLoop";
     private String functionName;
     private Graph functionGraph;
     private CInfo mainInfo;
+    private HashMap<String, VarAccesses> varsAccessesInfo = new HashMap<>();
     
-    public FoldingAlgorithm(Config config, ArrayList<Graph> subgraphList ){
+    public FoldingAlgorithm(Config config, List<Graph> subgraphList ){
         this.config = config;
         this.subgraphList = subgraphList;
     }
@@ -44,7 +45,8 @@ public class FoldingAlgorithm implements Algorithm {
     @Override
     public void compute() {
         // I have to update var accesses on the subgraphList here
-        setVarsPartitions(subgraphList);
+        computeVarsMinAccessesInfo(subgraphList.get(0));
+        computeVarsMaxAccessesInfo(subgraphList.get(subgraphList.size() - 1));
         updateVarsAccesses(subgraphList);
         computeLoopInfoForAllEdges(subgraphList);
         functionGraph = subgraphList.get(0);
@@ -68,6 +70,44 @@ public class FoldingAlgorithm implements Algorithm {
 
     }
 
+    private void computeVarsMinAccessesInfo(Graph firstSubgraph) {
+        for (Edge e: firstSubgraph.getEachEdge()) {
+            if (e.hasAttribute("array")) {
+                String name = e.getAttribute("name");
+                List<Integer> indexes = Utils.getIndexes(e.getAttribute("label"));
+                varsAccessesInfo.putIfAbsent(name, new VarAccesses());
+                VarAccesses oldAccesses = varsAccessesInfo.get(name);
+                if (oldAccesses.hasMinIndexes()) {
+                    List<Integer> oldMinIndexes = oldAccesses.getMinIndexes();
+                    if (Utils.compareIndexes(indexes, oldMinIndexes) < 0) {
+                        oldAccesses.setMinIndexes(indexes);
+                    }
+                } else {
+                    oldAccesses.setMinIndexes(indexes);
+                }
+            }
+        }
+    }
+
+    private void computeVarsMaxAccessesInfo(Graph lastSubgraph) {
+        for (Edge e: lastSubgraph.getEachEdge()) {
+            if (e.hasAttribute("array")) {
+                String name = e.getAttribute("name");
+                List<Integer> indexes = Utils.getIndexes(e.getAttribute("label"));
+                varsAccessesInfo.putIfAbsent(name, new VarAccesses());
+                VarAccesses oldAccesses = varsAccessesInfo.get(name);
+                if (oldAccesses.hasMaxIndexes()) {
+                    List<Integer> oldMaxIndexes = oldAccesses.getMaxIndexes();
+                    if (Utils.compareIndexes(indexes, oldMaxIndexes) > 0) {
+                        oldAccesses.setMaxIndexes(indexes);
+                    }
+                } else {
+                    oldAccesses.setMaxIndexes(indexes);
+                }
+            }
+        }
+    }
+
     private void addOutputsToVarsToFold(FoldInfo foldInfo) {
         Node endNode = functionGraph.getNode("End");
         for (Edge edge: endNode.getEachEnteringEdge()) {
@@ -80,82 +120,28 @@ public class FoldingAlgorithm implements Algorithm {
         }
     }
 
-    private void setVarsPartitions(ArrayList<Graph> subgraphList) {
-        List<Var> inputs = mainInfo.getInputs();
-        for (Var input: inputs) {
-            if (input.isArray()) {
-                // find the first and last indexes that are used inside the folded graph
-                List<Integer> sizes = input.getSizes();
-                Integer dimToPartition = config.getDimToPartition(input.getName());
-                Integer dimMaxSize = sizes.get(dimToPartition);
-
-                int minIndex = getVarMinUsedIndex(subgraphList.get(0), input.getName(), dimToPartition);
-                int maxIndexInFirstSubgraph = getVarMaxUsedIndex(subgraphList.get(0), input.getName(), dimToPartition);
-                int maxIndex = getVarMaxUsedIndex(subgraphList.get(subgraphList.size() - 1), input.getName(), dimToPartition);
-                if (minIndex != 0) {
-                    input.addPartition(minIndex, dimToPartition);
-                }
-                if (maxIndex != dimMaxSize - 1) {
-                    input.addPartition(maxIndex + 1, dimToPartition);
-                }
-                input.setHlsPartition(new HLSPartition(dimToPartition, maxIndexInFirstSubgraph - minIndex + 1));
-            }
-        }
-    }
-
-    private int getVarMinUsedIndex(Graph firstSubgraph, String var, int dim) {
-        int minIndex = Integer.MAX_VALUE;
-        for (Edge edge: firstSubgraph.getEachEdge()){
-            if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var)) {
-                String label = edge.getAttribute("label");
-                List<Integer> indexes = utils.getIndexes(label);
-                int index = indexes.get(dim);
-                if (index < minIndex) {
-                    minIndex = index;
-                }
-            }
-        }
-        return minIndex;
-    }
-
-    private int getVarMaxUsedIndex(Graph lastSubgraph, String var, int dim) {
-        int maxIndex = 0;
-        for (Edge edge: lastSubgraph.getEachEdge()){
-            if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var)) {
-                String label = edge.getAttribute("label");
-                List<Integer> indexes = utils.getIndexes(label);
-                int index = indexes.get(dim);
-                if (index > maxIndex) {
-                    maxIndex = index;
-                }
-            }
-        }
-        return maxIndex;
-    }
-
-    private void updateVarsAccesses(ArrayList<Graph> subgraphList) {
-        CInfo info = graph.getAttribute("info");
+    private void updateVarsAccesses(List<Graph> subgraphList) {
         List<Var> vars = new ArrayList<>();
-        vars.addAll(info.getInputs());
-        vars.addAll(info.getLocalInfo());
-        vars.addAll(info.getOutputs());
+        vars.addAll(mainInfo.getInputs());
+        vars.addAll(mainInfo.getLocalInfo());
+        vars.addAll(mainInfo.getOutputs());
 
         for (Var var: vars) {
-            if (var.isArray() && var.hasPartitions()) {
+            if (varsAccessesInfo.containsKey(var.getName())) {
                 int dimToPartition = config.getDimToPartition(var.getName());
-                int firstPartitionIndex = var.getPartitionsMap().get(dimToPartition).getFirst();
+                int minIndexOnDimToPartition = varsAccessesInfo.get(var.getName()).getMinIndexes().get(dimToPartition);
                 for (int i = 0; i < 3; i++) {
                     // update the var accesses only on the first 3 subgraphs
                     Graph subgraph = subgraphList.get(i);
                     for (Edge edge: subgraph.getEachEdge()) {
                         if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var.getName())) {
                             String label = edge.getAttribute("label");
-                            ArrayList<Integer> indexes = utils.getIndexes(label);
+                            ArrayList<Integer> indexes = Utils.getIndexes(label);
                             String newLabelSuffix = new String();
                             for (int j=0; j < indexes.size(); j++) {
                                 int newIndex = indexes.get(j);
                                 if (j == dimToPartition) {
-                                    newIndex = newIndex - firstPartitionIndex;
+                                    newIndex = newIndex - minIndexOnDimToPartition;
                                 }
                                 newLabelSuffix = newLabelSuffix.concat("[" + newIndex + "]");
                             }
@@ -216,9 +202,9 @@ public class FoldingAlgorithm implements Algorithm {
             String label0 = edge0.getAttribute("label");
             String label1 = edge1.getAttribute("label");
             String label2 = edge2.getAttribute("label");
-            ArrayList<Integer> indexes0 = utils.getIndexes(label0);
-            ArrayList<Integer> indexes1 = utils.getIndexes(label1);
-            ArrayList<Integer> indexes2 = utils.getIndexes(label2);
+            ArrayList<Integer> indexes0 = Utils.getIndexes(label0);
+            ArrayList<Integer> indexes1 = Utils.getIndexes(label1);
+            ArrayList<Integer> indexes2 = Utils.getIndexes(label2);
             if (indexes0.size() > 0) {
                 try {
                     SpecificLoopInfo specificLoopInfo = getSpecificLoopInfo(indexes0, indexes1, indexes2);
@@ -232,7 +218,7 @@ public class FoldingAlgorithm implements Algorithm {
         }
     }
 
-    private void computeLoopInfoForAllEdges(ArrayList<Graph> subgraphList) {
+    private void computeLoopInfoForAllEdges(List<Graph> subgraphList) {
         Graph subgraph0 = subgraphList.get(0);
         Graph subgraph1 = subgraphList.get(1);
         Graph subgraph2 = subgraphList.get(2);

@@ -16,8 +16,8 @@
    "full_part" : false,
    "full_connect" : false,
    "graph" : "dotprod_graph.dot",
-   "outputFile": "dotprod_parallel3",
-   "parallelFunctions": 3,
+   "outputFile": "dotprod_parallel6",
+   "parallelFunctions": 6,
    "maxNodesPerSubgraph": 1000,
    "varsToPartition": [{
       "var": "x",

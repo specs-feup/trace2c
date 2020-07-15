@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.*;
 import pt.up.fe.specs.utils.HLSPartition;
+import pt.up.fe.specs.utils.VarComparator;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -143,6 +144,7 @@ public class CFunctionPrinter extends CPrinter {
 
 
         outBuffer.append("// Step 2: Initialize local variables\n");
+        info.getLocalInfo().sort(new VarComparator());
         for (Var var : info.getLocalInfo()) {
             if (var.getType().equals("global")) {
                 continue;

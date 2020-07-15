@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include "dotprod_viv.h"
+
 
 void parallel_0(short x[992], short y[992], int sum_array[62]) {
 // Step 2: Initialize local variables
@@ -424,4 +427,55 @@ parallel_0(x_2,y_2,sum_array_1);
 
 epilogue(x_0,y_0,y_3,x_3,sum_array_1,sum_array_0,out);
 
+}
+
+
+
+
+
+
+int DSP_dotprod_golden_c(const short x[NX], const short y[NX], int nx)
+{
+    int sum = 0, i;
+    int k = 0;
+
+    for (i = 0; i < nx; i++) {
+        k = x[i] * y[i];
+        sum += k;
+    }
+       
+
+    return sum;
+}
+
+
+int main() {
+    short x[NX];
+    short y[NX];
+	short x_0[13]; short x_1[992]; short x_2[992]; short x_3[3];
+	short y_0[13]; short y_1[992]; short y_2[992]; short y_3[3];
+    for (int i = 0; i < NX; i++) {
+        x[i] = (i%101)+1;
+        y[i] = 2*(i%107);
+		if (i < 13) {
+			x_0[i] = x[i];
+			y_0[i] = y[i];
+		} else if ( i < 1005) {
+			x_1[i - 13] = x[i];
+			y_1[i - 13] = y[i];
+		} else if ( i < 1997) {
+			x_2[i - 1005] = x[i];
+			y_2[i - 1005] = y[i];
+		} else if ( i < 2000) {
+			x_3[i - 1997] = x[i];
+			y_3[i - 1997] = y[i];
+		}
+    }
+    
+    
+    int resultGolden = DSP_dotprod_golden_c(x,y,NX);
+    int out = 0;
+    printf("golden: %d\n", resultGolden);
+    dotprod_parallel2(x_0, x_1, x_2, x_3, y_0, y_1, y_2, y_3, &out);
+    printf("out: %d\n", out);
 }

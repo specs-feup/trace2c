@@ -109,8 +109,7 @@ public class WrapNodesIntoFunction implements Algorithm {
     }
 
     private void setFunctionGraphCInfo() {
-        CInfo mainGraphInfo = mainGraph.getAttribute("info");
-        SetGraphCInfo infoAlgorithm = new SetGraphCInfo(mainGraphInfo);
+        SetGraphCInfo infoAlgorithm = new SetGraphCInfo();
         infoAlgorithm.init(functionGraph);
         infoAlgorithm.compute();
     }

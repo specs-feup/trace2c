@@ -12,6 +12,10 @@ public class LoopInfo {
         loopInfoList.add(i);
     }
 
+    public ArrayList<SpecificLoopInfo> getLoopList() {
+        return loopInfoList;
+    }
+
     public SpecificLoopInfo getLoopWithName(String loopName) {
         for (SpecificLoopInfo info : loopInfoList) {
             if (info.name.equals(loopName)) {

@@ -110,7 +110,7 @@ public class CParallelLoopPrinter extends CLoopPrinter {
         String loopIterator = loopVariables.get(loopLevel).getIterator();
         outBuffer.append(
                 "for( int " + loopIterator + " = " + foldInfo.getInitialValue() +"; "
-                        + loopIterator + " < width;"
+                        + loopIterator + " < " + foldInfo.getWidth() + ";"
                         + loopIterator + "=" + loopIterator + "+"
                         + foldInfo.getIncrement() + "){\n");
 

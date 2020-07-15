@@ -6,123 +6,117 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.Var;
-import pt.up.fe.specs.utils.FoldInfo;
-import pt.up.fe.specs.utils.Utils;
+import pt.up.fe.specs.utils.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SetGraphCInfo implements Algorithm {
 
     private Graph graph;
-    private CInfo upperInfo;
     private CInfo info;
     private Utils utils = new Utils();
-    private boolean isParallel = false;
     private Integer numberOfParallelCalls = 1;
     private FoldInfo foldInfo;
+    private HashMap<String, List<Integer>> varsMaxIndexes = new HashMap<>();
+    private HashMap<String, String> varTypes = new HashMap<>();
+    private Integer foldWidth = 0;
 
-    /**
-     *
-     * @param upperInfo The CInfo from the upper graph in the hierarchy
-     */
-    public SetGraphCInfo(CInfo upperInfo) {
-        this.upperInfo = upperInfo;
-    }
-
-    public void setNumberOfParallelCalls(Integer parallelCalls) {
-        this.numberOfParallelCalls = parallelCalls;
-    }
 
     @Override
     public void init(Graph graph) {
         this.graph = graph;
         this.info = new CInfo();
-        this.foldInfo = graph.getAttribute("foldInfo");
-        if (graph.hasAttribute("type")) {
-            if (graph.getAttribute("type").equals("parallel")) {
-                isParallel = true;
-            }
+        if (graph.hasAttribute("foldInfo")) {
+            this.foldInfo = graph.getAttribute("foldInfo");
+            this.foldWidth = foldInfo.getWidth();
         }
 
     }
 
     @Override
     public void compute() {
-        addInputs();
-        addOutputs();
+        Node startNode = graph.getNode("Start");
+        Node endNode = graph.getNode("End");
+        List<Var> inputs = getInfoFromEdges(startNode.getEachLeavingEdge());
+        List<Var> outputs = getInfoFromEdges(endNode.getEachEnteringEdge());
+        inputs.forEach(input -> info.addInput(input));
+        outputs.forEach(output -> info.addOutput(output));
         graph.setAttribute("info", info);
     }
 
-    private Var getVarFromUpperInfo(String varName) {
-        Var upperInput = upperInfo.getInput(varName);
-        if (upperInput == null) {
-            Var localVar = upperInfo.getLocalVar(varName);
-            if (localVar == null) {
-                return upperInfo.getOutput(varName);
-            } else {
-                return new Var(localVar.getType(),localVar.getName(),localVar.isArray(),localVar.getSizes());
-            }
-        }
-        return upperInput;
-    }
+    List<Integer> unfoldIndexes(Edge edge) {
+        String label = edge.getAttribute("label");
 
-    private void addInputs() {
-        Node start = graph.getNode("Start");
-        for (Edge edge: start.getEachLeavingEdge()) {
-            String label = edge.getAttribute("label");
-            String varName = utils.varNameFromLabel(label);
-
-            if (!info.hasInput(varName)) {
-                Var upperInput = getVarFromUpperInfo(varName);
-                if (upperInput != null) {
-                    upperInput = splitDimensions(upperInput);
-                    info.addInput(upperInput);
-                }
-            }
-
-        }
-        if (isParallel) {
-            info.addInput(new Var("int", "width", false, null));
-        }
-
-    }
-
-    private Var splitDimensions(Var var) {
-        if (numberOfParallelCalls > 1 && (foldInfo.hasVar(var.getName()))) {
-            return utils.splitDimensions(var, numberOfParallelCalls, foldInfo.getDimOfVar(var.getName()));
-        }
-        return var;
-    }
-
-    private void addOutputs() {
-        Node end = graph.getNode("End");
-        end.getEachEnteringEdge().forEach(edge -> {
-            String label = edge.getAttribute("label");
-            String varName = utils.varNameFromLabel(label);
-            if (info.getOutput(varName) == null) {
-                Var upperOutput = upperInfo.getOutput(varName);
-                if ( upperOutput != null) {
-                    info.addOutput(upperOutput);
-                } else {
-                    Var var = upperInfo.getLocalVar(varName);
-                    if (var != null) {
-                        info.addOutput(splitDimensions(var));
-                    } else {
-                        info.addOutput(computeOutputVar(edge, varName));
+        if (edge.hasAttribute("loopinfo")) {
+            List<Integer> unfoldedIndexes = new ArrayList<>();
+            LoopInfo loopInfo = edge.getAttribute("loopinfo");
+            ArrayList<SpecificLoopInfo> loopList = loopInfo.getLoopList();
+            for (SpecificLoopInfo loop: loopList) {
+                for (int dim = 0; dim < loop.dim; dim++) {
+                    if (loop.progressionTypes.get(dim).equals(ProgressionType.Arithmetic)) {
+                        int maxIndex = loop.ratios.get(dim) * (foldWidth-1) + loop.initialValues.get(dim);
+                        unfoldedIndexes.add(maxIndex);
                     }
                 }
             }
-        });
+            return unfoldedIndexes;
+        } else {
+            return utils.getIndexes(label);
+        }
+
+
     }
 
-    private Var computeOutputVar(Edge edge, String varName) {
-        Boolean isArray = edge.hasAttribute("array");
-        String type = edge.getAttribute("att3");
-        String label = edge.getAttribute("label");
-        if (isArray) {
-            return splitDimensions(new Var(type, varName, true, utils.getIndexes(label)));
-        } else {
-            return new Var(type, edge.getAttribute("label"), false, null);
+    private List<Integer> transformIndexesToSizes(List<Integer> indexes) {
+        List<Integer> sizes = new ArrayList<>();
+        for (int dim = 0; dim < indexes.size(); dim++) {
+            sizes.add(indexes.get(dim) + 1);
         }
+        return sizes;
     }
+
+
+    private List<Var> getInfoFromEdges(Iterable<Edge> edgesToAnalyze) {
+        List<Var> varsInfo = new ArrayList<>();
+        for (Edge edge: edgesToAnalyze) {
+            if (!edge.getAttribute("att1").equals("var")) continue;
+            if (edge.hasAttribute("array")) {
+                String varName = edge.getAttribute("name");
+                List<Integer> indexes = unfoldIndexes(edge);
+                varTypes.putIfAbsent(varName, edge.getAttribute("att3"));
+                if (varsMaxIndexes.containsKey(varName)) {
+                    List<Integer> prevMaxSizes = varsMaxIndexes.get(varName);
+                    if (Utils.compareIndexes(prevMaxSizes, indexes) < 0) {
+                        varsMaxIndexes.put(varName, indexes);
+                    }
+
+                } else {
+                    varsMaxIndexes.put(varName, indexes);
+                }
+            } else {
+                String label = edge.getAttribute("label");
+                String type = edge.getAttribute("att3");
+                varsInfo.add(new Var(type, label, false, null));
+            }
+        }
+
+        for (Map.Entry<String, List<Integer>> varAndIndexes : varsMaxIndexes.entrySet()) {
+            String varName = varAndIndexes.getKey();
+            List<Integer> maxIndexes = varAndIndexes.getValue();
+            List<Integer> sizes = transformIndexesToSizes(maxIndexes);
+            Var newVar = new Var(varTypes.get(varName), varName, true, sizes);
+            varsInfo.add(newVar);
+        }
+        varTypes.clear();
+        varsMaxIndexes.clear();
+        return varsInfo;
+    }
+
+
+
 
     public CInfo getInfo() {
         return info;
