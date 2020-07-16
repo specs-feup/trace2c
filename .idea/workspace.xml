@@ -346,38 +346,38 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="274" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1590591142254" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1594832052586">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1594850955987">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594832052586" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1594832052586">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955987" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1594850955987">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594832052586" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1594832052586">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955987" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1594850955987">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594832052586" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1594832052586">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955987" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1594850955987">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594832052586" />
-    <state width="1877" height="301" key="GridCell.Tab.1.bottom" timestamp="1594830172846">
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955987" />
+    <state width="1877" height="301" key="GridCell.Tab.1.bottom" timestamp="1594850955984">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="301" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594830172846" />
-    <state width="1877" height="301" key="GridCell.Tab.1.center" timestamp="1594830172846">
+    <state width="1877" height="301" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955984" />
+    <state width="1877" height="301" key="GridCell.Tab.1.center" timestamp="1594850955984">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="301" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594830172846" />
-    <state width="1877" height="301" key="GridCell.Tab.1.left" timestamp="1594830172845">
+    <state width="1877" height="301" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955984" />
+    <state width="1877" height="301" key="GridCell.Tab.1.left" timestamp="1594850955984">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="301" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594830172845" />
-    <state width="1877" height="301" key="GridCell.Tab.1.right" timestamp="1594830172846">
+    <state width="1877" height="301" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955984" />
+    <state width="1877" height="301" key="GridCell.Tab.1.right" timestamp="1594850955984">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="301" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594830172846" />
+    <state width="1877" height="301" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1594850955984" />
     <state x="440" y="94" key="SettingsEditor" timestamp="1590584917123">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -447,34 +447,9 @@
           <option name="timeStamp" value="786" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>99</line>
-          <option name="timeStamp" value="789" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>103</line>
-          <option name="timeStamp" value="790" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>109</line>
-          <option name="timeStamp" value="791" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldingAlgorithm.java</url>
-          <line>50</line>
-          <option name="timeStamp" value="804" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldingAlgorithm.java</url>
-          <line>51</line>
-          <option name="timeStamp" value="806" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldingAlgorithm.java</url>
-          <line>58</line>
-          <option name="timeStamp" value="807" />
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/printers/CFunctionPrinter.java</url>
+          <line>170</line>
+          <option name="timeStamp" value="809" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,5 +1,5 @@
 
-void parallel_0(short x[336], short y[336], int sum_array[21]) {
+void parallel_0(short x[672], short y[672], int sum_array[42]) {
 // Step 2: Initialize local variables
 int sum_w1;
 int sum_w10;
@@ -33,7 +33,7 @@ int temp_l83_i28_w1;
 int temp_l83_i29_w1;
 // Initialization done
 // starting Loop
-for( int i = 0; i < 21;i=i+1){
+for( int i = 0; i < 42;i=i+1){
 #pragma HLS pipeline
 
 
@@ -76,7 +76,7 @@ sum_array[i] = sum_w9 + sum_w10;
 }
 }
 
-void parallel_1(short x[304], short y[304], int sum_array[19]) {
+void parallel_1(short x[640], short y[640], int sum_array[40]) {
 // Step 2: Initialize local variables
 int sum_w1;
 int sum_w10;
@@ -92,68 +92,68 @@ int sum_w6;
 int sum_w7;
 int sum_w8;
 int sum_w9;
-int temp_l83_i1694_w1;
-int temp_l83_i1695_w1;
-int temp_l83_i1696_w1;
-int temp_l83_i1697_w1;
-int temp_l83_i1698_w1;
-int temp_l83_i1699_w1;
-int temp_l83_i1700_w1;
-int temp_l83_i1701_w1;
-int temp_l83_i1702_w1;
-int temp_l83_i1703_w1;
-int temp_l83_i1704_w1;
-int temp_l83_i1705_w1;
-int temp_l83_i1706_w1;
-int temp_l83_i1707_w1;
-int temp_l83_i1708_w1;
-int temp_l83_i1709_w1;
+int temp_l83_i1358_w1;
+int temp_l83_i1359_w1;
+int temp_l83_i1360_w1;
+int temp_l83_i1361_w1;
+int temp_l83_i1362_w1;
+int temp_l83_i1363_w1;
+int temp_l83_i1364_w1;
+int temp_l83_i1365_w1;
+int temp_l83_i1366_w1;
+int temp_l83_i1367_w1;
+int temp_l83_i1368_w1;
+int temp_l83_i1369_w1;
+int temp_l83_i1370_w1;
+int temp_l83_i1371_w1;
+int temp_l83_i1372_w1;
+int temp_l83_i1373_w1;
 // Initialization done
 // starting Loop
-for( int i = 0; i < 19;i=i+1){
+for( int i = 0; i < 40;i=i+1){
 #pragma HLS pipeline
 
 
-temp_l83_i1694_w1 = x[(16)*i] * y[(16)*i];
-temp_l83_i1695_w1 = x[(16)*i+1] * y[(16)*i+1];
-temp_l83_i1696_w1 = x[(16)*i+2] * y[(16)*i+2];
-temp_l83_i1697_w1 = x[(16)*i+3] * y[(16)*i+3];
-temp_l83_i1698_w1 = x[(16)*i+4] * y[(16)*i+4];
-temp_l83_i1699_w1 = x[(16)*i+5] * y[(16)*i+5];
-temp_l83_i1700_w1 = x[(16)*i+6] * y[(16)*i+6];
-temp_l83_i1701_w1 = x[(16)*i+7] * y[(16)*i+7];
-temp_l83_i1702_w1 = x[(16)*i+8] * y[(16)*i+8];
-temp_l83_i1703_w1 = x[(16)*i+9] * y[(16)*i+9];
-temp_l83_i1704_w1 = x[(16)*i+10] * y[(16)*i+10];
-temp_l83_i1705_w1 = x[(16)*i+11] * y[(16)*i+11];
-temp_l83_i1706_w1 = x[(16)*i+12] * y[(16)*i+12];
-temp_l83_i1707_w1 = x[(16)*i+13] * y[(16)*i+13];
-temp_l83_i1708_w1 = x[(16)*i+14] * y[(16)*i+14];
-temp_l83_i1709_w1 = x[(16)*i+15] * y[(16)*i+15];
+temp_l83_i1358_w1 = x[(16)*i] * y[(16)*i];
+temp_l83_i1359_w1 = x[(16)*i+1] * y[(16)*i+1];
+temp_l83_i1360_w1 = x[(16)*i+2] * y[(16)*i+2];
+temp_l83_i1361_w1 = x[(16)*i+3] * y[(16)*i+3];
+temp_l83_i1362_w1 = x[(16)*i+4] * y[(16)*i+4];
+temp_l83_i1363_w1 = x[(16)*i+5] * y[(16)*i+5];
+temp_l83_i1364_w1 = x[(16)*i+6] * y[(16)*i+6];
+temp_l83_i1365_w1 = x[(16)*i+7] * y[(16)*i+7];
+temp_l83_i1366_w1 = x[(16)*i+8] * y[(16)*i+8];
+temp_l83_i1367_w1 = x[(16)*i+9] * y[(16)*i+9];
+temp_l83_i1368_w1 = x[(16)*i+10] * y[(16)*i+10];
+temp_l83_i1369_w1 = x[(16)*i+11] * y[(16)*i+11];
+temp_l83_i1370_w1 = x[(16)*i+12] * y[(16)*i+12];
+temp_l83_i1371_w1 = x[(16)*i+13] * y[(16)*i+13];
+temp_l83_i1372_w1 = x[(16)*i+14] * y[(16)*i+14];
+temp_l83_i1373_w1 = x[(16)*i+15] * y[(16)*i+15];
 
-sum_w1 = temp_l83_i1694_w1 + temp_l83_i1695_w1;
-sum_w2 = temp_l83_i1696_w1 + temp_l83_i1697_w1;
-sum_w13 = temp_l83_i1698_w1 + temp_l83_i1699_w1;
-sum_w14 = temp_l83_i1700_w1 + temp_l83_i1701_w1;
-sum_w9 = temp_l83_i1702_w1 + temp_l83_i1703_w1;
-sum_w10 = temp_l83_i1704_w1 + temp_l83_i1705_w1;
-sum_w11 = temp_l83_i1706_w1 + temp_l83_i1707_w1;
-sum_w12 = temp_l83_i1708_w1 + temp_l83_i1709_w1;
+sum_w9 = temp_l83_i1358_w1 + temp_l83_i1359_w1;
+sum_w10 = temp_l83_i1360_w1 + temp_l83_i1361_w1;
+sum_w7 = temp_l83_i1362_w1 + temp_l83_i1363_w1;
+sum_w8 = temp_l83_i1364_w1 + temp_l83_i1365_w1;
+sum_w5 = temp_l83_i1366_w1 + temp_l83_i1367_w1;
+sum_w6 = temp_l83_i1368_w1 + temp_l83_i1369_w1;
+sum_w11 = temp_l83_i1370_w1 + temp_l83_i1371_w1;
+sum_w12 = temp_l83_i1372_w1 + temp_l83_i1373_w1;
 
-sum_w7 = sum_w1 + sum_w2;
-sum_w6 = sum_w11 + sum_w12;
-sum_w8 = sum_w13 + sum_w14;
-sum_w5 = sum_w9 + sum_w10;
+sum_w14 = sum_w11 + sum_w12;
+sum_w13 = sum_w5 + sum_w6;
+sum_w2 = sum_w7 + sum_w8;
+sum_w1 = sum_w9 + sum_w10;
 
-sum_w4 = sum_w5 + sum_w6;
-sum_w3 = sum_w7 + sum_w8;
+sum_w3 = sum_w1 + sum_w2;
+sum_w4 = sum_w13 + sum_w14;
 
 sum_array[i] = sum_w3 + sum_w4;
 
 }
 }
 
-void epilogue(short y_7[3], int sum_array_3[21], short x_7[3], int sum_array_2[21], int sum_array_5[19], int sum_array_4[21], short x_0[13], short y_0[13], int sum_array_1[21], int sum_array_0[21], int *out) {
+void epilogue(int sum_array_2[40], short x_0[13], short y_0[13], short x_4[3], int sum_array_1[42], short y_4[3], int sum_array_0[42], int *out) {
 // Step 2: Initialize local variables
 int sum_w1;
 int sum_w10;
@@ -321,58 +321,58 @@ sum_w131 = sum_array_0[12] + sum_array_0[13];
 sum_w61 = sum_array_0[14] + sum_array_0[15];
 sum_w62 = sum_array_0[16] + sum_array_0[17];
 sum_w21 = sum_array_0[18] + sum_array_0[19];
-sum_w22 = sum_array_0[20] + sum_array_1[0];
-sum_w29 = sum_array_1[1] + sum_array_1[2];
-sum_w30 = sum_array_1[3] + sum_array_1[4];
-sum_w92 = sum_array_1[5] + sum_array_1[6];
-sum_w93 = sum_array_1[7] + sum_array_1[8];
-sum_w37 = sum_array_1[9] + sum_array_1[10];
-sum_w38 = sum_array_1[11] + sum_array_1[12];
-sum_w3 = sum_array_1[13] + sum_array_1[14];
-sum_w4 = sum_array_1[15] + sum_array_1[16];
-sum_w118 = sum_array_1[17] + sum_array_1[18];
-sum_w119 = sum_array_1[19] + sum_array_1[20];
-sum_w132 = sum_array_2[0] + sum_array_2[1];
-sum_w133 = sum_array_2[2] + sum_array_2[3];
-sum_w106 = sum_array_2[4] + sum_array_2[5];
-sum_w107 = sum_array_2[6] + sum_array_2[7];
-sum_w82 = sum_array_2[8] + sum_array_2[9];
-sum_w83 = sum_array_2[10] + sum_array_2[11];
-sum_w100 = sum_array_2[12] + sum_array_2[13];
-sum_w101 = sum_array_2[14] + sum_array_2[15];
-sum_w27 = sum_array_2[16] + sum_array_2[17];
-sum_w28 = sum_array_2[18] + sum_array_2[19];
-sum_w84 = sum_array_2[20] + sum_array_3[0];
-sum_w85 = sum_array_3[1] + sum_array_3[2];
-sum_w41 = sum_array_3[3] + sum_array_3[4];
-sum_w42 = sum_array_3[5] + sum_array_3[6];
-sum_w39 = sum_array_3[7] + sum_array_3[8];
-sum_w40 = sum_array_3[9] + sum_array_3[10];
-sum_w35 = sum_array_3[11] + sum_array_3[12];
-sum_w36 = sum_array_3[13] + sum_array_3[14];
-sum_w49 = sum_array_3[15] + sum_array_3[16];
-sum_w50 = sum_array_3[17] + sum_array_3[18];
-sum_w112 = sum_array_3[19] + sum_array_3[20];
-sum_w113 = sum_array_4[0] + sum_array_4[1];
-sum_w63 = sum_array_4[2] + sum_array_4[3];
-sum_w64 = sum_array_4[4] + sum_array_4[5];
-sum_w55 = sum_array_4[6] + sum_array_4[7];
-sum_w56 = sum_array_4[8] + sum_array_4[9];
-sum_w77 = sum_array_4[10] + sum_array_4[11];
-sum_w78 = sum_array_4[12] + sum_array_4[13];
-sum_w53 = sum_array_4[14] + sum_array_4[15];
-sum_w54 = sum_array_4[16] + sum_array_4[17];
-sum_w88 = sum_array_4[18] + sum_array_4[19];
-sum_w89 = sum_array_4[20] + sum_array_5[0];
-sum_w5 = sum_array_5[1] + sum_array_5[2];
-sum_w6 = sum_array_5[3] + sum_array_5[4];
-sum_w17 = sum_array_5[5] + sum_array_5[6];
-sum_w18 = sum_array_5[7] + sum_array_5[8];
-sum_w13 = sum_array_5[9] + sum_array_5[10];
-sum_w14 = sum_array_5[11] + sum_array_5[12];
-sum_w45 = sum_array_5[13] + sum_array_5[14];
-sum_w46 = sum_array_5[15] + sum_array_5[16];
-sum_w16 = sum_array_5[17] + sum_array_5[18];
+sum_w22 = sum_array_0[20] + sum_array_0[21];
+sum_w29 = sum_array_0[22] + sum_array_0[23];
+sum_w30 = sum_array_0[24] + sum_array_0[25];
+sum_w92 = sum_array_0[26] + sum_array_0[27];
+sum_w93 = sum_array_0[28] + sum_array_0[29];
+sum_w37 = sum_array_0[30] + sum_array_0[31];
+sum_w38 = sum_array_0[32] + sum_array_0[33];
+sum_w3 = sum_array_0[34] + sum_array_0[35];
+sum_w4 = sum_array_0[36] + sum_array_0[37];
+sum_w118 = sum_array_0[38] + sum_array_0[39];
+sum_w119 = sum_array_0[40] + sum_array_0[41];
+sum_w132 = sum_array_1[0] + sum_array_1[1];
+sum_w133 = sum_array_1[2] + sum_array_1[3];
+sum_w106 = sum_array_1[4] + sum_array_1[5];
+sum_w107 = sum_array_1[6] + sum_array_1[7];
+sum_w82 = sum_array_1[8] + sum_array_1[9];
+sum_w83 = sum_array_1[10] + sum_array_1[11];
+sum_w100 = sum_array_1[12] + sum_array_1[13];
+sum_w101 = sum_array_1[14] + sum_array_1[15];
+sum_w27 = sum_array_1[16] + sum_array_1[17];
+sum_w28 = sum_array_1[18] + sum_array_1[19];
+sum_w84 = sum_array_1[20] + sum_array_1[21];
+sum_w85 = sum_array_1[22] + sum_array_1[23];
+sum_w41 = sum_array_1[24] + sum_array_1[25];
+sum_w42 = sum_array_1[26] + sum_array_1[27];
+sum_w39 = sum_array_1[28] + sum_array_1[29];
+sum_w40 = sum_array_1[30] + sum_array_1[31];
+sum_w35 = sum_array_1[32] + sum_array_1[33];
+sum_w36 = sum_array_1[34] + sum_array_1[35];
+sum_w49 = sum_array_1[36] + sum_array_1[37];
+sum_w50 = sum_array_1[38] + sum_array_1[39];
+sum_w112 = sum_array_1[40] + sum_array_1[41];
+sum_w113 = sum_array_2[0] + sum_array_2[1];
+sum_w63 = sum_array_2[2] + sum_array_2[3];
+sum_w64 = sum_array_2[4] + sum_array_2[5];
+sum_w55 = sum_array_2[6] + sum_array_2[7];
+sum_w56 = sum_array_2[8] + sum_array_2[9];
+sum_w77 = sum_array_2[10] + sum_array_2[11];
+sum_w78 = sum_array_2[12] + sum_array_2[13];
+sum_w53 = sum_array_2[14] + sum_array_2[15];
+sum_w54 = sum_array_2[16] + sum_array_2[17];
+sum_w88 = sum_array_2[18] + sum_array_2[19];
+sum_w89 = sum_array_2[20] + sum_array_2[21];
+sum_w5 = sum_array_2[22] + sum_array_2[23];
+sum_w6 = sum_array_2[24] + sum_array_2[25];
+sum_w17 = sum_array_2[26] + sum_array_2[27];
+sum_w18 = sum_array_2[28] + sum_array_2[29];
+sum_w13 = sum_array_2[30] + sum_array_2[31];
+sum_w14 = sum_array_2[32] + sum_array_2[33];
+sum_w45 = sum_array_2[34] + sum_array_2[35];
+sum_w46 = sum_array_2[36] + sum_array_2[37];
+sum_w16 = sum_array_2[38] + sum_array_2[39];
 temp_l83_i1_w1 = x_0[0] * y_0[0];
 temp_l83_i2_w1 = x_0[1] * y_0[1];
 temp_l83_i3_w1 = x_0[2] * y_0[2];
@@ -386,9 +386,9 @@ temp_l83_i10_w1 = x_0[9] * y_0[9];
 temp_l83_i11_w1 = x_0[10] * y_0[10];
 temp_l83_i12_w1 = x_0[11] * y_0[11];
 temp_l83_i13_w1 = x_0[12] * y_0[12];
-temp_l83_i1998_w1 = x_7[0] * y_7[0];
-temp_l83_i1999_w1 = x_7[1] * y_7[1];
-temp_l83_i2000_w1 = x_7[2] * y_7[2];
+temp_l83_i1998_w1 = x_4[0] * y_4[0];
+temp_l83_i1999_w1 = x_4[1] * y_4[1];
+temp_l83_i2000_w1 = x_4[2] * y_4[2];
 
 sum_w123 = sum_w100 + sum_w101;
 sum_w125 = sum_w106 + sum_w107;
@@ -478,47 +478,32 @@ sum_w79 = sum_w104 + sum_w105;
 
 }
 
-void dotprod_parallel6(short x_0[13], short x_1[336], short x_2[336], short x_3[336], short x_4[336], short x_5[336], short x_6[304], short x_7[3], short y_0[13], short y_1[336], short y_2[336], short y_3[336], short y_4[336], short y_5[336], short y_6[304], short y_7[3], int *out) {
+void dotprod_parallel3(short x_0[13], short x_1[672], short x_2[672], short x_3[640], short x_4[3], short y_0[13], short y_1[672], short y_2[672], short y_3[640], short y_4[3], int *out) {
 // Step 2: Initialize local variables
-int sum_array_0[21];
-int sum_array_1[21];
-int sum_array_2[21];
-int sum_array_3[21];
-int sum_array_4[21];
-int sum_array_5[19];
+int sum_array_0[42];
+int sum_array_1[42];
+int sum_array_2[40];
 #pragma HLS ARRAY_PARTITION variable=x_0 cyclic factor=13 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_1 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_2 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_3 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_4 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_5 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_6 cyclic factor=304 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_7 cyclic factor=3 dim=0
+#pragma HLS ARRAY_PARTITION variable=x_1 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=x_2 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=x_3 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=x_4 cyclic factor=3 dim=0
 #pragma HLS ARRAY_PARTITION variable=y_0 cyclic factor=13 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_1 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_2 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_3 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_4 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_5 cyclic factor=336 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_6 cyclic factor=304 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_7 cyclic factor=3 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_0 cyclic factor=21 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_1 cyclic factor=21 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_2 cyclic factor=21 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_3 cyclic factor=21 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_4 cyclic factor=21 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_5 cyclic factor=19 dim=0
+#pragma HLS ARRAY_PARTITION variable=y_1 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=y_2 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=y_3 cyclic factor=16 dim=0
+#pragma HLS ARRAY_PARTITION variable=y_4 cyclic factor=3 dim=0
+#pragma HLS ARRAY_PARTITION variable=sum_array_0 cyclic factor=2 dim=0
+#pragma HLS ARRAY_PARTITION variable=sum_array_1 cyclic factor=2 dim=0
+#pragma HLS ARRAY_PARTITION variable=sum_array_2 cyclic factor=2 dim=0
 // Initialization done
 #pragma HLS dataflow
 
 parallel_0(x_1,y_1,sum_array_0);
 parallel_0(x_2,y_2,sum_array_1);
-parallel_0(x_3,y_3,sum_array_2);
-parallel_0(x_4,y_4,sum_array_3);
-parallel_0(x_5,y_5,sum_array_4);
-parallel_1(x_6,y_6,sum_array_5);
+parallel_1(x_3,y_3,sum_array_2);
 
 
-epilogue(y_7,sum_array_3,x_7,sum_array_2,sum_array_5,sum_array_4,x_0,y_0,sum_array_1,sum_array_0,out);
+epilogue(sum_array_2,x_0,y_0,x_4,sum_array_1,y_4,sum_array_0,out);
 
 }
