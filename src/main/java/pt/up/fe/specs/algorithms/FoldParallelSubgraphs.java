@@ -220,11 +220,17 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     private List<Var> splitSingleVar(Var var, int numberOfParallelFunctions, int dimToFold) {
         List<Var> newVars = new ArrayList<>();
+        HLSPartition varHLSPartition = var.getHlsPartition();
         List<List<Integer>> newVarsSizes = utils.splitDimensions(var, dimToFold, numberOfParallelFunctions, allNodeClusters.size());
         for (int i = 0; i < newVarsSizes.size(); i++) {
             List<Integer> newVarSizes = newVarsSizes.get(i);
             Var newVar = new Var(var.getType(), var.getName() + "_" + i, var.isArray(), newVarSizes);
-            newVar.setHlsPartition(new HLSPartition(dimToFold, newVarSizes.get(dimToFold)));
+            if (var.hasHlsPartition()) {
+                newVar.setHlsPartition(new HLSPartition(dimToFold, Math.min(newVarSizes.get(dimToFold), varHLSPartition.getFactor())));
+            } else {
+                newVar.setHlsPartition(new HLSPartition(dimToFold, 2));
+            }
+
             newVars.add(newVar);
         }
         return newVars;
