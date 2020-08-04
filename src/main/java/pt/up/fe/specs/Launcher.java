@@ -1,14 +1,19 @@
 package pt.up.fe.specs;
 
+import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.IdAlreadyInUseException;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
+import pt.up.fe.specs.algorithms.*;
+import pt.up.fe.specs.utils.AddStartAndEnd;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * pt.up.fe.specs.Launcher of application. Call the stages of the tool
@@ -48,46 +53,55 @@ public class Launcher {
         // Creating main part of tool and reading config file
         LaunchAlgorithm launch = new LaunchAlgorithm();
         Config config = launch.getConfiguration(configFile);
-        loadStores = config.loadstores;
-        arithmetic = config.arithmetic;
-        access = config.acc;
         // Getting Graph
         FileSource fs = FileSourceFactory
                 .sourceFor(path + "\\" + config.graph);
 
         fs.addSink(mainGraph);
         fs.readAll(path + "\\" + config.graph);
-        
+        mainGraph.addAttribute("config", config);
+        mainGraph.addAttribute("functionName", config.outputFile);
+
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
-        mainGraph = launch.Initializations(mainGraph, config);
-        launch.InfoInit(mainGraph, config);
-        mainGraph.addAttribute("functionName", config.outputFile);
 
-        launch.Prune(mainGraph);
-        launch.leveling(mainGraph);
-        boolean performedRotations = launch.parallelizeSums(mainGraph);
-        if (performedRotations) {
-            launch.leveling(mainGraph);
+        Queue<Algorithm> algorithmsQueue = new LinkedList<>();
+        algorithmsQueue.add(new AddStartAndEnd());
+        algorithmsQueue.add(new LocalVectorPruning());
+        algorithmsQueue.add(new SetVarsAttributes());
+        algorithmsQueue.add(new InfoFromConfig());
+        algorithmsQueue.add(new Pruning());
+        algorithmsQueue.add(new Leveling());
+        algorithmsQueue.add(new ParallelizeSums());
+
+        while(!algorithmsQueue.isEmpty()) {
+            Algorithm algorithm = algorithmsQueue.remove();
+            algorithm.init(mainGraph);
+            algorithm.compute();
         }
+
         if (config.folding.equals("high") || config.folding.equals("medium")) {
             launch.runWeightAlgorithm(mainGraph);
             long graphsMatchTime = System.currentTimeMillis();
             System.out.println("Starting parallel Matching");
             boolean isFolded = launch.foldParallel(mainGraph, config);
             System.out.println("Fold parallel time:" + (graphsMatchTime - startTime));
+            List<Graph> subgraphs = mainGraph.getAttribute("subgraphs");
+
             //launch.createPrologue(mainGraph);
             if (isFolded) {
                 Graph epilogue = launch.createEpilogue(mainGraph);
+                //fsDOT.writeAll(epilogue, "./dotprod_N10_epilogue.dot");
             }
+
 
         }
 
         launch.arithmeticOptimizations(mainGraph);
         launch.updateVarLabels(mainGraph);
         launch.orderLevelGraph(mainGraph);
-        //Update vars names with wire numbers before writing the code
+
         launch.writeC(mainGraph, path.concat("\\"+config.outputFile + ".c"), config);
 
         long endTime = System.currentTimeMillis();

@@ -5,6 +5,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
+import pt.up.fe.specs.utils.Utils;
+import sun.nio.ch.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +20,10 @@ import static java.util.stream.Collectors.toCollection;
  * @author CPU TOSH
  *
  */
-public class PruneInterNode implements Algorithm {
+public class Pruning implements Algorithm {
 
     Graph graph;
     int ne;
-
-    public PruneInterNode() {
-        // TODO Auto-generated constructor stub
-    }
 
     @Override
     /**
@@ -52,27 +50,25 @@ public class PruneInterNode implements Algorithm {
 
 
         for (Node n: nodes) {
-            String att1 = n.getAttribute("att1").toString();
-            if (!att1.equals("nop") && !att1.equals("call") && !att1.equals("op") && !att1.equals("mux")) {
-                removeIntermediate(n);
+            if (isDisconnected(n)) {
+                safeRemoveNode(n);
+            } else {
+                if (Utils.isVar(n) || Utils.isConst(n)) {
+                    removeIntermediate(n);
+                }
             }
+
 
         }
         System.out.println("Pruning finished - node count: " + graph.getNodeCount());
         System.out.println("Pruning finished - edge count: " + graph.getEdgeCount());
 
-
-
     }
 
-    private boolean isEndNodeNext(Node n) {
-        for (Edge e: n.getEachLeavingEdge()) {
-            if (e.getTargetNode().getId().equals("End")) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isDisconnected(Node n) {
+        return n.getInDegree() == 0 && n.getOutDegree() == 0;
     }
+
 
     /**
      * Method that deals with removal of intermediate nodes. If a node is between two
@@ -83,25 +79,23 @@ public class PruneInterNode implements Algorithm {
      * @param n Node to handled.
      */
     public void removeIntermediate(Node n) {
-        if (n.getInDegree() == 0 || n.getOutDegree() == 0) {
-            safeRemoveNode(n);
-        }
-        else if (n.getInDegree() <= 1) {
+
+        if (n.getInDegree() <= 1) {
             Node prev = n.getEnteringEdge(0).getSourceNode();
             String mod = getModAttribute(n);
             for (Edge edgeToTarget: n.getEachLeavingEdge()) {
-                Node nxt = edgeToTarget.getTargetNode();
+                Node targetNode = edgeToTarget.getTargetNode();
 
-                if (n.getAttribute("att1").equals("const") && nxt.getAttribute("att1").equals("var")) {
-                    for (Edge nxtLeaveEdge: nxt.getEachLeavingEdge()) {
+                if (Utils.isConst(n) && Utils.isVar(targetNode)) {
+                    for (Edge nxtLeaveEdge: targetNode.getEachLeavingEdge()) {
                         Node target = nxtLeaveEdge.getTargetNode();
                         Edge newEdge = graph.addEdge(prev.getId() + "->" + target.getId(), prev, target, true);
                         Graphs.copyAttributes(nxtLeaveEdge, newEdge);
                         Graphs.copyAttributes(n, newEdge);
                     }
-                    safeRemoveNode(nxt);
+                    safeRemoveNode(targetNode);
                 } else {
-                    Edge newEdge = graph.addEdge(prev.getId() + "->" + nxt.getId() + "_" + ne++, prev, nxt, true);
+                    Edge newEdge = graph.addEdge(prev.getId() + "->" + targetNode.getId() + "_" + ne++, prev, targetNode, true);
                     Graphs.copyAttributes(edgeToTarget, newEdge);
                     Graphs.copyAttributes(n, newEdge);
                     if (!mod.isEmpty()) {

@@ -4,7 +4,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.Config;
-import pt.up.fe.specs.LoopNameAndIterator;
+import pt.up.fe.specs.utils.LoopNameAndIterator;
 import pt.up.fe.specs.utils.LoopInfo;
 import pt.up.fe.specs.utils.SpecificLoopInfo;
 import pt.up.fe.specs.utils.FoldInfo;

@@ -4,6 +4,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.Config;
+import pt.up.fe.specs.customNodes.ArrayAccessNode;
 import pt.up.fe.specs.utils.Utils;
 
 import java.io.BufferedWriter;
@@ -30,11 +31,7 @@ abstract public class CPrinter {
             List<Node> list = levelGraph.get(i);
             for (Node n : list) {
                 String att1 = n.getAttribute("att1");
-                if (att1.equals("op")) {
-                    writeAssignment(n);
-                } else if (att1.equals("mux")) {
-                    writeTernaryStatement(n);
-                } else if (att1.equals("function")) {
+               if (att1.equals("function")) {
 
                     for (Edge edge: n.getEachEnteringEdge()) {
                         outBuffer.append(getCallStatement(edge) + ";\n");
@@ -43,6 +40,8 @@ abstract public class CPrinter {
                 } else if (att1.equals("hyper")) {
                     CLoopPrinter cLoopPrinter = new CLoopPrinter(outBuffer, graph, config, loopLevel);
                     cLoopPrinter.print();
+                } else if (!Utils.isNOP(n)){
+                   writeAssignment(n);
                 }
                 n.addAttribute("done", true);
             }
@@ -53,14 +52,44 @@ abstract public class CPrinter {
     abstract protected String getLabel(Edge edge) throws IOException;
     abstract protected String getAssignmentLabel(Edge edge) throws IOException;
 
+    protected void writeComplexAssignmentRHS(Node n) throws IOException {
+        Edge rhs;
+        for (Edge inEdge: n.getEachEnteringEdge()) {
+            if (inEdge.getAttribute("pos").equals("r")) {
+                rhs = inEdge;
+                outBuffer.append(getLabel(rhs));
+                break;
+            }
+        }
+    }
 
+    protected void writeArrayAccessRHS(Node n) throws IOException {
+        ArrayAccessNode arrayAccessNode = new ArrayAccessNode(n);
+        String arrayName = arrayAccessNode.getArrayName();
+        Integer arrayDim = arrayAccessNode.getArrayDimension();
+        ArrayList<String> accesses = new ArrayList<>();
+        for (int i = 0; i < arrayDim; i++) {
+            Edge edge = arrayAccessNode.getEdgeAtDimension(i);
+            if (edge == null) System.err.println("Null edge in array access");
+            accesses.add(getLabel(edge));
+        }
+        outBuffer.append(arrayName);
+        for (String label: accesses) {
+            outBuffer.append("[" + label + "]");
+        }
+    }
 
-    protected void writeExpression(Node n) throws IOException {
-        String att1 = n.getAttribute("att1");
-        if (att1.equals("mux")) {
-            writeTernaryStatement(n);
-        } else if (att1.equals("op")) {
-            writeOperation(n);
+    protected void writeExpressionRHS(Node n) throws IOException {
+        if (Utils.isMux(n)) {
+            writeTernaryStatementRHS(n);
+        } else if (Utils.isOperation(n)) {
+            writeOperationRHS(n);
+        } else if (Utils.isArrayAccess(n)) {
+            writeArrayAccessRHS(n);
+        } else if (Utils.isComplexAssignment(n)) {
+            writeComplexAssignmentRHS(n);
+        } else if (Utils.isAssignment(n)){
+            outBuffer.append(getLabel(n.getEnteringEdge(0)));
         } else {
             outBuffer.append(n.getAttribute("label").toString());
         }
@@ -70,12 +99,12 @@ abstract public class CPrinter {
         for (Edge leavingEdge : n.getEachLeavingEdge()) {
             String label = getAssignmentLabel(leavingEdge);
             outBuffer.append(label + " = ");
-            writeExpression(n);
+            writeExpressionRHS(n);
             outBuffer.append(";\n");
         }
     }
 
-    protected void writeOperation(Node n) throws IOException {
+    protected void writeOperationRHS(Node n) throws IOException {
 
         ArrayList<Edge> edges = new ArrayList<>();
         edges.add(n.getEnteringEdge(0));
@@ -120,7 +149,7 @@ abstract public class CPrinter {
         return buffer.toString();
     }
 
-    protected void writeTernaryStatement(Node n) throws IOException {
+    protected void writeTernaryStatementRHS(Node n) throws IOException {
         Edge selectorEdge = null;
         Edge trueEdge = null;
         Edge falseEdge = null;
@@ -137,11 +166,8 @@ abstract public class CPrinter {
         if (selectorEdge == null || trueEdge == null || falseEdge == null) {
             throw new IOException("Error in graph: " + n.getAttribute("label"));
         }
-        for (Edge e: n.getEachLeavingEdge()) {
-            outBuffer.append(getLabel(e) + " = ");
-            outBuffer.append(getLabel(selectorEdge) + " ? ");
-            outBuffer.append(getLabel(trueEdge) + ":" + getLabel(falseEdge) + ";\n");
-        }
 
+        outBuffer.append(getLabel(selectorEdge) + " ? ");
+        outBuffer.append(getLabel(trueEdge) + ":" + getLabel(falseEdge));
     }
 }

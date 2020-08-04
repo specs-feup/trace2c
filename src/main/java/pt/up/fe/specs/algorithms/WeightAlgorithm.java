@@ -4,6 +4,7 @@ import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import pt.up.fe.specs.utils.Utils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -19,17 +20,19 @@ public class WeightAlgorithm implements Algorithm {
     public void init(Graph graph) {
         this.graph = graph;
 
-        operationTypeToInt.put("=", 0);
         operationTypeToInt.put("+", 1);
-        operationTypeToInt.put("-", 4);
-        operationTypeToInt.put("*", 8);
-        operationTypeToInt.put("/", 16);
-        operationTypeToInt.put(">", 32);
-        operationTypeToInt.put("<", 64);
+        operationTypeToInt.put("-", 2);
+        operationTypeToInt.put("*", 4);
+        operationTypeToInt.put("/", 8);
+        operationTypeToInt.put(">", 16);
+        operationTypeToInt.put("<", 32);
 
-        nodeTypeToInt.put("nop", 0);
-        nodeTypeToInt.put("mux", 32);
-        nodeTypeToInt.put("call", 64);
+        nodeTypeToInt.put("nop", 3);
+        nodeTypeToInt.put("mux", 5);
+        nodeTypeToInt.put("call", 7);
+        nodeTypeToInt.put("assignment", 9);
+        nodeTypeToInt.put("arrayAccess",11);
+        nodeTypeToInt.put("complexAssignment", 13);
 
         edgeTypeToInt.put(null, 0);
         edgeTypeToInt.put("var", 10);
@@ -50,7 +53,7 @@ public class WeightAlgorithm implements Algorithm {
 
         for (Node n : graph) {
             String nodeType = n.getAttribute("att1");
-            Integer typeWeight = nodeType.equals("op") ? operationTypeToInt.get(n.getAttribute("label")) : nodeTypeToInt.get(nodeType);
+            Integer typeWeight = Utils.isOperation(n) ? operationTypeToInt.get(Utils.getLabel(n)) : nodeTypeToInt.get(nodeType);
             Integer nodeLevel = n.getAttribute("level");
             int sequential_weight = k2 * typeWeight + n.getDegree() * typeWeight;
 

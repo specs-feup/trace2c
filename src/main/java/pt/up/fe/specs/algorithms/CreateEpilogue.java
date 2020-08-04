@@ -5,8 +5,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
-import pt.up.fe.specs.LevelingAlgorithmExt;
-import pt.up.fe.specs.Var;
+import pt.up.fe.specs.utils.Var;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,10 +33,10 @@ public class CreateEpilogue implements Algorithm {
         wrapAlgorithm.compute();
         Node callNode = wrapAlgorithm.getCallNode();
         Node functionNode = wrapAlgorithm.getFunctionNode();
-        Graph functionGraph = wrapAlgorithm.getFunctionGraph();
-        addCallingEdges(functionGraph, callNode, functionNode);
-        LevelingAlgorithmExt levelingAlgorithmExt = new LevelingAlgorithmExt();
-        levelingAlgorithmExt.init(functionGraph);
+        epilogueGraph = wrapAlgorithm.getFunctionGraph();
+        addCallingEdges(epilogueGraph, callNode, functionNode);
+        Leveling levelingAlgorithmExt = new Leveling();
+        levelingAlgorithmExt.init(epilogueGraph);
         levelingAlgorithmExt.compute();
         levelingAlgorithmExt.init(mainGraph);
         levelingAlgorithmExt.compute();

@@ -1,7 +1,5 @@
 package pt.up.fe.specs.utils;
 
-import pt.up.fe.specs.Var;
-
 import java.util.Comparator;
 
 public class VarComparator implements Comparator<Var> {

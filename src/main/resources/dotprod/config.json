@@ -1,8 +1,8 @@
 {
    "loadstores":2,
    "inputs":[
-      "x[4000]",
-      "y[4000]"
+      "x[10]",
+      "y[10]"
    ],
    "input_types":[
       "short",
@@ -16,9 +16,9 @@
    "full_part" : false,
    "full_connect" : false,
    "graph" : "dotprod_graph.dot",
-   "outputFile": "n4000_maxNodes_100_dotprod_parallel1",
-   "parallelFunctions": 1,
-   "maxNodesPerSubgraph": 100,
+   "outputFile": "n10_dotprod_parallel2",
+   "parallelFunctions": 2,
+   "maxNodesPerSubgraph": 1000,
    "varsToPartition": [{
       "var": "x",
       "dim": 0

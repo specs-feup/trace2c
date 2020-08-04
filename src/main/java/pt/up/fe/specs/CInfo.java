@@ -1,5 +1,7 @@
 package pt.up.fe.specs;
 
+import pt.up.fe.specs.utils.Var;
+
 import java.util.*;
 
 /**

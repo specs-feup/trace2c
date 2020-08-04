@@ -1,4 +1,4 @@
-package pt.up.fe.specs;
+package pt.up.fe.specs.algorithms;
 
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Edge;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author Afonso
  *
  */
-public class LevelingAlgorithmExt implements Algorithm {
+public class Leveling implements Algorithm {
 
     Graph graph;
     private HashSet<Node> nodeList = new HashSet<>();
@@ -93,7 +93,7 @@ public class LevelingAlgorithmExt implements Algorithm {
 
         graph.addAttribute("levelgraph", levelGraph);
         graph.addAttribute("maxlevel", level);
-        //System.out.println("Done graph leveling ext");
+        System.out.println("Leveling finished");
     }
     
     /**

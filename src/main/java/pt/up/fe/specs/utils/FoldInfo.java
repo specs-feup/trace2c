@@ -1,6 +1,5 @@
 package pt.up.fe.specs.utils;
 
-import pt.up.fe.specs.Var;
 import java.util.HashMap;
 
 public class FoldInfo implements Cloneable {

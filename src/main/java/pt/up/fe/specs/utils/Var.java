@@ -1,6 +1,4 @@
-package pt.up.fe.specs;
-
-import pt.up.fe.specs.utils.HLSPartition;
+package pt.up.fe.specs.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

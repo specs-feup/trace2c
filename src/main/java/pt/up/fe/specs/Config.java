@@ -1,5 +1,7 @@
 package pt.up.fe.specs;
 
+import pt.up.fe.specs.utils.VarAndDim;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,8 @@ import java.util.List;
 public class Config {
 
     int loadstores;
+
+
     List<String> inputs = new ArrayList<>();
     List<String> input_types = new ArrayList<>();
     List<String> outputs;
@@ -48,4 +52,21 @@ public class Config {
         }
         return 0;
     }
+
+    public List<String> getInputs() {
+        return inputs;
+    }
+
+    public List<String> getInput_types() {
+        return input_types;
+    }
+
+    public List<String> getOutputs() {
+        return outputs;
+    }
+
+    public List<String> getOutput_types() {
+        return output_types;
+    }
+
 }

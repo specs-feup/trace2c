@@ -5,6 +5,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
+import pt.up.fe.specs.utils.Utils;
 
 import java.util.*;
 
@@ -29,6 +30,13 @@ public class ParallelizeSums implements Algorithm {
             rotateGraph();
             clearInSeqAttributes();
         }
+        System.out.println("ParallelizeSums half-finished, leveling again");
+        if (performedRotations) {
+            Algorithm leveling = new Leveling();
+            leveling.init(graph);
+            leveling.compute();
+        }
+        System.out.println("ParallelizeSums finished");
     }
 
     private void clearInSeqAttributes() {
@@ -37,16 +45,12 @@ public class ParallelizeSums implements Algorithm {
         }
     }
 
-    private boolean isSum(Node n) {
-        return n.getAttribute("label").equals("+");
-    }
-
     private void detectSequences(Node currentNode, Node sequenceStarter, Integer count, Integer minLevel) {
         if (currentNode.getOutDegree() > 0) {
             Edge e = currentNode.getLeavingEdge(0);
             Node child = e.getTargetNode();
             int childLevel = child.getAttribute("level");
-            if (child.getAttribute("att1").equals("op") && child.getAttribute("label").equals("+") && childLevel >= minLevel) {
+            if (Utils.isOperation(child) && childLevel >= minLevel) {
                 if (count == 0) {
                     sequenceStarter = child;
                 }

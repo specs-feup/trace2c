@@ -8,7 +8,7 @@ import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.graph.implementations.MultiGraph;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.Config;
-import pt.up.fe.specs.Var;
+import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.*;
 
 import java.util.*;

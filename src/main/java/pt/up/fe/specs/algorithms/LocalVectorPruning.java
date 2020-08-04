@@ -3,6 +3,7 @@ package pt.up.fe.specs.algorithms;
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import pt.up.fe.specs.utils.Utils;
 
 /**
  * Algorithm that replaces local arrays with unique array variables.
@@ -30,23 +31,15 @@ public class LocalVectorPruning implements Algorithm {
         boolean isArray;
         String label;
 
-        System.out.println("Local vectors pruned due to unrolling");
-        System.out.println("Currently all local vectors pruned");
         for (Node n : graph) {
-            // Later maybe from attribute
-            if (n.hasAttribute("att2")) {
-                if (n.getAttribute("att2").toString().equals("loc")) {
-                    isArray = n.getAttribute("label").toString().contains("[");
-                    if (isArray) {
-                        label = n.getAttribute("label").toString();
-                        label = label.replace("[", "");
-                        label = label.replace("]", "");
-                        n.setAttribute("label", label);
-                    }
-                }
+            if (Utils.isLocalVar(n) && Utils.isArray(n)) {
+                label = n.getAttribute("label").toString();
+                label = label.replace("[", "");
+                label = label.replace("]", "");
+                n.setAttribute("label", label);
             }
         }
-
+        System.out.println("LocalVectorPruning finished");
     }
 
 }

@@ -3,7 +3,7 @@ package pt.up.fe.specs.printers;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import pt.up.fe.specs.Config;
-import pt.up.fe.specs.LoopNameAndIterator;
+import pt.up.fe.specs.utils.LoopNameAndIterator;
 import pt.up.fe.specs.utils.FoldInfo;
 import pt.up.fe.specs.utils.LoopInfo;
 import pt.up.fe.specs.utils.SpecificLoopInfo;

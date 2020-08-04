@@ -17,13 +17,11 @@ import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.algorithms.*;
-import pt.up.fe.specs.utils.AddStartAndEnd;
 import pt.up.fe.specs.printers.CFunctionPrinter;
 import pt.up.fe.specs.printers.CPrinter;
 import pt.up.fe.specs.utils.NodeComparator;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -35,16 +33,6 @@ import java.util.List;
  *
  */
 public class LaunchAlgorithm {
-
-    private boolean separated = false;
-    private boolean parallel_access_optimized = false;
-    private boolean only_IO = false;
-    private static int outputdim = 0;
-    private boolean done_div = false;
-    private boolean pipe_again = false;
-    private String output_name = null;
-    private boolean complete_fold = true;
-    private int maxDSP = 200;
 
     /**
      * Method that read the configuration JSON file
@@ -64,49 +52,6 @@ public class LaunchAlgorithm {
 
     }
 
-    /**
-     * Method that applies the initialization algorithms for the graph before the pruning. 
-     * Currently adds the start and end nodes, removes local vectors, and sets att3 on operations. 
-     * 
-     * @param graph
-     *            Graph to be manipulated
-     * @return changed Graph
-     */
-    public Graph Initializations(Graph graph, Config config) {
-        AddStartAndEnd addStartAndEnd = new AddStartAndEnd();
-        addStartAndEnd.init(graph);
-        addStartAndEnd.compute();
-        Algorithm lvecprun = new LocalVectorPruning();
-        lvecprun.init(graph);
-        lvecprun.compute();
-        return graph;
-
-    }
-
-    /**
-     * Calls the Algorithm to get information on variables. Gets input information from config file.
-     * 
-     * @param graph
-     *            Graph to get information
-     * @param config
-     *            configuration file for the Graph
-     * @return The obtained information
-     */
-    public CInfo InfoInit(Graph graph, Config config) throws IOException {
-
-        CInfo info;
-        // Potential alternative Info method tested (not used)
-
-        Algorithm getInfo = new CInfoAlgorithm();
-        getInfo.init(graph);
-        getInfo.compute();
-        info = ((CInfoAlgorithm) getInfo).getInfo();
-
-        info = ioFromGson(info, config);
-        graph.setAttribute("info", info);
-        return info;
-
-    }
 
     public boolean foldParallel(Graph graph, Config config) {
         boolean hasFolded = false;
@@ -148,22 +93,6 @@ public class LaunchAlgorithm {
         return allSubgraphs.getMostRepeatableParallelSubgraph();
     }
 
-    /**
-     * 
-     * launches the pruning algorithm.
-     * 
-     * @param graph
-     *            Graph to be pruned
-     * @return pruned Graph
-     */
-    public Graph Prune(Graph graph) {
-
-        Algorithm prune = new PruneInterNode();
-        prune.init(graph);
-        prune.compute();
-        return graph;
-    }
-
 
     /**
      * Call the graph leveling algorithm.
@@ -174,7 +103,7 @@ public class LaunchAlgorithm {
      */
     public Graph leveling(Graph graph) {
 
-        Algorithm level = new LevelingAlgorithmExt();
+        Algorithm level = new Leveling();
         level.init(graph);
         level.compute();
         if (graph.hasAttribute("subgraphs")) {
@@ -217,35 +146,6 @@ public class LaunchAlgorithm {
             e.printStackTrace();
             System.exit(0);
         }
-
-    }
-
-
-
-    /**
-     * Acquire integer indexes from array access. Works for multiple dimensions.
-     * 
-     * @param name
-     *            String of array access.
-     * @param indexes
-     *            list to store identified indexes.
-     * @return the dimension of the array.
-     */
-    public static int getIndexes(String name, List<Integer> indexes) {
-        String temp = name;
-
-        int dim = 0;
-        while (temp.lastIndexOf("[") != -1) {
-
-            temp = temp.substring(temp.indexOf("["));
-            String temp2 = temp.substring(1, temp.indexOf("]"));
-
-            indexes.add(Integer.parseInt(temp2));
-            temp = temp.substring(temp.indexOf("]"));
-
-            dim++;
-        }
-        return dim;
 
     }
 
@@ -298,51 +198,6 @@ public class LaunchAlgorithm {
             return name;
     }
 
-    /**
-     * Acquire input information from configuration file.
-     * 
-     * @param info
-     *            info object to update.
-     * @param config
-     *            configurations
-     * @return updated information.
-     */
-    public CInfo ioFromGson(CInfo info, Config config) throws IOException {
-        List<Integer> indexes;
-        int dim;
-        if (config.inputs.size() != config.input_types.size()) {
-            throw new IOException("Inputs and Input types do not match");
-        }
-        if (config.outputs.size() != config.output_types.size()) {
-            throw  new IOException("Outputs and Output types do not match");
-        }
-        for (int i = 0; i < config.inputs.size(); i++) {
-            String input = config.inputs.get(i);
-            String inputVarName = parseVarName(input);
-            indexes = new ArrayList<>();
-            dim = getIndexes(input, indexes);
-            Var in = new Var(config.input_types.get(i), inputVarName, dim > 0, indexes);
-            info.addInput(in);
-        }
-        for (int i = 0; i < config.outputs.size(); i++) {
-            String output = config.outputs.get(i);
-            String outputVarName = parseVarName(output);
-            indexes = new ArrayList<>();
-            dim = getIndexes(output, indexes);
-            Var out = new Var(config.output_types.get(i), outputVarName, dim > 0, indexes);
-            info.addOutput(out);
-        }
-
-        return info;
-    }
-
-
-    public boolean parallelizeSums(Graph graph) {
-        ParallelizeSums parallelizeSumsAlgo = new ParallelizeSums();
-        parallelizeSumsAlgo.init(graph);
-        parallelizeSumsAlgo.compute();
-        return parallelizeSumsAlgo.performedRotations();
-    }
 
     public Graph updateVarLabels(Graph graph) {
         Algorithm updateVarLabels = new UpdateVarLabels();

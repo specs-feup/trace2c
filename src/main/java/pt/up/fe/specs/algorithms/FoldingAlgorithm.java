@@ -6,7 +6,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.Config;
-import pt.up.fe.specs.Var;
+import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.*;
 
 import java.util.ArrayList;

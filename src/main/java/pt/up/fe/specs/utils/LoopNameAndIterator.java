@@ -1,4 +1,4 @@
-package pt.up.fe.specs;
+package pt.up.fe.specs.utils;
 
 public class LoopNameAndIterator {
     private String loopName;

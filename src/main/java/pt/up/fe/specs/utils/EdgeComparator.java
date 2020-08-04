@@ -1,6 +1,7 @@
 package pt.up.fe.specs.utils;
 
 import org.graphstream.graph.Edge;
+import sun.nio.ch.Util;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,8 +25,8 @@ public class EdgeComparator implements Comparator<Edge> {
             return 0;
         }
         for (int i = 0; i < indexes1.size(); i++) {
-            int size1 = indexes1.get(i);
-            int size2 = indexes2.get(i);
+            Integer size1 = indexes1.get(i);
+            Integer size2 = indexes2.get(i);
             if (size1 != size2) {
                 return size1 - size2;
             }
@@ -35,15 +36,15 @@ public class EdgeComparator implements Comparator<Edge> {
 
     @Override
     public int compare(Edge e1, Edge e2) {
-        String label1 = e1.getAttribute("label");
-        String label2 = e2.getAttribute("label");
+        String label1 = Utils.getLabel(e1);
+        String label2 = Utils.getLabel(e2);
         if (label1 == null || label2 == null) {
-            System.out.println("Debug");
+            System.err.println("Debug null label");
         }
-        String name1 = e1.getAttribute("name");
-        String name2 = e2.getAttribute("name");
+        String name1 = Utils.getName(e1);
+        String name2 = Utils.getName(e2);
         if (varToFold != null) {
-            if (e1.hasAttribute("array") && e2.hasAttribute("array")) {
+            if (Utils.isArray(e1) && Utils.isArray(e2)) {
                 if (name1.equals(varToFold)) {
                     if (name2.equals(varToFold)) {
                         return compareIndexes(label1, label2);
@@ -53,28 +54,28 @@ public class EdgeComparator implements Comparator<Edge> {
                 } else if (name2.equals(varToFold)) {
                     return 1;
                 }
-            } else if (e1.hasAttribute("array")) {
+            } else if (Utils.isArray(e1)) {
                 if (name1.equals(varToFold)) {
                     return -1;
                 }
 
-            } else if (e2.hasAttribute("array")) {
+            } else if (Utils.isArray(e2)) {
                 if (name2.equals(varToFold)) {
                     return 1;
                 }
             }
         }
-        if (e1.hasAttribute("array") && e2.hasAttribute("array")) {
+        if (Utils.isArray(e1) && Utils.isArray(e2)) {
             if (name1.equals(name2)) {
                 return compareIndexes(label1, label2);
             } else {
                 return name1.compareTo(name2);
             }
         }
-        if (e1.hasAttribute("array")) {
+        if (Utils.isArray(e1)) {
             return -1;
         }
-        if (e2.hasAttribute("array")) {
+        if (Utils.isArray(e2)) {
             return 1;
         }
 

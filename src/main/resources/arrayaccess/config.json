@@ -1,0 +1,20 @@
+{
+    "inputs":[
+        "a[5]", "input"
+    ],
+    "input_types":[
+       "int", "int"
+    ],
+    "outputs":["*out"],
+    "output_types": ["int"],
+    "folding" : "false",
+    "arithmetic" : false,
+    "acc" : false,
+    "full_part" : false,
+    "full_connect" : false,
+    "graph" : "arrayaccess.dot",
+    "outputFile": "output",
+    "parallelFunctions": 0,
+    "maxNodesPerSubgraph": 1000,
+    "varsToPartition": []
+ }

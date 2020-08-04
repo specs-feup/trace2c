@@ -1,7 +1,7 @@
 package pt.up.fe.specs.utils;
 
+import org.graphstream.graph.Element;
 import org.graphstream.graph.Node;
-import pt.up.fe.specs.Var;
 
 import java.util.*;
 
@@ -73,6 +73,23 @@ public class Utils {
     }
 
     /**
+     * Isolate the dimensions and indexes of an array.
+     *
+     * @param label label of array access.
+     * @return dimension of array.
+     */
+    public static int getArrayDimension(String label) {
+        String temp = label;
+        int dim = 0;
+        while (temp.lastIndexOf("[") != -1) {
+            temp = temp.substring(temp.indexOf("]") + 1);
+            dim++;
+        }
+        return dim;
+
+    }
+
+    /**
      * Isolate indexes of an array access.
      * @param label    label of array access,
      * @return indexes
@@ -84,8 +101,13 @@ public class Utils {
 
             temp = temp.substring(temp.indexOf("["));
             String temp2 = temp.substring(1, temp.indexOf("]"));
+            try {
+                Integer intValue = Integer.parseInt(temp2);
+                indexes.add(intValue);
+            } catch (NumberFormatException exception) {
+                indexes.add(null);
+            }
 
-            indexes.add(Integer.parseInt(temp2));
             temp = temp.substring(temp.indexOf("]"));
         }
         return indexes;
@@ -103,8 +125,16 @@ public class Utils {
         return 0;
     }
 
-    public static boolean isArray(String label) {
-        return label.contains("[");
+
+    public static String getLabel(Element element) {
+        return element.getAttribute("label");
+    }
+
+    public static String getName(Element element) { return element.getAttribute("name");}
+
+    public static boolean isArray(Element element) {
+        if (!element.hasAttribute("label")) return false;
+        return getLabel(element).contains("[");
     }
 
     public static boolean isStartNode(Node node) {
@@ -122,4 +152,112 @@ public class Utils {
             return label;
         }
     }
+
+    public static boolean isVar(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("var")) return true;
+        return  false;
+    }
+
+    public static boolean isConst(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("const")) return true;
+        return  false;
+    }
+
+    public static boolean isComplexAssignment(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("complexAssignment")) return true;
+        return false;
+    }
+
+    public static boolean isArrayAccess(Element element) {
+        if (!element.hasAttribute("att1") || !element.hasAttribute("att2")) return false;
+        if (element.getAttribute("att1").equals("arrayAccess")) return true;
+        return false;
+    }
+
+    public static boolean isNOP(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("nop")) return true;
+        return false;
+    }
+
+
+    public static boolean isLocalVar(Element element) {
+        if (!isVar(element)) return false;
+        if (!element.hasAttribute("att2")) return false;
+        if (element.getAttribute("att2").equals("loc")) return true;
+        return false;
+    }
+
+
+    public static boolean isParamVar(Element element) {
+        if (!isVar(element)) return false;
+        if (!element.hasAttribute("att2")) return false;
+        String att2 = element.getAttribute("att2");
+        if (att2.equals("param") || att2.equals("inte")) return true;
+        return false;
+    }
+
+    public static boolean isGlobalVar(Element element) {
+        if (!isVar(element)) return false;
+        if (!element.hasAttribute("att2")) return false;
+        if (element.getAttribute("att2").equals("global")) return true;
+        return false;
+    }
+
+    public static boolean isOperation(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("op")) return true;
+        return false;
+    }
+
+    public static boolean isMux(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("mux")) return true;
+        return false;
+    }
+
+    public static boolean isSumOperation(Element element) {
+        if (!isOperation(element)) return false;
+        if (getLabel(element).equals("+")) return true;
+        return false;
+    }
+
+    public static boolean isAssignment(Element element) {
+        if (!element.hasAttribute("att1")) return false;
+        if (element.getAttribute("att1").equals("assignment")) return true;
+        return false;
+    }
+
+
+
+    public static boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        int length = str.length();
+        if (length == 0) {
+            return false;
+        }
+        int i = 0;
+        if (str.charAt(0) == '-') {
+            if (length == 1) {
+                return false;
+            }
+            i = 1;
+        }
+        for (; i < length; i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
+
 }

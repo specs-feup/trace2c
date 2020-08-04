@@ -1,7 +1,7 @@
 /**
 	k-NN
 	
-	Version by João MP Cardoso
+	Version by Joï¿½o MP Cardoso
 	Email: jmpc@fe.up.pt
 	
 	April 2020

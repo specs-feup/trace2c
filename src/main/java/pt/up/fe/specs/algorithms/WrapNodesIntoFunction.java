@@ -6,8 +6,6 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.graph.implementations.MultiGraph;
-import pt.up.fe.specs.CInfo;
-import pt.up.fe.specs.LevelingAlgorithmExt;
 import pt.up.fe.specs.utils.AddStartAndEnd;
 import pt.up.fe.specs.utils.EdgeComparator;
 import pt.up.fe.specs.utils.Utils;

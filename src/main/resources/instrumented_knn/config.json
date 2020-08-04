@@ -1,0 +1,30 @@
+{
+   "inputs":[
+      "xFeatures[5]",
+      "knownFeatures[10][5]",
+      "knownClasses[10]"
+   ],
+   "input_types":[
+      "float",
+      "float",
+      "char"
+   ],
+   "outputs":["*out"],
+   "output_types": ["char"],
+   "folding" : "false",
+   "arithmetic" : false,
+   "acc" : false,
+   "full_part" : false,
+   "full_connect" : false,
+   "graph" : "knn.dot",
+   "outputFile": "knn_no_folding_output",
+   "parallelFunctions": 0,
+   "maxNodesPerSubgraph": 1000,
+   "varsToPartition": [{
+      "var": "knownFeatures",
+      "dim": 0
+   }, {
+      "var": "knownClasses",
+      "dim": 0
+   }]
+}

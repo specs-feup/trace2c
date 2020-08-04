@@ -5,6 +5,8 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.*;
 import pt.up.fe.specs.utils.HLSPartition;
+import pt.up.fe.specs.utils.Utils;
+import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.VarComparator;
 
 import java.io.BufferedWriter;
@@ -76,7 +78,7 @@ public class CFunctionPrinter extends CPrinter {
     protected String getLabel(Edge edge) throws IOException {
         String name;
         if (!edge.hasAttribute("att1")) {
-            throw new IOException("Edge without att1");
+            throw new IOException("Edge without att1, label: " + Utils.getLabel(edge));
         }
         if (edge.getAttribute("att1").equals("call")) {
             name = getCallStatement(edge);

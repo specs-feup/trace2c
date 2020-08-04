@@ -5,7 +5,7 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
-import pt.up.fe.specs.Var;
+import pt.up.fe.specs.utils.Var;
 
 import java.util.ArrayList;
 import java.util.HashSet;
