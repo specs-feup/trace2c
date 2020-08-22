@@ -1,0 +1,10 @@
+input,optimizations,part,target_clock,estim_clock,lat_worst,lat_avg,lat_best,II,FF,LUT,BRAM,DSP
+latnrm_unfold2.c,original,xc7z020-clg484-1,10.00,7.256,46593,46593,46593,0,1437,2472,0,16
+latnrm_unfold2.c,cinter,xc7z020-clg484-1,10.00,12.958,7199,7199,7199,110,7146,5705,0,24
+latnrm_unfold2.c,chigh,xc7z020-clg484-1,10.00,12.958,7222,7222,7222,219,7601,5559,0,16
+latnrm_unfold2.c,lvl2,xc7z020-clg484-1,10.00,9.531,533,533,533,8,2952,4712,0,19
+latnrm_unfold2.c,lvl4,xc7z020-clg484-1,10.00,9.531,314,314,314,1,2456,4303,0,16
+latnrm_unfold2.c,lvl5,xc7z020-clg484-1,10.00,9.489,538,538,538,8,2953,4718,0,19
+latnrm_unfold2.c,lvl6,xc7z020-clg484-1,10.00,9.489,319,319,319,1,2461,4338,0,16
+latnrm_unfold2.c,lvl7,xc7z020-clg484-1,10.00,10.257,537,537,537,8,2362,4853,0,16
+latnrm_unfold2.c,lvl8,xc7z020-clg484-1,10.00,10.284,319,319,319,1,2109,4785,0,16

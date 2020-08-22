@@ -1,0 +1,30 @@
+8p32f (1833 nodes, 2556 edges, 146 levels):
+1: 643ms
+2: 579ms
+3: 599ms
+8p64f (3145 nodes, 4380 edges, 178 levels):
+1: 855ms
+2: 824ms
+3: 813ms
+8p128f (5769 nodes, 8028 edges, 242 levels):
+1449ms
+1480ms
+1540ms
+8p256f (11017 nodes, 15324 edges, 370 levels):
+3610ms
+4015ms
+4027ms
+8p512f (21513 nodes, 29916 edges, 626 levels):
+6051ms
+5844ms
+5971ms
+8p1024f (42505 nodes, 59100 edges, 1138 levels):
+25821ms
+25756ms
+26574ms
+8p2048f (84489 nodes, 117468 edges, 2162 levels):
+43585ms
+46635ms
+43032ms
+
+

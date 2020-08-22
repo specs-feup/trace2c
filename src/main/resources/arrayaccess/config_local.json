@@ -1,0 +1,21 @@
+{
+    "inputs":[
+        "input"
+    ],
+    "input_types":[
+       "int"
+    ],
+    "outputs":["*out"],
+    "output_types": ["int"],
+    "folding" : false,
+    "arithmetic" : false,
+    "pruneLocalArrays": false,
+    "acc" : false,
+    "full_part" : false,
+    "full_connect" : false,
+    "graph" : "arrayaccess_local.dot",
+    "outputFile": "output_local",
+    "parallelFunctions": 0,
+    "maxNodesPerSubgraph": 1000,
+    "varsToPartition": []
+ }

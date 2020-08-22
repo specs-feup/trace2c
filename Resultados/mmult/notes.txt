@@ -1,0 +1,11 @@
+All levels run with loadstores=5.
+
+cinter only with pipelining on the outer loop
+chigh with pipelining on the outer loop and unrolling in the outer loop with a factor of 5.
+Partition factors for chigh:
+#pragma HLS array_partition variable=c_matrix cyclic factor=2 dim=1
+#pragma HLS array_partition variable=c_matrix cyclic factor=5 dim=2
+#pragma HLS array_partition variable=a_matrix cyclic factor=2 dim=1
+#pragma HLS array_partition variable=a_matrix cyclic factor=5 dim=2
+#pragma HLS array_partition variable=b_matrix cyclic factor=2 dim=1
+#pragma HLS array_partition variable=b_matrix cyclic factor=5 dim=2

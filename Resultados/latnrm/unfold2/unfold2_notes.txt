@@ -1,0 +1,2 @@
+there's no lvl1 cause it's a 60k lines function.
+there's no lvl3, cause loadstores=2 does not create array partitions.

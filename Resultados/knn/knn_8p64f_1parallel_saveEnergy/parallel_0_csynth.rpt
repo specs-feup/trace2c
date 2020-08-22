@@ -1,0 +1,668 @@
+
+
+================================================================
+== Vivado HLS Report for 'parallel_0'
+================================================================
+* Date:           Sat Aug 22 15:13:30 2020
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        knn
+* Solution:       solution1
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 8.232 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+    |   min   |   max   |    min   |    max   | min | max |   Type  |
+    +---------+---------+----------+----------+-----+-----+---------+
+    |      243|      243| 2.430 us | 2.430 us |  243|  243|   none  |
+    +---------+---------+----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |          |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        | Loop Name|   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |- Loop 1  |      241|      241|       186|          8|          1|     8|    yes   |
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-------+--------+-------+-----+
+|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  | URAM|
++-----------------+---------+-------+--------+-------+-----+
+|DSP              |        -|      -|       -|      -|    -|
+|Expression       |        -|      -|       0|    148|    -|
+|FIFO             |        -|      -|       -|      -|    -|
+|Instance         |        -|     64|    7873|  17849|    -|
+|Memory           |        -|      -|       -|      -|    -|
+|Multiplexer      |        -|      -|       -|   2634|    -|
+|Register         |        0|      -|   13260|    928|    -|
++-----------------+---------+-------+--------+-------+-----+
+|Total            |        0|     64|   21133|  21559|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Available        |      280|    220|  106400|  53200|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Utilization (%)  |        0|     29|      19|     40|    0|
++-----------------+---------+-------+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +--------------------------+----------------------+---------+-------+-----+------+-----+
+    |         Instance         |        Module        | BRAM_18K| DSP48E|  FF |  LUT | URAM|
+    +--------------------------+----------------------+---------+-------+-----+------+-----+
+    |knn_8p64f_1parallbkb_U1   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U2   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U3   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U4   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U5   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U6   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U7   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallbkb_U8   |knn_8p64f_1parallbkb  |        0|      2|  205|   390|    0|
+    |knn_8p64f_1parallcud_U9   |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U10  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U11  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U12  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U13  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U14  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U15  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1parallcud_U16  |knn_8p64f_1parallcud  |        0|      3|  143|   321|    0|
+    |knn_8p64f_1paralldEe_U17  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U18  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U19  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U20  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U21  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U22  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U23  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralldEe_U24  |knn_8p64f_1paralldEe  |        0|      0|  128|   277|    0|
+    |knn_8p64f_1paralleOg_U25  |knn_8p64f_1paralleOg  |        0|      0|  100|   138|    0|
+    |knn_8p64f_1parallfYi_U26  |knn_8p64f_1parallfYi  |        0|      0|  405|   615|    0|
+    |knn_8p64f_1parallg8j_U27  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U28  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U29  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U30  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U31  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U32  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U33  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    |knn_8p64f_1parallg8j_U34  |knn_8p64f_1parallg8j  |        0|      3|  445|  1149|    0|
+    +--------------------------+----------------------+---------+-------+-----+------+-----+
+    |Total                     |                      |        0|     64| 7873| 17849|    0|
+    +--------------------------+----------------------+---------+-------+-----+------+-----+
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-----------------------+----------+-------+---+----+------------+------------+
+    |     Variable Name     | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------------+----------+-------+---+----+------------+------------+
+    |i_fu_1673_p2           |     +    |      0|  0|  13|           4|           1|
+    |icmp_ln143_fu_1667_p2  |   icmp   |      0|  0|  11|           4|           5|
+    |ap_block_state1        |    or    |      0|  0|   2|           1|           1|
+    |or_ln151_fu_1695_p2    |    or    |      0|  0|   8|           8|           1|
+    |or_ln155_fu_1713_p2    |    or    |      0|  0|   8|           8|           2|
+    |or_ln159_fu_1730_p2    |    or    |      0|  0|   8|           8|           2|
+    |or_ln163_fu_1747_p2    |    or    |      0|  0|   8|           8|           3|
+    |or_ln167_fu_1764_p2    |    or    |      0|  0|   8|           8|           3|
+    |or_ln171_fu_1779_p2    |    or    |      0|  0|   8|           8|           3|
+    |or_ln175_fu_1793_p2    |    or    |      0|  0|   8|           8|           3|
+    |or_ln179_fu_1807_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln183_fu_1824_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln187_fu_1838_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln191_fu_1855_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln195_fu_1869_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln199_fu_1886_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln203_fu_1900_p2    |    or    |      0|  0|   8|           8|           4|
+    |or_ln207_fu_1916_p2    |    or    |      0|  0|   8|           8|           4|
+    |ap_enable_pp0          |    xor   |      0|  0|   2|           1|           2|
+    +-----------------------+----------+-------+---+----+------------+------------+
+    |Total                  |          |      0|  0| 148|         130|          58|
+    +-----------------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-------------------------------+----+-----------+-----+-----------+
+    |              Name             | LUT| Input Size| Bits| Total Bits|
+    +-------------------------------+----+-----------+-----+-----------+
+    |ap_NS_fsm                      |  50|         11|    1|         11|
+    |ap_done                        |   9|          2|    1|          2|
+    |ap_enable_reg_pp0_iter23       |   9|          2|    1|          2|
+    |ap_phi_mux_i_0_phi_fu_1157_p4  |   9|          2|    4|          8|
+    |grp_fu_1165_p0                 |  44|          9|   32|        288|
+    |grp_fu_1165_p1                 |  44|          9|   32|        288|
+    |grp_fu_1170_p0                 |  44|          9|   32|        288|
+    |grp_fu_1170_p1                 |  44|          9|   32|        288|
+    |grp_fu_1174_p0                 |  44|          9|   32|        288|
+    |grp_fu_1174_p1                 |  44|          9|   32|        288|
+    |grp_fu_1178_p0                 |  44|          9|   32|        288|
+    |grp_fu_1178_p1                 |  44|          9|   32|        288|
+    |grp_fu_1182_p0                 |  44|          9|   32|        288|
+    |grp_fu_1182_p1                 |  44|          9|   32|        288|
+    |grp_fu_1186_p0                 |  44|          9|   32|        288|
+    |grp_fu_1186_p1                 |  44|          9|   32|        288|
+    |grp_fu_1190_p0                 |  44|          9|   32|        288|
+    |grp_fu_1190_p1                 |  44|          9|   32|        288|
+    |grp_fu_1194_p0                 |  44|          9|   32|        288|
+    |grp_fu_1194_p1                 |  44|          9|   32|        288|
+    |grp_fu_1198_p0                 |  44|          9|   32|        288|
+    |grp_fu_1198_p1                 |  44|          9|   32|        288|
+    |grp_fu_1202_p0                 |  41|          8|   32|        256|
+    |grp_fu_1202_p1                 |  41|          8|   32|        256|
+    |grp_fu_1206_p0                 |  41|          8|   32|        256|
+    |grp_fu_1206_p1                 |  41|          8|   32|        256|
+    |grp_fu_1210_p0                 |  41|          8|   32|        256|
+    |grp_fu_1210_p1                 |  41|          8|   32|        256|
+    |grp_fu_1214_p0                 |  44|          9|   32|        288|
+    |grp_fu_1214_p1                 |  44|          9|   32|        288|
+    |grp_fu_1218_p0                 |  41|          8|   32|        256|
+    |grp_fu_1218_p1                 |  41|          8|   32|        256|
+    |grp_fu_1222_p0                 |  41|          8|   32|        256|
+    |grp_fu_1222_p1                 |  41|          8|   32|        256|
+    |grp_fu_1226_p0                 |  41|          8|   32|        256|
+    |grp_fu_1226_p1                 |  41|          8|   32|        256|
+    |grp_fu_1230_p0                 |  15|          3|   64|        192|
+    |grp_fu_1233_p0                 |  15|          3|   64|        192|
+    |grp_fu_1236_p0                 |  15|          3|   64|        192|
+    |grp_fu_1239_p0                 |  15|          3|   64|        192|
+    |grp_fu_1242_p0                 |  15|          3|   64|        192|
+    |grp_fu_1245_p0                 |  15|          3|   64|        192|
+    |grp_fu_1248_p0                 |  15|          3|   64|        192|
+    |grp_fu_1251_p0                 |  15|          3|   64|        192|
+    |grp_fu_1263_p0                 |  44|          9|   64|        576|
+    |grp_fu_1263_p1                 |  44|          9|   64|        576|
+    |grp_fu_1268_p0                 |  44|          9|   64|        576|
+    |grp_fu_1268_p1                 |  44|          9|   64|        576|
+    |grp_fu_1273_p0                 |  44|          9|   64|        576|
+    |grp_fu_1273_p1                 |  44|          9|   64|        576|
+    |grp_fu_1278_p0                 |  44|          9|   64|        576|
+    |grp_fu_1278_p1                 |  44|          9|   64|        576|
+    |grp_fu_1283_p0                 |  44|          9|   64|        576|
+    |grp_fu_1283_p1                 |  44|          9|   64|        576|
+    |grp_fu_1288_p0                 |  44|          9|   64|        576|
+    |grp_fu_1288_p1                 |  44|          9|   64|        576|
+    |grp_fu_1293_p0                 |  44|          9|   64|        576|
+    |grp_fu_1293_p1                 |  44|          9|   64|        576|
+    |grp_fu_1298_p0                 |  44|          9|   64|        576|
+    |grp_fu_1298_p1                 |  44|          9|   64|        576|
+    |i_0_reg_1153                   |   9|          2|    4|          8|
+    |knownFeatures_0_address0       |  44|          9|    7|         63|
+    |knownFeatures_0_address1       |  44|          9|    7|         63|
+    |knownFeatures_1_address0       |  44|          9|    7|         63|
+    |knownFeatures_1_address1       |  44|          9|    7|         63|
+    |knownFeatures_2_address0       |  44|          9|    7|         63|
+    |knownFeatures_2_address1       |  44|          9|    7|         63|
+    |knownFeatures_3_address0       |  44|          9|    7|         63|
+    |knownFeatures_3_address1       |  44|          9|    7|         63|
+    +-------------------------------+----+-----------+-----+-----------+
+    |Total                          |2634|        535| 2627|      20119|
+    +-------------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +---------------------------------+-----+----+-----+-----------+
+    |               Name              |  FF | LUT| Bits| Const Bits|
+    +---------------------------------+-----+----+-----+-----------+
+    |ap_CS_fsm                        |   10|   0|   10|          0|
+    |ap_done_reg                      |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter0          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter1          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter10         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter11         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter12         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter13         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter14         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter15         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter16         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter17         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter18         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter19         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter2          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter20         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter21         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter22         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter23         |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter3          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter4          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter5          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter6          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter7          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter8          |    1|   0|    1|          0|
+    |ap_enable_reg_pp0_iter9          |    1|   0|    1|          0|
+    |distance_w10_reg_3571            |   32|   0|   32|          0|
+    |distance_w11_reg_3531            |   32|   0|   32|          0|
+    |distance_w12_reg_3526            |   32|   0|   32|          0|
+    |distance_w13_reg_3541            |   32|   0|   32|          0|
+    |distance_w14_reg_3536            |   32|   0|   32|          0|
+    |distance_w15_reg_3566            |   32|   0|   32|          0|
+    |distance_w16_reg_3496            |   32|   0|   32|          0|
+    |distance_w17_reg_3486            |   32|   0|   32|          0|
+    |distance_w18_reg_3401            |   32|   0|   32|          0|
+    |distance_w19_reg_3326            |   32|   0|   32|          0|
+    |distance_w1_reg_3586             |   32|   0|   32|          0|
+    |distance_w20_reg_3456            |   32|   0|   32|          0|
+    |distance_w21_reg_3336            |   32|   0|   32|          0|
+    |distance_w22_reg_3411            |   32|   0|   32|          0|
+    |distance_w23_reg_3446            |   32|   0|   32|          0|
+    |distance_w24_reg_3341            |   32|   0|   32|          0|
+    |distance_w25_reg_3426            |   32|   0|   32|          0|
+    |distance_w26_reg_3366            |   32|   0|   32|          0|
+    |distance_w27_reg_3351            |   32|   0|   32|          0|
+    |distance_w28_reg_3311            |   32|   0|   32|          0|
+    |distance_w29_reg_3436            |   32|   0|   32|          0|
+    |distance_w2_reg_3581             |   32|   0|   32|          0|
+    |distance_w30_reg_3356            |   32|   0|   32|          0|
+    |distance_w31_reg_3211            |   32|   0|   32|          0|
+    |distance_w32_reg_3316            |   32|   0|   32|          0|
+    |distance_w33_reg_3406            |   32|   0|   32|          0|
+    |distance_w34_reg_3471            |   32|   0|   32|          0|
+    |distance_w35_reg_3516            |   32|   0|   32|          0|
+    |distance_w36_reg_3511            |   32|   0|   32|          0|
+    |distance_w37_reg_3451            |   32|   0|   32|          0|
+    |distance_w38_reg_3421            |   32|   0|   32|          0|
+    |distance_w39_reg_3346            |   32|   0|   32|          0|
+    |distance_w3_reg_3371             |   32|   0|   32|          0|
+    |distance_w40_reg_3491            |   32|   0|   32|          0|
+    |distance_w41_reg_3551            |   32|   0|   32|          0|
+    |distance_w42_reg_3441            |   32|   0|   32|          0|
+    |distance_w43_reg_3461            |   32|   0|   32|          0|
+    |distance_w44_reg_3376            |   32|   0|   32|          0|
+    |distance_w45_reg_3501            |   32|   0|   32|          0|
+    |distance_w46_reg_3331            |   32|   0|   32|          0|
+    |distance_w47_reg_3466            |   32|   0|   32|          0|
+    |distance_w48_reg_3381            |   32|   0|   32|          0|
+    |distance_w49_reg_3506            |   32|   0|   32|          0|
+    |distance_w4_reg_3431             |   32|   0|   32|          0|
+    |distance_w50_reg_3396            |   32|   0|   32|          0|
+    |distance_w51_reg_3306            |   32|   0|   32|          0|
+    |distance_w52_reg_3591            |   32|   0|   32|          0|
+    |distance_w53_reg_3546            |   32|   0|   32|          0|
+    |distance_w54_reg_3321            |   32|   0|   32|          0|
+    |distance_w55_reg_3361            |   32|   0|   32|          0|
+    |distance_w56_reg_3476            |   32|   0|   32|          0|
+    |distance_w57_reg_3481            |   32|   0|   32|          0|
+    |distance_w58_reg_3391            |   32|   0|   32|          0|
+    |distance_w59_reg_3601            |   32|   0|   32|          0|
+    |distance_w5_reg_3561             |   32|   0|   32|          0|
+    |distance_w60_reg_3521            |   32|   0|   32|          0|
+    |distance_w61_reg_3596            |   32|   0|   32|          0|
+    |distance_w62_reg_3296            |   32|   0|   32|          0|
+    |distance_w63_reg_3416            |   32|   0|   32|          0|
+    |distance_w64_reg_3301            |   32|   0|   32|          0|
+    |distance_w6_reg_3556             |   32|   0|   32|          0|
+    |distance_w7_reg_3606             |   32|   0|   32|          0|
+    |distance_w8_reg_3386             |   32|   0|   32|          0|
+    |distance_w9_reg_3576             |   32|   0|   32|          0|
+    |i_0_reg_1153                     |    4|   0|    4|          0|
+    |i_reg_1942                       |    4|   0|    4|          0|
+    |icmp_ln143_reg_1938              |    1|   0|    1|          0|
+    |knownFeatures_0_loa_10_reg_2581  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_11_reg_2686  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_12_reg_2706  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_13_reg_2846  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_14_reg_2881  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_15_reg_2951  |   64|   0|   64|          0|
+    |knownFeatures_0_loa_1_reg_2065   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_2_reg_2185   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_3_reg_2205   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_4_reg_2312   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_5_reg_2332   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_6_reg_2931   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_7_reg_2434   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_8_reg_2454   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_9_reg_2561   |   64|   0|   64|          0|
+    |knownFeatures_0_loa_reg_2045     |   64|   0|   64|          0|
+    |knownFeatures_1_loa_10_reg_2586  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_11_reg_2691  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_12_reg_2711  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_13_reg_2856  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_14_reg_2891  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_15_reg_2956  |   64|   0|   64|          0|
+    |knownFeatures_1_loa_1_reg_2070   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_2_reg_2190   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_3_reg_2210   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_4_reg_2317   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_5_reg_2337   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_6_reg_2936   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_7_reg_2439   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_8_reg_2459   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_9_reg_2566   |   64|   0|   64|          0|
+    |knownFeatures_1_loa_reg_2050     |   64|   0|   64|          0|
+    |knownFeatures_2_loa_10_reg_2591  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_11_reg_2601  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_12_reg_2716  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_13_reg_2726  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_14_reg_2901  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_15_reg_2961  |   64|   0|   64|          0|
+    |knownFeatures_2_loa_1_reg_2075   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_2_reg_2195   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_3_reg_2215   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_4_reg_2322   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_5_reg_2776   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_6_reg_2941   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_7_reg_2347   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_8_reg_2464   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_9_reg_2474   |   64|   0|   64|          0|
+    |knownFeatures_2_loa_reg_2055     |   64|   0|   64|          0|
+    |knownFeatures_3_loa_10_reg_2596  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_11_reg_2701  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_12_reg_2721  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_13_reg_2871  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_14_reg_2946  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_15_reg_2966  |   64|   0|   64|          0|
+    |knownFeatures_3_loa_1_reg_2080   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_2_reg_2200   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_3_reg_2220   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_4_reg_2327   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_5_reg_2786   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_6_reg_2342   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_7_reg_2449   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_8_reg_2469   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_9_reg_2576   |   64|   0|   64|          0|
+    |knownFeatures_3_loa_reg_2060     |   64|   0|   64|          0|
+    |reg_1343                         |   64|   0|   64|          0|
+    |reg_1348                         |   64|   0|   64|          0|
+    |reg_1353                         |   64|   0|   64|          0|
+    |reg_1358                         |   64|   0|   64|          0|
+    |reg_1363                         |   64|   0|   64|          0|
+    |reg_1368                         |   64|   0|   64|          0|
+    |reg_1373                         |   64|   0|   64|          0|
+    |reg_1378                         |   64|   0|   64|          0|
+    |reg_1383                         |   64|   0|   64|          0|
+    |reg_1388                         |   64|   0|   64|          0|
+    |reg_1393                         |   64|   0|   64|          0|
+    |reg_1398                         |   64|   0|   64|          0|
+    |reg_1403                         |   64|   0|   64|          0|
+    |reg_1408                         |   64|   0|   64|          0|
+    |reg_1413                         |   64|   0|   64|          0|
+    |reg_1418                         |   64|   0|   64|          0|
+    |reg_1423                         |   32|   0|   32|          0|
+    |reg_1431                         |   32|   0|   32|          0|
+    |reg_1439                         |   32|   0|   32|          0|
+    |reg_1447                         |   32|   0|   32|          0|
+    |reg_1455                         |   32|   0|   32|          0|
+    |reg_1463                         |   32|   0|   32|          0|
+    |reg_1471                         |   32|   0|   32|          0|
+    |reg_1479                         |   32|   0|   32|          0|
+    |reg_1487                         |   32|   0|   32|          0|
+    |reg_1495                         |   32|   0|   32|          0|
+    |reg_1503                         |   32|   0|   32|          0|
+    |reg_1511                         |   32|   0|   32|          0|
+    |reg_1519                         |   32|   0|   32|          0|
+    |reg_1527                         |   32|   0|   32|          0|
+    |reg_1535                         |   32|   0|   32|          0|
+    |reg_1543                         |   32|   0|   32|          0|
+    |reg_1549                         |   32|   0|   32|          0|
+    |reg_1557                         |   32|   0|   32|          0|
+    |reg_1565                         |   32|   0|   32|          0|
+    |reg_1573                         |   32|   0|   32|          0|
+    |reg_1579                         |   32|   0|   32|          0|
+    |reg_1587                         |   32|   0|   32|          0|
+    |reg_1595                         |   32|   0|   32|          0|
+    |reg_1603                         |   32|   0|   32|          0|
+    |reg_1611                         |   32|   0|   32|          0|
+    |reg_1619                         |   32|   0|   32|          0|
+    |reg_1627                         |   32|   0|   32|          0|
+    |reg_1633                         |   32|   0|   32|          0|
+    |reg_1641                         |   32|   0|   32|          0|
+    |reg_1647                         |   32|   0|   32|          0|
+    |reg_1653                         |   32|   0|   32|          0|
+    |reg_1659                         |   32|   0|   32|          0|
+    |tmp_100_reg_2976                 |   32|   0|   32|          0|
+    |tmp_101_reg_2981                 |   32|   0|   32|          0|
+    |tmp_101_reg_2981_pp0_iter2_reg   |   32|   0|   32|          0|
+    |tmp_102_reg_2986                 |   32|   0|   32|          0|
+    |tmp_103_reg_2991                 |   32|   0|   32|          0|
+    |tmp_104_reg_2996                 |   32|   0|   32|          0|
+    |tmp_105_reg_3001                 |   32|   0|   32|          0|
+    |tmp_106_reg_3006                 |   32|   0|   32|          0|
+    |tmp_107_reg_3011                 |   32|   0|   32|          0|
+    |tmp_108_reg_3016                 |   32|   0|   32|          0|
+    |tmp_109_reg_3021                 |   32|   0|   32|          0|
+    |tmp_110_reg_3026                 |   32|   0|   32|          0|
+    |tmp_111_reg_3031                 |   32|   0|   32|          0|
+    |tmp_112_reg_3036                 |   32|   0|   32|          0|
+    |tmp_113_reg_3041                 |   32|   0|   32|          0|
+    |tmp_114_reg_3046                 |   32|   0|   32|          0|
+    |tmp_115_reg_3061                 |   32|   0|   32|          0|
+    |tmp_116_reg_3066                 |   32|   0|   32|          0|
+    |tmp_117_reg_3071                 |   32|   0|   32|          0|
+    |tmp_118_reg_3076                 |   32|   0|   32|          0|
+    |tmp_119_reg_3081                 |   32|   0|   32|          0|
+    |tmp_120_reg_3086                 |   32|   0|   32|          0|
+    |tmp_121_reg_3246                 |   32|   0|   32|          0|
+    |tmp_122_reg_3251                 |   32|   0|   32|          0|
+    |tmp_123_reg_3276                 |   32|   0|   32|          0|
+    |tmp_124_reg_3281                 |   32|   0|   32|          0|
+    |tmp_125_reg_3286                 |   32|   0|   32|          0|
+    |tmp_126_reg_3291                 |   32|   0|   32|          0|
+    |tmp_127_reg_3611                 |   32|   0|   32|          0|
+    |tmp_130_reg_1947                 |    4|   0|    8|          4|
+    |tmp_135_reg_2095                 |    4|   0|   64|         60|
+    |tmp_136_reg_2106                 |    4|   0|   64|         60|
+    |tmp_137_reg_2113                 |    4|   0|   64|         60|
+    |tmp_139_reg_2235                 |    4|   0|   64|         60|
+    |tmp_141_reg_2362                 |    4|   0|   64|         60|
+    |tmp_143_reg_2489                 |    4|   0|   64|         60|
+    |tmp_144_reg_2611                 |    4|   0|   64|         60|
+    |tmp_63_reg_3131                  |   32|   0|   32|          0|
+    |tmp_64_reg_3091                  |   32|   0|   32|          0|
+    |tmp_65_reg_3216                  |   32|   0|   32|          0|
+    |tmp_66_reg_3221                  |   32|   0|   32|          0|
+    |tmp_67_reg_3171                  |   32|   0|   32|          0|
+    |tmp_68_reg_3226                  |   32|   0|   32|          0|
+    |tmp_69_reg_3096                  |   32|   0|   32|          0|
+    |tmp_70_reg_3101                  |   32|   0|   32|          0|
+    |tmp_71_reg_3176                  |   32|   0|   32|          0|
+    |tmp_72_reg_3181                  |   32|   0|   32|          0|
+    |tmp_73_reg_3231                  |   32|   0|   32|          0|
+    |tmp_74_reg_3236                  |   32|   0|   32|          0|
+    |tmp_75_reg_3106                  |   32|   0|   32|          0|
+    |tmp_76_reg_3136                  |   32|   0|   32|          0|
+    |tmp_77_reg_3186                  |   32|   0|   32|          0|
+    |tmp_78_reg_3141                  |   32|   0|   32|          0|
+    |tmp_79_reg_3146                  |   32|   0|   32|          0|
+    |tmp_80_reg_3191                  |   32|   0|   32|          0|
+    |tmp_81_reg_3256                  |   32|   0|   32|          0|
+    |tmp_82_reg_3261                  |   32|   0|   32|          0|
+    |tmp_83_reg_3111                  |   32|   0|   32|          0|
+    |tmp_84_reg_3051                  |   32|   0|   32|          0|
+    |tmp_85_reg_3196                  |   32|   0|   32|          0|
+    |tmp_86_reg_3201                  |   32|   0|   32|          0|
+    |tmp_87_reg_3151                  |   32|   0|   32|          0|
+    |tmp_88_reg_3156                  |   32|   0|   32|          0|
+    |tmp_89_reg_3241                  |   32|   0|   32|          0|
+    |tmp_90_reg_3206                  |   32|   0|   32|          0|
+    |tmp_91_reg_3056                  |   32|   0|   32|          0|
+    |tmp_92_reg_3116                  |   32|   0|   32|          0|
+    |tmp_93_reg_3161                  |   32|   0|   32|          0|
+    |tmp_94_reg_3166                  |   32|   0|   32|          0|
+    |tmp_95_reg_3121                  |   32|   0|   32|          0|
+    |tmp_96_reg_3126                  |   32|   0|   32|          0|
+    |tmp_97_reg_3266                  |   32|   0|   32|          0|
+    |tmp_98_reg_3271                  |   32|   0|   32|          0|
+    |tmp_99_reg_2971                  |   32|   0|   32|          0|
+    |xFeatures_22_read_reg_2771       |   64|   0|   64|          0|
+    |xFeatures_23_read_reg_2781       |   64|   0|   64|          0|
+    |xFeatures_24_read_reg_2791       |   64|   0|   64|          0|
+    |xFeatures_25_read_reg_2796       |   64|   0|   64|          0|
+    |xFeatures_26_read_reg_2801       |   64|   0|   64|          0|
+    |xFeatures_52_read_reg_2841       |   64|   0|   64|          0|
+    |xFeatures_53_read_reg_2851       |   64|   0|   64|          0|
+    |xFeatures_55_read_reg_2866       |   64|   0|   64|          0|
+    |xFeatures_56_read_reg_2876       |   64|   0|   64|          0|
+    |xFeatures_57_read_reg_2886       |   64|   0|   64|          0|
+    |xFeatures_58_read_reg_2896       |   64|   0|   64|          0|
+    |xFeatures_59_read_reg_2906       |   64|   0|   64|          0|
+    |xFeatures_60_read_reg_2911       |   64|   0|   64|          0|
+    |xFeatures_61_read_reg_2916       |   64|   0|   64|          0|
+    |xFeatures_62_read_reg_2921       |   64|   0|   64|          0|
+    |xFeatures_63_read_reg_2926       |   64|   0|   64|          0|
+    |distance_w20_reg_3456            |   64|  32|   32|          0|
+    |distance_w49_reg_3506            |   64|  32|   32|          0|
+    |i_0_reg_1153                     |   64|  32|    4|          0|
+    |icmp_ln143_reg_1938              |   64|  32|    1|          0|
+    |tmp_102_reg_2986                 |   64|  32|   32|          0|
+    |tmp_103_reg_2991                 |   64|  32|   32|          0|
+    |tmp_104_reg_2996                 |   64|  32|   32|          0|
+    |tmp_105_reg_3001                 |   64|  32|   32|          0|
+    |tmp_106_reg_3006                 |   64|  32|   32|          0|
+    |tmp_107_reg_3011                 |   64|  32|   32|          0|
+    |tmp_108_reg_3016                 |   64|  32|   32|          0|
+    |tmp_109_reg_3021                 |   64|  32|   32|          0|
+    |tmp_110_reg_3026                 |   64|  32|   32|          0|
+    |tmp_111_reg_3031                 |   64|  32|   32|          0|
+    |tmp_112_reg_3036                 |   64|  32|   32|          0|
+    |tmp_113_reg_3041                 |   64|  32|   32|          0|
+    |tmp_114_reg_3046                 |   64|  32|   32|          0|
+    |tmp_115_reg_3061                 |   64|  32|   32|          0|
+    |tmp_116_reg_3066                 |   64|  32|   32|          0|
+    |tmp_117_reg_3071                 |   64|  32|   32|          0|
+    |tmp_118_reg_3076                 |   64|  32|   32|          0|
+    |tmp_119_reg_3081                 |   64|  32|   32|          0|
+    |tmp_120_reg_3086                 |   64|  32|   32|          0|
+    |tmp_121_reg_3246                 |   64|  32|   32|          0|
+    |tmp_122_reg_3251                 |   64|  32|   32|          0|
+    |tmp_123_reg_3276                 |   64|  32|   32|          0|
+    |tmp_124_reg_3281                 |   64|  32|   32|          0|
+    |tmp_125_reg_3286                 |   64|  32|   32|          0|
+    |tmp_126_reg_3291                 |   64|  32|   32|          0|
+    +---------------------------------+-----+----+-----+-----------+
+    |Total                            |13260| 928|12697|        424|
+    +---------------------------------+-----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++--------------------------+-----+-----+------------+-----------------+--------------+
+|         RTL Ports        | Dir | Bits|  Protocol  |  Source Object  |    C Type    |
++--------------------------+-----+-----+------------+-----------------+--------------+
+|ap_clk                    |  in |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_rst                    |  in |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_start                  |  in |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_done                   | out |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_continue               |  in |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_idle                   | out |    1| ap_ctrl_hs |    parallel_0   | return value |
+|ap_ready                  | out |    1| ap_ctrl_hs |    parallel_0   | return value |
+|knownFeatures_0_address0  | out |    7|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_0_ce0       | out |    1|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_0_q0        |  in |   64|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_0_address1  | out |    7|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_0_ce1       | out |    1|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_0_q1        |  in |   64|  ap_memory | knownFeatures_0 |     array    |
+|knownFeatures_1_address0  | out |    7|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_1_ce0       | out |    1|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_1_q0        |  in |   64|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_1_address1  | out |    7|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_1_ce1       | out |    1|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_1_q1        |  in |   64|  ap_memory | knownFeatures_1 |     array    |
+|knownFeatures_2_address0  | out |    7|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_2_ce0       | out |    1|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_2_q0        |  in |   64|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_2_address1  | out |    7|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_2_ce1       | out |    1|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_2_q1        |  in |   64|  ap_memory | knownFeatures_2 |     array    |
+|knownFeatures_3_address0  | out |    7|  ap_memory | knownFeatures_3 |     array    |
+|knownFeatures_3_ce0       | out |    1|  ap_memory | knownFeatures_3 |     array    |
+|knownFeatures_3_q0        |  in |   64|  ap_memory | knownFeatures_3 |     array    |
+|knownFeatures_3_address1  | out |    7|  ap_memory | knownFeatures_3 |     array    |
+|knownFeatures_3_ce1       | out |    1|  ap_memory | knownFeatures_3 |     array    |
+|knownFeatures_3_q1        |  in |   64|  ap_memory | knownFeatures_3 |     array    |
+|xFeatures_0               |  in |   64|   ap_none  |   xFeatures_0   |    pointer   |
+|xFeatures_1               |  in |   64|   ap_none  |   xFeatures_1   |    pointer   |
+|xFeatures_2               |  in |   64|   ap_none  |   xFeatures_2   |    pointer   |
+|xFeatures_3               |  in |   64|   ap_none  |   xFeatures_3   |    pointer   |
+|xFeatures_4               |  in |   64|   ap_none  |   xFeatures_4   |    pointer   |
+|xFeatures_5               |  in |   64|   ap_none  |   xFeatures_5   |    pointer   |
+|xFeatures_6               |  in |   64|   ap_none  |   xFeatures_6   |    pointer   |
+|xFeatures_7               |  in |   64|   ap_none  |   xFeatures_7   |    pointer   |
+|xFeatures_8               |  in |   64|   ap_none  |   xFeatures_8   |    pointer   |
+|xFeatures_9               |  in |   64|   ap_none  |   xFeatures_9   |    pointer   |
+|xFeatures_10              |  in |   64|   ap_none  |   xFeatures_10  |    pointer   |
+|xFeatures_11              |  in |   64|   ap_none  |   xFeatures_11  |    pointer   |
+|xFeatures_12              |  in |   64|   ap_none  |   xFeatures_12  |    pointer   |
+|xFeatures_13              |  in |   64|   ap_none  |   xFeatures_13  |    pointer   |
+|xFeatures_14              |  in |   64|   ap_none  |   xFeatures_14  |    pointer   |
+|xFeatures_15              |  in |   64|   ap_none  |   xFeatures_15  |    pointer   |
+|xFeatures_16              |  in |   64|   ap_none  |   xFeatures_16  |    pointer   |
+|xFeatures_17              |  in |   64|   ap_none  |   xFeatures_17  |    pointer   |
+|xFeatures_18              |  in |   64|   ap_none  |   xFeatures_18  |    pointer   |
+|xFeatures_19              |  in |   64|   ap_none  |   xFeatures_19  |    pointer   |
+|xFeatures_20              |  in |   64|   ap_none  |   xFeatures_20  |    pointer   |
+|xFeatures_21              |  in |   64|   ap_none  |   xFeatures_21  |    pointer   |
+|xFeatures_22              |  in |   64|   ap_none  |   xFeatures_22  |    pointer   |
+|xFeatures_23              |  in |   64|   ap_none  |   xFeatures_23  |    pointer   |
+|xFeatures_24              |  in |   64|   ap_none  |   xFeatures_24  |    pointer   |
+|xFeatures_25              |  in |   64|   ap_none  |   xFeatures_25  |    pointer   |
+|xFeatures_26              |  in |   64|   ap_none  |   xFeatures_26  |    pointer   |
+|xFeatures_27              |  in |   64|   ap_none  |   xFeatures_27  |    pointer   |
+|xFeatures_28              |  in |   64|   ap_none  |   xFeatures_28  |    pointer   |
+|xFeatures_29              |  in |   64|   ap_none  |   xFeatures_29  |    pointer   |
+|xFeatures_30              |  in |   64|   ap_none  |   xFeatures_30  |    pointer   |
+|xFeatures_31              |  in |   64|   ap_none  |   xFeatures_31  |    pointer   |
+|xFeatures_32              |  in |   64|   ap_none  |   xFeatures_32  |    pointer   |
+|xFeatures_33              |  in |   64|   ap_none  |   xFeatures_33  |    pointer   |
+|xFeatures_34              |  in |   64|   ap_none  |   xFeatures_34  |    pointer   |
+|xFeatures_35              |  in |   64|   ap_none  |   xFeatures_35  |    pointer   |
+|xFeatures_36              |  in |   64|   ap_none  |   xFeatures_36  |    pointer   |
+|xFeatures_37              |  in |   64|   ap_none  |   xFeatures_37  |    pointer   |
+|xFeatures_38              |  in |   64|   ap_none  |   xFeatures_38  |    pointer   |
+|xFeatures_39              |  in |   64|   ap_none  |   xFeatures_39  |    pointer   |
+|xFeatures_40              |  in |   64|   ap_none  |   xFeatures_40  |    pointer   |
+|xFeatures_41              |  in |   64|   ap_none  |   xFeatures_41  |    pointer   |
+|xFeatures_42              |  in |   64|   ap_none  |   xFeatures_42  |    pointer   |
+|xFeatures_43              |  in |   64|   ap_none  |   xFeatures_43  |    pointer   |
+|xFeatures_44              |  in |   64|   ap_none  |   xFeatures_44  |    pointer   |
+|xFeatures_45              |  in |   64|   ap_none  |   xFeatures_45  |    pointer   |
+|xFeatures_46              |  in |   64|   ap_none  |   xFeatures_46  |    pointer   |
+|xFeatures_47              |  in |   64|   ap_none  |   xFeatures_47  |    pointer   |
+|xFeatures_48              |  in |   64|   ap_none  |   xFeatures_48  |    pointer   |
+|xFeatures_49              |  in |   64|   ap_none  |   xFeatures_49  |    pointer   |
+|xFeatures_50              |  in |   64|   ap_none  |   xFeatures_50  |    pointer   |
+|xFeatures_51              |  in |   64|   ap_none  |   xFeatures_51  |    pointer   |
+|xFeatures_52              |  in |   64|   ap_none  |   xFeatures_52  |    pointer   |
+|xFeatures_53              |  in |   64|   ap_none  |   xFeatures_53  |    pointer   |
+|xFeatures_54              |  in |   64|   ap_none  |   xFeatures_54  |    pointer   |
+|xFeatures_55              |  in |   64|   ap_none  |   xFeatures_55  |    pointer   |
+|xFeatures_56              |  in |   64|   ap_none  |   xFeatures_56  |    pointer   |
+|xFeatures_57              |  in |   64|   ap_none  |   xFeatures_57  |    pointer   |
+|xFeatures_58              |  in |   64|   ap_none  |   xFeatures_58  |    pointer   |
+|xFeatures_59              |  in |   64|   ap_none  |   xFeatures_59  |    pointer   |
+|xFeatures_60              |  in |   64|   ap_none  |   xFeatures_60  |    pointer   |
+|xFeatures_61              |  in |   64|   ap_none  |   xFeatures_61  |    pointer   |
+|xFeatures_62              |  in |   64|   ap_none  |   xFeatures_62  |    pointer   |
+|xFeatures_63              |  in |   64|   ap_none  |   xFeatures_63  |    pointer   |
+|distance_array_address0   | out |    3|  ap_memory |  distance_array |     array    |
+|distance_array_ce0        | out |    1|  ap_memory |  distance_array |     array    |
+|distance_array_we0        | out |    1|  ap_memory |  distance_array |     array    |
+|distance_array_d0         | out |   64|  ap_memory |  distance_array |     array    |
++--------------------------+-----+-----+------------+-----------------+--------------+
+

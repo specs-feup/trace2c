@@ -1,0 +1,8 @@
+The modifier sqrt was not being written and had to be inserted manually in the generated c code.
+
+Hipotenuses lvl1, started synthesis failed after 30m and no error description is given.
+Lvl3 to 8 gave the same results.
+
+
+
+

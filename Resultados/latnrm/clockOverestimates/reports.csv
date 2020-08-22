@@ -1,0 +1,6 @@
+input,optimizations,part,target_clock,estim_clock,lat_worst,lat_avg,lat_best,II,FF,LUT,BRAM,DSP
+latnrm_unfold16.c,target10ns,xc7z020-clg484-1,10.00,12.958,7199,7199,7199,110,7146,5705,0,24
+latnrm_unfold16.c,target15ns,xc7z020-clg484-1,15.00,21.744,4131,4131,4131,63,6792,5849,0,22
+latnrm_unfold16.c,target20ns,xc7z020-clg484-1,20.00,21.744,4131,4131,4131,63,6792,5849,0,22
+latnrm_unfold16.c,target25ns,xc7z020-clg484-1,25.00,30.973,3167,3167,3167,48,7006,7271,0,30
+latnrm_unfold16.c,target30ns,xc7z020-clg484-1,30.00,34.691,2177,2177,2177,33,5886,5566,0,22

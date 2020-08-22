@@ -1,0 +1,1 @@
+gcc knn.c utils.c main.c -Wall -o knn.exe

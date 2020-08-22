@@ -1,0 +1,8 @@
+Resources available -
+BRAM - 280
+DSP - 220
+FF- -106400
+LUT - 53200
+O II reportado é o do loop de fora. Se tiver o II a 0 é porque o loop de fora não foi pipelined.
+If you want to know the II of the other loops, you can look at the xmls.
+Lvl 7 uses more than the resources available.

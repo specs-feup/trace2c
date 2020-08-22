@@ -1,0 +1,300 @@
+
+
+================================================================
+== Vivado HLS Report for 'svmResult'
+================================================================
+* Date:           Mon Jun 22 03:32:59 2020
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        SVM
+* Solution:       solution1
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 9.598 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+----------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline |
+    |   min   |   max   |    min   |    max   | min | max |   Type   |
+    +---------+---------+----------+----------+-----+-----+----------+
+    |      168|      168| 1.680 us | 1.680 us |   90|   90| dataflow |
+    +---------+---------+----------+----------+-----+-----+----------+
+
+    + Detail: 
+        * Instance: 
+        +-----------------+--------------+---------+---------+----------+----------+-----+-----+---------+
+        |                 |              |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+        |     Instance    |    Module    |   min   |   max   |    min   |    max   | min | max |   Type  |
+        +-----------------+--------------+---------+---------+----------+----------+-----+-----+---------+
+        |epilogue_U0      |epilogue      |       89|       89| 0.890 us | 0.890 us |   89|   89|   none  |
+        |parallel_022_U0  |parallel_022  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_023_U0  |parallel_023  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_024_U0  |parallel_024  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_025_U0  |parallel_025  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_026_U0  |parallel_026  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_027_U0  |parallel_027  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_028_U0  |parallel_028  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_029_U0  |parallel_029  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_030_U0  |parallel_030  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_031_U0  |parallel_031  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_032_U0  |parallel_032  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_033_U0  |parallel_033  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_034_U0  |parallel_034  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_035_U0  |parallel_035  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_036_U0  |parallel_036  |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        |parallel_0_U0    |parallel_0    |       78|       78| 0.780 us | 0.780 us |   78|   78|   none  |
+        +-----------------+--------------+---------+---------+----------+----------+-----+-----+---------+
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-------+--------+-------+-----+
+|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  | URAM|
++-----------------+---------+-------+--------+-------+-----+
+|DSP              |        -|      -|       -|      -|    -|
+|Expression       |        -|      -|       0|    230|    -|
+|FIFO             |        -|      -|       -|      -|    -|
+|Instance         |        0|    232|   36035|  51288|    -|
+|Memory           |       32|      -|       0|      0|    0|
+|Multiplexer      |        -|      -|       -|    288|    -|
+|Register         |        -|      -|      48|      -|    -|
++-----------------+---------+-------+--------+-------+-----+
+|Total            |       32|    232|   36083|  51806|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Available        |      280|    220|  106400|  53200|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Utilization (%)  |       11|    105|      33|     97|    0|
++-----------------+---------+-------+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +-----------------+--------------+---------+-------+-------+-------+-----+
+    |     Instance    |    Module    | BRAM_18K| DSP48E|   FF  |  LUT  | URAM|
+    +-----------------+--------------+---------+-------+-------+-------+-----+
+    |epilogue_U0      |epilogue      |        0|     72|  25715|  28776|    0|
+    |parallel_0_U0    |parallel_0    |        0|     10|    645|   1407|    0|
+    |parallel_022_U0  |parallel_022  |        0|     10|    645|   1407|    0|
+    |parallel_023_U0  |parallel_023  |        0|     10|    645|   1407|    0|
+    |parallel_024_U0  |parallel_024  |        0|     10|    645|   1407|    0|
+    |parallel_025_U0  |parallel_025  |        0|     10|    645|   1407|    0|
+    |parallel_026_U0  |parallel_026  |        0|     10|    645|   1407|    0|
+    |parallel_027_U0  |parallel_027  |        0|     10|    645|   1407|    0|
+    |parallel_028_U0  |parallel_028  |        0|     10|    645|   1407|    0|
+    |parallel_029_U0  |parallel_029  |        0|     10|    645|   1407|    0|
+    |parallel_030_U0  |parallel_030  |        0|     10|    645|   1407|    0|
+    |parallel_031_U0  |parallel_031  |        0|     10|    645|   1407|    0|
+    |parallel_032_U0  |parallel_032  |        0|     10|    645|   1407|    0|
+    |parallel_033_U0  |parallel_033  |        0|     10|    645|   1407|    0|
+    |parallel_034_U0  |parallel_034  |        0|     10|    645|   1407|    0|
+    |parallel_035_U0  |parallel_035  |        0|     10|    645|   1407|    0|
+    |parallel_036_U0  |parallel_036  |        0|     10|    645|   1407|    0|
+    +-----------------+--------------+---------+-------+-------+-------+-----+
+    |Total            |              |        0|    232|  36035|  51288|    0|
+    +-----------------+--------------+---------+-------+-------+-------+-----+
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    +---------------------------+----------------------+---------+---+----+-----+------+-----+------+-------------+
+    |           Memory          |        Module        | BRAM_18K| FF| LUT| URAM| Words| Bits| Banks| W*Bits*Banks|
+    +---------------------------+----------------------+---------+---+----+-----+------+-----+------+-------------+
+    |temp_l111_2_i2_array_U     |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_1_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_2_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_3_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_4_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_5_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_6_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_7_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_8_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_9_U   |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_10_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_11_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_12_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_13_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_14_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    |temp_l111_2_i2_array_15_U  |svmResult_temp_l1fYi  |        2|  0|   0|    0|    64|   32|     2|         4096|
+    +---------------------------+----------------------+---------+---+----+-----+------+-----+------+-------------+
+    |Total                      |                      |       32|  0|   0|    0|  1024|  512|    32|        65536|
+    +---------------------------+----------------------+---------+---+----+-----+------+-----+------+-------------+
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |           Variable Name          | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |parallel_022_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_023_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_024_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_025_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_026_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_027_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_028_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_029_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_030_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_031_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_032_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_033_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_034_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_035_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_036_U0_ap_ready_count    |     +    |      0|  0|  10|           2|           1|
+    |parallel_0_U0_ap_ready_count      |     +    |      0|  0|  10|           2|           1|
+    |ap_idle                           |    and   |      0|  0|   2|           1|           1|
+    |ap_sync_ready                     |    and   |      0|  0|   2|           1|           1|
+    |epilogue_U0_ap_start              |    and   |      0|  0|   2|           1|           1|
+    |parallel_022_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_023_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_024_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_025_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_026_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_027_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_028_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_029_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_030_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_031_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_032_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_033_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_034_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_035_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_036_U0_ap_start          |    and   |      0|  0|   2|           1|           1|
+    |parallel_0_U0_ap_start            |    and   |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_022_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_023_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_024_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_025_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_026_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_027_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_028_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_029_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_030_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_031_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_032_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_033_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_034_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_035_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_036_U0_ap_ready  |    or    |      0|  0|   2|           1|           1|
+    |ap_sync_parallel_0_U0_ap_ready    |    or    |      0|  0|   2|           1|           1|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+    |Total                             |          |      0|  0| 230|          67|          51|
+    +----------------------------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------------------------+----+-----------+-----+-----------+
+    |                 Name                 | LUT| Input Size| Bits| Total Bits|
+    +--------------------------------------+----+-----------+-----+-----------+
+    |ap_sync_reg_parallel_022_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_023_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_024_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_025_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_026_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_027_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_028_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_029_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_030_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_031_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_032_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_033_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_034_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_035_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_036_U0_ap_ready  |   9|          2|    1|          2|
+    |ap_sync_reg_parallel_0_U0_ap_ready    |   9|          2|    1|          2|
+    |parallel_022_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_023_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_024_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_025_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_026_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_027_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_028_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_029_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_030_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_031_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_032_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_033_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_034_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_035_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_036_U0_ap_ready_count        |   9|          2|    2|          4|
+    |parallel_0_U0_ap_ready_count          |   9|          2|    2|          4|
+    +--------------------------------------+----+-----------+-----+-----------+
+    |Total                                 | 288|         64|   48|         96|
+    +--------------------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +--------------------------------------+---+----+-----+-----------+
+    |                 Name                 | FF| LUT| Bits| Const Bits|
+    +--------------------------------------+---+----+-----+-----------+
+    |ap_sync_reg_parallel_022_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_023_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_024_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_025_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_026_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_027_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_028_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_029_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_030_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_031_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_032_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_033_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_034_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_035_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_036_U0_ap_ready  |  1|   0|    1|          0|
+    |ap_sync_reg_parallel_0_U0_ap_ready    |  1|   0|    1|          0|
+    |parallel_022_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_023_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_024_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_025_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_026_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_027_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_028_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_029_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_030_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_031_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_032_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_033_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_034_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_035_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_036_U0_ap_ready_count        |  2|   0|    2|          0|
+    |parallel_0_U0_ap_ready_count          |  2|   0|    2|          0|
+    +--------------------------------------+---+----+-----+-----------+
+    |Total                                 | 48|   0|   48|          0|
+    +--------------------------------------+---+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++----------+-----+-----+------------+--------------+--------------+
+| RTL Ports| Dir | Bits|  Protocol  | Source Object|    C Type    |
++----------+-----+-----+------------+--------------+--------------+
+|ap_clk    |  in |    1| ap_ctrl_hs |   svmResult  | return value |
+|ap_rst    |  in |    1| ap_ctrl_hs |   svmResult  | return value |
+|ap_start  |  in |    1| ap_ctrl_hs |   svmResult  | return value |
+|ap_done   | out |    1| ap_ctrl_hs |   svmResult  | return value |
+|ap_ready  | out |    1| ap_ctrl_hs |   svmResult  | return value |
+|ap_idle   | out |    1| ap_ctrl_hs |   svmResult  | return value |
+|y         | out |   32|   ap_vld   |       y      |    pointer   |
+|y_ap_vld  | out |    1|   ap_vld   |       y      |    pointer   |
++----------+-----+-----+------------+--------------+--------------+
+
