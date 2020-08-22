@@ -9,9 +9,7 @@ import pt.up.fe.specs.Config;
 import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -21,7 +19,6 @@ import java.util.stream.StreamSupport;
 public class FoldingAlgorithm implements Algorithm {
 
     private static Integer loopCounter = 0;
-    private final Config config;
     private List<Graph> subgraphList;
     private Graph graph;
     private String loopName = "parallelLoop";
@@ -29,9 +26,8 @@ public class FoldingAlgorithm implements Algorithm {
     private Graph functionGraph;
     private CInfo mainInfo;
     private HashMap<String, VarAccesses> varsAccessesInfo = new HashMap<>();
-    
-    public FoldingAlgorithm(Config config, List<Graph> subgraphList ){
-        this.config = config;
+
+    public FoldingAlgorithm(List<Graph> subgraphList) {
         this.subgraphList = subgraphList;
     }
 
@@ -56,9 +52,14 @@ public class FoldingAlgorithm implements Algorithm {
         foldInfo.setIncrement(1);
         functionGraph.setAttribute("functionName", functionName);
         addLoopNames();
+        addInputsToVarsToFold(foldInfo);
         addOutputsToVarsToFold(foldInfo);
-
-
+        Leveling leveling = new Leveling();
+        leveling.init(functionGraph);
+        leveling.compute();
+        Algorithm parallelizeSums = new ParallelizeSums();
+        parallelizeSums.init(functionGraph);
+        parallelizeSums.compute();
 
         ArrayList<Graph> subgraphs = graph.getAttribute("subgraphs");
         if (subgraphs == null) {
@@ -71,10 +72,10 @@ public class FoldingAlgorithm implements Algorithm {
     }
 
     private void computeVarsMinAccessesInfo(Graph firstSubgraph) {
-        for (Edge e: firstSubgraph.getEachEdge()) {
-            if (e.hasAttribute("array")) {
-                String name = e.getAttribute("name");
-                List<Integer> indexes = Utils.getIndexes(e.getAttribute("label"));
+        for (Edge e : firstSubgraph.getEachEdge()) {
+            if (Utils.isArray(e)) {
+                String name = Utils.getName(e);
+                List<Integer> indexes = Utils.getIndexes(Utils.getLabel(e));
                 varsAccessesInfo.putIfAbsent(name, new VarAccesses());
                 VarAccesses oldAccesses = varsAccessesInfo.get(name);
                 if (oldAccesses.hasMinIndexes()) {
@@ -90,10 +91,10 @@ public class FoldingAlgorithm implements Algorithm {
     }
 
     private void computeVarsMaxAccessesInfo(Graph lastSubgraph) {
-        for (Edge e: lastSubgraph.getEachEdge()) {
-            if (e.hasAttribute("array")) {
-                String name = e.getAttribute("name");
-                List<Integer> indexes = Utils.getIndexes(e.getAttribute("label"));
+        for (Edge e : lastSubgraph.getEachEdge()) {
+            if (Utils.isArray(e)) {
+                String name = Utils.getName(e);
+                List<Integer> indexes = Utils.getIndexes(Utils.getLabel(e));
                 varsAccessesInfo.putIfAbsent(name, new VarAccesses());
                 VarAccesses oldAccesses = varsAccessesInfo.get(name);
                 if (oldAccesses.hasMaxIndexes()) {
@@ -108,15 +109,50 @@ public class FoldingAlgorithm implements Algorithm {
         }
     }
 
-    private void addOutputsToVarsToFold(FoldInfo foldInfo) {
-        Node endNode = functionGraph.getNode("End");
-        for (Edge edge: endNode.getEachEnteringEdge()) {
-            if (edge.hasAttribute("name") && edge.hasAttribute("array")) {
-                String name = edge.getAttribute("name");
-                if (!foldInfo.hasVar(name)) {
-                    foldInfo.addVar(name, 0);
+    private void computeFoldInfoFromEdge(FoldInfo foldInfo, Edge edge) {
+        if (Utils.isArray(edge)) {
+            String name = Utils.getName(edge);
+            if (!foldInfo.hasVar(name)) {
+                LoopInfo loopInfo = Utils.getLoopInfo(edge);
+                SpecificLoopInfo firstLoopInfo = loopInfo.getLoopList().get(0);
+                for (int dim = 0; dim < firstLoopInfo.dim; dim++) {
+                    int ratio = firstLoopInfo.ratios.get(dim);
+                    if (ratio != 0) {
+                        foldInfo.addVar(name, dim);
+                    }
+                }
+
+            }
+            if (!foldInfo.hasVarHLSPartitionDim(name)) {
+                LoopInfo loopInfo = Utils.getLoopInfo(edge);
+                SpecificLoopInfo firstLoopInfo = loopInfo.getLoopList().get(0);
+                for (int dim = 0; dim < firstLoopInfo.dim; dim++) {
+                    int ratio = firstLoopInfo.ratios.get(dim);
+                    if (ratio == 0) {
+                        foldInfo.setVarsHLSPartitionDimension(name, dim);
+                    }
                 }
             }
+        }
+    }
+
+    /**
+     * Inputs which accesses vary between iterations, should be added to the vars to fold in the dimension that varies.
+     *
+     * @param foldInfo
+     */
+    private void addInputsToVarsToFold(FoldInfo foldInfo) {
+        Node startNode = Utils.getStartNode(functionGraph);
+        for (Edge edge : startNode.getEachLeavingEdge()) {
+            computeFoldInfoFromEdge(foldInfo, edge);
+        }
+
+    }
+
+    private void addOutputsToVarsToFold(FoldInfo foldInfo) {
+        Node endNode = Utils.getEndNode(functionGraph);
+        for (Edge edge : endNode.getEachEnteringEdge()) {
+            computeFoldInfoFromEdge(foldInfo, edge);
         }
     }
 
@@ -126,26 +162,27 @@ public class FoldingAlgorithm implements Algorithm {
         vars.addAll(mainInfo.getLocalInfo());
         vars.addAll(mainInfo.getOutputs());
 
-        for (Var var: vars) {
+        for (Var var : vars) {
             if (varsAccessesInfo.containsKey(var.getName())) {
-                int dimToPartition = config.getDimToPartition(var.getName());
+                int dimToPartition = Config.getDimToPartition(var.getName());
                 int minIndexOnDimToPartition = varsAccessesInfo.get(var.getName()).getMinIndexes().get(dimToPartition);
                 for (int i = 0; i < 3; i++) {
                     // update the var accesses only on the first 3 subgraphs
                     Graph subgraph = subgraphList.get(i);
-                    for (Edge edge: subgraph.getEachEdge()) {
-                        if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var.getName())) {
-                            String label = edge.getAttribute("label");
+                    for (Edge edge : subgraph.getEachEdge()) {
+
+                        if (Utils.hasName(edge) && Utils.getName(edge).equals(var.getName())) {
+                            String label = Utils.getLabel(edge);
                             ArrayList<Integer> indexes = Utils.getIndexes(label);
-                            String newLabelSuffix = new String();
-                            for (int j=0; j < indexes.size(); j++) {
+                            String newLabelSuffix = "";
+                            for (int j = 0; j < indexes.size(); j++) {
                                 int newIndex = indexes.get(j);
                                 if (j == dimToPartition) {
                                     newIndex = newIndex - minIndexOnDimToPartition;
                                 }
                                 newLabelSuffix = newLabelSuffix.concat("[" + newIndex + "]");
                             }
-                            edge.setAttribute("label", var.getName() + newLabelSuffix);
+                            Utils.setLabel(edge, var.getName() + newLabelSuffix);
                         }
                     }
                 }
@@ -174,60 +211,68 @@ public class FoldingAlgorithm implements Algorithm {
         edges.sort(new EdgeComparator());
     }
 
-    private void recursivelyComputeLoopInfo(Node node0, Node node1, Node node2) {
-        if (node0.getId().equals("End")) {
-            return;
-        }
-        List<Edge> edgesLeavingNode0 = StreamSupport.stream(node0.getEachLeavingEdge().spliterator(), false).collect(Collectors.toList());
-        List<Edge> edgesLeavingNode1 = StreamSupport.stream(node1.getEachLeavingEdge().spliterator(), false).collect(Collectors.toList());
-        List<Edge> edgesLeavingNode2 = StreamSupport.stream(node2.getEachLeavingEdge().spliterator(), false).collect(Collectors.toList());
-        orderEdges(edgesLeavingNode0);
-        orderEdges(edgesLeavingNode1);
-        orderEdges(edgesLeavingNode2);
-
-
-        for (int i = 0; i < edgesLeavingNode0.size(); i++) {
-            Edge edge0 = edgesLeavingNode0.get(i);
-            Edge edge1 = edgesLeavingNode1.get(i);
-            Edge edge2 = edgesLeavingNode2.get(i);
-            boolean hasLoopInfo = edge0.hasAttribute("loopinfo");
-            LoopInfo loopInfo = edge0.getAttribute("loopinfo");
-            if (hasLoopInfo) {
-                if (loopInfo.hasSpecificLoopInfo(loopName)) {
-                    continue;
-                }
-            } else {
-                loopInfo = new LoopInfo();
-            }
-            String label0 = edge0.getAttribute("label");
-            String label1 = edge1.getAttribute("label");
-            String label2 = edge2.getAttribute("label");
-            ArrayList<Integer> indexes0 = Utils.getIndexes(label0);
-            ArrayList<Integer> indexes1 = Utils.getIndexes(label1);
-            ArrayList<Integer> indexes2 = Utils.getIndexes(label2);
-            if (indexes0.size() > 0) {
-                try {
-                    SpecificLoopInfo specificLoopInfo = getSpecificLoopInfo(indexes0, indexes1, indexes2);
-                    loopInfo.addSpecificLoopInfo(specificLoopInfo);
-                    edge0.setAttribute("loopinfo", loopInfo);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            recursivelyComputeLoopInfo(edge0.getTargetNode(), edge1.getTargetNode(), edge2.getTargetNode());
-        }
-    }
 
     private void computeLoopInfoForAllEdges(List<Graph> subgraphList) {
         Graph subgraph0 = subgraphList.get(0);
         Graph subgraph1 = subgraphList.get(1);
         Graph subgraph2 = subgraphList.get(2);
-        Node node0 = subgraph0.getNode("Start");
-        Node node1 = subgraph1.getNode("Start");
-        Node node2 = subgraph2.getNode("Start");
+        Node node0 = Utils.getStartNode(subgraph0);
+        Node node1 = Utils.getStartNode(subgraph1);
+        Node node2 = Utils.getStartNode(subgraph2);
+        Queue<Node> nodesQueue = new LinkedList<>();
+        nodesQueue.add(node0);
+        nodesQueue.add(node1);
+        nodesQueue.add(node2);
+        while (!nodesQueue.isEmpty()) {
+            List<Edge> edgesLeavingNode0 = StreamSupport.stream(nodesQueue.remove().getEachLeavingEdge()
+                    .spliterator(), false).collect(Collectors.toList());
+            List<Edge> edgesLeavingNode1 = StreamSupport.stream(nodesQueue.remove().getEachLeavingEdge()
+                    .spliterator(), false).collect(Collectors.toList());
+            List<Edge> edgesLeavingNode2 = StreamSupport.stream(nodesQueue.remove().getEachLeavingEdge()
+                    .spliterator(), false).collect(Collectors.toList());
+            orderEdges(edgesLeavingNode0);
+            orderEdges(edgesLeavingNode1);
+            orderEdges(edgesLeavingNode2);
+            if (edgesLeavingNode0.size() != edgesLeavingNode1.size() ||
+                    edgesLeavingNode1.size() != edgesLeavingNode2.size()) {
+                System.err.println("The subgraphs don't look the same!");
+            }
 
-        recursivelyComputeLoopInfo(node0, node1, node2);
 
+            for (int i = 0; i < edgesLeavingNode0.size(); i++) {
+                Edge edge0 = edgesLeavingNode0.get(i);
+                Edge edge1 = edgesLeavingNode1.get(i);
+                Edge edge2 = edgesLeavingNode2.get(i);
+                boolean hasLoopInfo = Utils.hasLoopInfo(edge0);
+                LoopInfo loopInfo = Utils.getLoopInfo(edge0);
+                if (hasLoopInfo) {
+                    if (loopInfo.hasSpecificLoopInfo(loopName)) {
+                        continue;
+                    }
+                } else {
+                    loopInfo = new LoopInfo();
+                }
+                ArrayList<Integer> indexes0 = Utils.getIndexes(Utils.getLabel(edge0));
+                ArrayList<Integer> indexes1 = Utils.getIndexes(Utils.getLabel(edge1));
+                ArrayList<Integer> indexes2 = Utils.getIndexes(Utils.getLabel(edge2));
+                if (indexes0.size() > 0) {
+                    try {
+                        SpecificLoopInfo specificLoopInfo = getSpecificLoopInfo(indexes0, indexes1, indexes2);
+                        loopInfo.addSpecificLoopInfo(specificLoopInfo);
+                        edge0.setAttribute("loopinfo", loopInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (!Utils.isEndNode(edge0.getTargetNode())) {
+                    nodesQueue.add(edge0.getTargetNode());
+                    nodesQueue.add(edge1.getTargetNode());
+                    nodesQueue.add(edge2.getTargetNode());
+                }
+
+            }
+
+        }
     }
 
     private SpecificLoopInfo getSpecificLoopInfo(ArrayList<Integer> indexes0, ArrayList<Integer> indexes1, ArrayList<Integer> indexes2) throws Exception {
@@ -236,7 +281,7 @@ public class FoldingAlgorithm implements Algorithm {
         ArrayList<Integer> initialValues = new ArrayList<>();
         for (int i = 0; i < indexes0.size(); i++) {
             Integer ratio = indexes1.get(i) - indexes0.get(i);
-            initialValues.add(indexes0.get(0));
+            initialValues.add(indexes0.get(i));
             if (indexes2.get(i) == indexes0.get(i) + 2 * ratio) {
                 // Then it is an arithmetic progression
                 progressionTypes.add(ProgressionType.Arithmetic);
@@ -249,8 +294,7 @@ public class FoldingAlgorithm implements Algorithm {
                     progressionTypes.add(ProgressionType.Geometric);
                     ratios.add(ratio);
                 } else {
-                    Exception e = new Exception("Invalid progression");
-                    throw e;
+                    throw new Exception("Invalid progression");
                 }
             }
         }

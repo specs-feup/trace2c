@@ -2,6 +2,7 @@ package pt.up.fe.specs.algorithms;
 
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Element;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
@@ -22,76 +23,68 @@ import java.util.stream.StreamSupport;
 public class FoldParallelSubgraphs implements Algorithm {
 
     private final String arraySuffixStr = "_array";
-    private final Config config;
 
     private int graph1Width;
     private int graph2Width;
 
     Graph mainGraph;
     private CInfo mainInfo;
-    private Utils utils = new Utils();
-    private HashMap<String, Integer> varCounter = new HashMap<>();
-    private HashMap<String, String> varsToTypes = new HashMap<>();
+    private final HashMap<String, Integer> varCounter = new HashMap<>();
+    private final HashMap<String, String> varsToTypes = new HashMap<>();
     private int edgeCounter = 0;
     private int graphCounter = 0;
-    private HashMap<String, List<Edge>> graphIdToEdgesLeavingStart = new HashMap<>();
+    private final HashMap<String, List<Edge>> graphIdToEdgesLeavingStart = new HashMap<>();
     private static int functionCounter = 0;
     private List<HashSet<Node>> allNodeClusters;
     private List<List<Node>> function0NodeLists;
     private List<List<Node>> function1NodeLists;
-    private int parallelCalls = 1;
+    private int parallelCalls;
+    private final HashMap<Node, String> nodeToOutputLabel = new HashMap<>();
 
-
-    public FoldParallelSubgraphs(List<HashSet<Node>> parallelNodeSets, Config config) {
-        this.config = config;
-        this.parallelCalls = config.getParallelFunctions();
-        this.allNodeClusters = parallelNodeSets;
-
-        this.graph1Width = parallelNodeSets.size();
-        this.graph2Width = 0;
-        List<List<Node>> parallelNodeLists = getNodeListsFromSets(parallelNodeSets);
-
-        if (parallelNodeSets.size() % config.getParallelFunctions() != 0) {
-            System.err.println("The number of parallel functions may produce invalid code.");
-            System.err.println("This case has been handled, but further testing is required.");
-            System.err.println("If so, consider updating to some number that divides " + parallelNodeSets.size());
-            graph1Width = (int) Math.ceil((float) parallelNodeSets.size() / config.getParallelFunctions()) * (config.getParallelFunctions() - 1);
-            graph2Width = parallelNodeSets.size() - graph1Width;
-            // I can't split the node clusters like this, because they are not ordered yet.
-
-            orderParallelNodeLists(parallelNodeLists);
-            this.function0NodeLists = parallelNodeLists.subList(0, graph1Width);
-            this.function1NodeLists = parallelNodeLists.subList(graph1Width, parallelNodeSets.size());
-        } else {
-            this.function0NodeLists = parallelNodeLists;
-        }
-    }
-
-    private List<List<Node>> getNodeListsFromSets(List<HashSet<Node>> parallelNodeSets) {
-        List<List<Node>> parallelNodesList = new ArrayList<>();
-        for (HashSet<Node> nodeSet : parallelNodeSets) {
-            parallelNodesList.add(new ArrayList<>(nodeSet));
-        }
-        return parallelNodesList;
-    }
-
-    private void orderParallelNodeLists(List<List<Node>> parallelNodeLists) {
-        parallelNodeLists.sort(new NodeListComparator());
-    }
 
     @Override
     public void init(Graph graph) {
         mainGraph = graph;
         mainInfo = graph.getAttribute("info");
+
+        this.parallelCalls = Config.getParallelFunctions();
+        this.allNodeClusters = graph.getAttribute("bestParallelClusters");
+
+        this.graph1Width = allNodeClusters.size();
+        this.graph2Width = 0;
+        List<List<Node>> parallelNodeLists = getNodeListsFromSets(allNodeClusters);
+
+        if (allNodeClusters.size() % Config.getParallelFunctions() != 0) {
+            System.err.println("The number of parallel functions may produce invalid code.");
+            System.err.println("This case has been handled, but further testing is required.");
+            System.err.println("If so, consider updating to some number that divides " + allNodeClusters.size());
+            graph1Width = (int) Math.ceil((float) allNodeClusters.size() / Config.getParallelFunctions()) * (Config.getParallelFunctions() - 1);
+            graph2Width = allNodeClusters.size() - graph1Width;
+            // I can't split the node clusters like this, because they are not ordered yet.
+
+            orderParallelNodeLists(parallelNodeLists);
+            this.function0NodeLists = parallelNodeLists.subList(0, graph1Width);
+            this.function1NodeLists = parallelNodeLists.subList(graph1Width, allNodeClusters.size());
+        } else {
+            this.function0NodeLists = parallelNodeLists;
+        }
     }
 
     @Override
     public void compute() {
-        if (graph2Width == 0) {
-            computeFor1Function();
+        if (allNodeClusters.size() > 2) {
+            if (graph2Width == 0) {
+                computeFor1Function();
+            } else {
+                computeFor2Functions();
+            }
+            Algorithm leveling = new Leveling();
+            leveling.init(mainGraph);
+            leveling.compute();
         } else {
-            computeFor2Functions();
+            System.out.println("Parallel node clusters are not repeatable enough to fold");
         }
+
     }
 
 
@@ -101,6 +94,7 @@ public class FoldParallelSubgraphs implements Algorithm {
         Node functionNode = createFunctionNode(functionName);
         ArrayList<Graph> allSubgraphs = moveNodesToSubgraphList(function0NodeLists, callNode, functionNode);
         orderSubgraphs(allSubgraphs);
+        updateInputNames(allSubgraphs);
         updateOutputNames(functionName, allSubgraphs);
         updateLocalInfo();
         removeNodesFromMainGraph(allNodeClusters);
@@ -110,6 +104,39 @@ public class FoldParallelSubgraphs implements Algorithm {
         setFunctionGraphCInfo(foldedGraph);
         addCallEdges(foldedGraph, functionNode, callNode, parallelCalls, 0);
         splitVars(foldedGraph.getAttribute("foldInfo"));
+    }
+
+    private void updateInputNames(ArrayList<Graph> allSubgraphs) {
+        List<List<Edge>> inputs = allSubgraphs.stream().map(subgraph ->
+                StreamSupport.stream(Utils.getStartNode(subgraph).getEachLeavingEdge().spliterator(), false)
+                        .collect(Collectors.toList())).collect(Collectors.toList());
+        for (List<Edge> inputsOfSubgraph : inputs) {
+            inputsOfSubgraph.sort(new EdgeComparator());
+        }
+        List<Edge> inputsOfSubgraph0 = inputs.get(0);
+        List<Edge> inputsOfSubgraph1 = inputs.get(1);
+        for (int i = 0; i < inputsOfSubgraph0.size(); i++) {
+            Edge edgeOfSubgraph0 = inputsOfSubgraph0.get(i);
+            Edge edgeOfSubgraph1 = inputsOfSubgraph1.get(i);
+            if (!Utils.isArray(edgeOfSubgraph0) && Utils.isVar(edgeOfSubgraph0)) {
+                //if (!Utils.getName(edgeOfSubgraph0).equals(Utils.getName(edgeOfSubgraph1))) {
+                // give the edges all the same name and transform them into arrays
+                Utils.setLabel(edgeOfSubgraph0, Utils.getLabel(edgeOfSubgraph0) + "_in");
+                String varLabel = Utils.getLabel(edgeOfSubgraph0);
+                for (List<Edge> subgraphEdges : inputs) {
+                    Edge edgeAtIndex = subgraphEdges.get(i);
+                    Utils.setLabel(edgeAtIndex, varLabel);
+                    Node mainGraphSourceNode = mainGraph.getEdge(edgeAtIndex.getId()).getSourceNode();
+                    transformScalarIntoArray(edgeAtIndex);
+                    for (Edge leavingMain : mainGraphSourceNode.getEachLeavingEdge()) {
+                        Graphs.copyAttributes(edgeAtIndex, leavingMain);
+                    }
+                }
+                //}
+            }
+        }
+
+
     }
 
     /**
@@ -129,6 +156,8 @@ public class FoldParallelSubgraphs implements Algorithm {
         ArrayList<Graph> function1Subgraphs = moveNodesToSubgraphList(function1NodeLists, callNode1, functionNode1);
         orderSubgraphs(function0Subgraphs);
         orderSubgraphs(function1Subgraphs);
+        updateInputNames(function0Subgraphs);
+        updateInputNames(function1Subgraphs);
         updateOutputNames(function0Name, function0Subgraphs);
         updateOutputNames(function1Name, function1Subgraphs);
         updateLocalInfo();
@@ -136,26 +165,44 @@ public class FoldParallelSubgraphs implements Algorithm {
         setVarsPartitions(function0Subgraphs.get(0), function1Subgraphs.get(function1Subgraphs.size() - 1));
         Graph foldedGraph0 = foldSubgraphs(function0Name, function0Subgraphs);
         Graph foldedGraph1 = foldSubgraphs(function1Name, function1Subgraphs);
-        updateGraphFoldWidth(foldedGraph0, graph1Width / (parallelCalls-1), false);
+        updateGraphFoldWidth(foldedGraph0, graph1Width / (parallelCalls - 1), false);
         setFunctionGraphCInfo(foldedGraph0);
         setFunctionGraphCInfo(foldedGraph1);
-        addCallEdges(foldedGraph0, functionNode0, callNode0, (parallelCalls-1), 0);
+        addCallEdges(foldedGraph0, functionNode0, callNode0, (parallelCalls - 1), 0);
         addCallEdges(foldedGraph1, functionNode1, callNode1, 1, parallelCalls - 1);
         splitVars(foldedGraph0.getAttribute("foldInfo"));
+    }
+
+    private List<List<Node>> getNodeListsFromSets(List<HashSet<Node>> parallelNodeSets) {
+        List<List<Node>> parallelNodesList = new ArrayList<>();
+        for (HashSet<Node> nodeSet : parallelNodeSets) {
+            parallelNodesList.add(new ArrayList<>(nodeSet));
+        }
+        return parallelNodesList;
+    }
+
+    private void orderParallelNodeLists(List<List<Node>> parallelNodeLists) {
+        parallelNodeLists.sort(new NodeListComparator());
+    }
+
+    private boolean isVarUsedInSubgraph(Var var, Graph graph) {
+        for (Edge edge : graph.getEachEdge()) {
+            if (Utils.getName(edge).equals(var.getName())) return true;
+        }
+        return false;
     }
 
 
     private void setVarsPartitions(Graph firstSubgraph, Graph lastSubgraph) {
         List<Var> inputs = mainInfo.getInputs();
-        for (Var input: inputs) {
-            if (input.isArray()) {
+        for (Var input : inputs) {
+            if (input.isArray() && isVarUsedInSubgraph(input, firstSubgraph)) {
                 // find the first and last indexes that are used inside the folded graph
                 List<Integer> sizes = input.getSizes();
-                Integer dimToPartition = config.getDimToPartition(input.getName());
+                int dimToPartition = Config.getDimToPartition(input.getName());
                 Integer dimMaxSize = sizes.get(dimToPartition);
 
                 int minIndex = getVarMinUsedIndex(firstSubgraph, input.getName(), dimToPartition);
-                int maxIndexInFirstSubgraph = getVarMaxUsedIndex(firstSubgraph, input.getName(), dimToPartition);
                 int maxIndex = getVarMaxUsedIndex(lastSubgraph, input.getName(), dimToPartition);
                 if (minIndex != 0) {
                     input.addPartition(minIndex, dimToPartition);
@@ -163,17 +210,16 @@ public class FoldParallelSubgraphs implements Algorithm {
                 if (maxIndex != dimMaxSize - 1) {
                     input.addPartition(maxIndex + 1, dimToPartition);
                 }
-                input.setHlsPartition(new HLSPartition(dimToPartition, maxIndexInFirstSubgraph - minIndex + 1));
             }
         }
     }
 
-    private int getVarMinUsedIndex(Graph firstSubgraph, String var, int dim) {
+    private int getVarMinUsedIndex(Graph firstSubgraph, String varName, int dim) {
         int minIndex = Integer.MAX_VALUE;
-        for (Edge edge: firstSubgraph.getEachEdge()){
-            if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var)) {
-                String label = edge.getAttribute("label");
-                List<Integer> indexes = utils.getIndexes(label);
+        for (Edge edge : firstSubgraph.getEachEdge()) {
+            if (Utils.hasName(edge) && Utils.getName(edge).equals(varName)) {
+                String label = Utils.getLabel(edge);
+                List<Integer> indexes = Utils.getIndexes(label);
                 int index = indexes.get(dim);
                 if (index < minIndex) {
                     minIndex = index;
@@ -185,10 +231,10 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     private int getVarMaxUsedIndex(Graph lastSubgraph, String var, int dim) {
         int maxIndex = 0;
-        for (Edge edge: lastSubgraph.getEachEdge()){
-            if (edge.hasAttribute("name") && edge.getAttribute("name").equals(var)) {
-                String label = edge.getAttribute("label");
-                List<Integer> indexes = utils.getIndexes(label);
+        for (Edge edge : lastSubgraph.getEachEdge()) {
+            if (Utils.hasName(edge) && Utils.getName(edge).equals(var)) {
+                String label = Utils.getLabel(edge);
+                List<Integer> indexes = Utils.getIndexes(label);
                 int index = indexes.get(dim);
                 if (index > maxIndex) {
                     maxIndex = index;
@@ -197,7 +243,6 @@ public class FoldParallelSubgraphs implements Algorithm {
         }
         return maxIndex;
     }
-
 
 
     private void updateGraphFoldWidth(Graph graph, Integer width, boolean isToClone) {
@@ -220,17 +265,17 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     private List<Var> splitSingleVar(Var var, int numberOfParallelFunctions, int dimToFold) {
         List<Var> newVars = new ArrayList<>();
-        HLSPartition varHLSPartition = var.getHlsPartition();
-        List<List<Integer>> newVarsSizes = utils.splitDimensions(var, dimToFold, numberOfParallelFunctions, allNodeClusters.size());
+        List<List<Integer>> newVarsSizes = Utils.splitDimensions(var, dimToFold, numberOfParallelFunctions, allNodeClusters.size());
+
+        if (var.hasHlsPartition()) {
+            HLSPartition oldHLSPartition = var.getHlsPartition();
+            var.setHlsPartition(new HLSPartition(oldHLSPartition.getDim(), oldHLSPartition.getFactor() / numberOfParallelFunctions));
+        }
+
         for (int i = 0; i < newVarsSizes.size(); i++) {
             List<Integer> newVarSizes = newVarsSizes.get(i);
             Var newVar = new Var(var.getType(), var.getName() + "_" + i, var.isArray(), newVarSizes);
-            if (var.hasHlsPartition()) {
-                newVar.setHlsPartition(new HLSPartition(dimToFold, Math.min(newVarSizes.get(dimToFold), varHLSPartition.getFactor())));
-            } else {
-                newVar.setHlsPartition(new HLSPartition(dimToFold, 2));
-            }
-
+            newVar.setHlsPartition(var.getHlsPartition());
             newVars.add(newVar);
         }
         return newVars;
@@ -239,21 +284,28 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     /**
      * It will split the arrays in the main graph
-     * Check what happens with sum_array
-     * @param foldInfo
+     *
+     * @param foldInfo foldInfo
      */
     private void splitVars(FoldInfo foldInfo) {
 
-        int numberOfParallelFunctions = config.getParallelFunctions();
+        int numberOfParallelFunctions = Config.getParallelFunctions();
         // move input parameters that are folded into new inputs with sizes ready for dataflow
         List<Var> localInfo = mainInfo.getLocalInfo();
         List<Var> mainInputs = mainInfo.getInputs();
         HashMap<Var, List<Var>> inputsToRemove = new HashMap<>();
-        for (Var var: mainInputs) {
+        for (Var var : mainInputs) {
             if (var.isArray()) {
                 if (foldInfo.hasVar(var)) {
+                    if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                        var.setHLSPartitionFromSize(foldInfo.getVarHLSPartitionDimension(var.getName()));
+                    }
                     List<Var> newVars = splitSingleVar(var, numberOfParallelFunctions, foldInfo.getDimOfVar(var));
+
                     inputsToRemove.put(var, newVars);
+                } else if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                    int dimToPartition = foldInfo.getVarHLSPartitionDimension(var.getName());
+                    var.setHlsPartition(new HLSPartition(dimToPartition, var.getSizes().get(dimToPartition)));
                 }
             }
 
@@ -261,31 +313,43 @@ public class FoldParallelSubgraphs implements Algorithm {
 
         HashMap<Var, List<Var>> localVarsToRemove = new HashMap<>();
 
-        for (Var var: localInfo) {
+        for (Var var : localInfo) {
             if (var.isArray()) {
                 if (foldInfo.hasVar(var)) {
+                    if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                        var.setHLSPartitionFromSize(foldInfo.getVarHLSPartitionDimension(var.getName()));
+                    }
                     List<Var> newVars = splitSingleVar(var, numberOfParallelFunctions, foldInfo.getDimOfVar(var));
                     localVarsToRemove.put(var, newVars);
+                } else if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                    int dimToPartition = foldInfo.getVarHLSPartitionDimension(var.getName());
+                    var.setHlsPartition(new HLSPartition(dimToPartition, var.getSizes().get(dimToPartition)));
                 }
             }
         }
-        inputsToRemove.forEach((varToRemove, newVars) -> {mainInputs.remove(varToRemove); mainInputs.addAll(newVars);});
-        localVarsToRemove.forEach((varToRemove, newVars) -> { localInfo.remove(varToRemove); localInfo.addAll(newVars);});
-        inputsToRemove.forEach((oldVar, newVars) -> updateAccessesToVar(oldVar, newVars));
-        localVarsToRemove.forEach( (oldVar, newVars) -> updateAccessesToVar(oldVar, newVars));
+        inputsToRemove.forEach((varToRemove, newVars) -> {
+            mainInputs.remove(varToRemove);
+            mainInputs.addAll(newVars);
+        });
+        localVarsToRemove.forEach((varToRemove, newVars) -> {
+            localInfo.remove(varToRemove);
+            localInfo.addAll(newVars);
+        });
+        inputsToRemove.forEach(this::updateAccessesToVar);
+        localVarsToRemove.forEach(this::updateAccessesToVar);
 
     }
 
     private void updateAccessesToVar(Var varToUpdate, List<Var> newVars) {
         if (!varToUpdate.isSplit()) return;
 
-        for (Edge edge: mainGraph.getEachEdge()) {
-            if (edge.hasAttribute("array")) {
-                String edgeName = edge.getAttribute("name");
+        for (Edge edge : mainGraph.getEachEdge()) {
+            if (Utils.isArray(edge)) {
+                String edgeName = Utils.getName(edge);
                 if (edgeName.equals(varToUpdate.getName())) {
-                    List<Integer> oldIndexes = utils.getIndexes(edge.getAttribute("label"));
+                    List<Integer> oldIndexes = Utils.getIndexes(Utils.getLabel(edge));
                     int arraySuffix = 0;
-                    String newLabelSuffix = new String();
+                    String newLabelSuffix = "";
                     for (int i = 0; i < oldIndexes.size(); i++) {
                         int oldIndex = oldIndexes.get(i);
                         int indexAcc = 0;
@@ -299,8 +363,8 @@ public class FoldParallelSubgraphs implements Algorithm {
                     }
                     String newName = edgeName + "_" + arraySuffix;
                     String newLabel = newName + newLabelSuffix;
-                    edge.setAttribute("name", newName);
-                    edge.setAttribute("label", newLabel);
+                    Utils.setName(edge, newName);
+                    Utils.setLabel(edge, newLabel);
                 }
             }
         }
@@ -329,7 +393,7 @@ public class FoldParallelSubgraphs implements Algorithm {
         ArrayList<ArrayList<String>> params = new ArrayList<>();
         buildCallParams(params, inputs, outputs, foldInfo, numberOfCalls, callsOffset);
         for (int i = 0; i < numberOfCalls; i++) {
-            Edge callEdge = mainGraph.addEdge("call_"+functionName+"_"+edgeCounter++, callNode, functionNode, true);
+            Edge callEdge = mainGraph.addEdge("call_" + functionName + "_" + edgeCounter++, callNode, functionNode, true);
             callEdge.setAttribute("att1", "call");
             callEdge.setAttribute("att2", functionName);
             callEdge.setAttribute("att3", params.get(i));
@@ -343,14 +407,14 @@ public class FoldParallelSubgraphs implements Algorithm {
             String varName = vars.get(j).getName();
             Var mainVar = mainInfo.getVar(varName);
             if (foldInfo.hasVar(varName)) {
-                varName += "_" + (callNumber + (mainVar.hasPartitions() ? 1: 0));
+                varName += "_" + (callNumber + (mainVar.hasPartitions() ? 1 : 0));
             }
             paramsForFunc.add(varName);
         }
     }
 
     private void buildCallParams(ArrayList<ArrayList<String>> calls, List<Var> inputs, List<Var> outputs, FoldInfo foldInfo, int numberOfCalls, int callsOffset) {
-        for (int i=callsOffset; i < callsOffset + numberOfCalls; i++) {
+        for (int i = callsOffset; i < callsOffset + numberOfCalls; i++) {
             ArrayList<String> paramsForFunction = new ArrayList<>();
             // add input params
             addVarsToParams(inputs.size(), inputs, paramsForFunction, i, foldInfo);
@@ -360,42 +424,28 @@ public class FoldParallelSubgraphs implements Algorithm {
         }
     }
 
-    private ArrayList<Integer> calculateExternalLoopWidths(Graph functionGraph) {
-        ArrayList<Integer> widths = new ArrayList<>(config.getParallelFunctions());
-        int size = ((FoldInfo) functionGraph.getAttribute("foldInfo")).getWidth();
-        int numberParallelFunctions = config.getParallelFunctions();
-        int currentOffset = 0;
-        int width;
-        for (int i=0; i < numberParallelFunctions; i++) {
-            width = Math.min((int) Math.ceil((float) size/numberParallelFunctions), size - currentOffset);
-            currentOffset += width;
-            widths.add(width);
-        }
-        return widths;
-    }
-
     private void updateOutputNames(String functionName, List<Graph> subgraphs) {
         // if subgraph has an output that is not an array, then we need to make sure that all outputs have the same label
         ArrayList<String> outputNames = new ArrayList<>();
-        for (Graph subgraph: subgraphs) {
-            Node endNode = subgraph.getNode("End");
-            // I have to sort the edges here;
+        for (Graph subgraph : subgraphs) {
+            Node endNode = Utils.getEndNode(subgraph);
+
             for (int i = 0; i < endNode.getInDegree(); i++) {
                 Edge edge = endNode.getEnteringEdge(i);
-                if (!edge.hasAttribute("array")) {
+                if (!Utils.isArray(edge)) {
                     if (outputNames.size() <= i) {
-                        outputNames.add(edge.getAttribute("label"));
+                        outputNames.add(Utils.getLabel(edge));
                     } else {
-                        String oldLabel = edge.getAttribute("label");
+                        String oldLabel = Utils.getLabel(edge);
                         Node sourceInMain = mainGraph.getNode(edge.getSourceNode().getId());
-                        for (Edge edgeInMainGraph: sourceInMain.getEachLeavingEdge()) {
-                            if (edgeInMainGraph.getAttribute("label").equals(oldLabel)) {
-                                edgeInMainGraph.setAttribute("label", outputNames.get(i));
-                                edgeInMainGraph.setAttribute("name", utils.varNameFromLabel(outputNames.get(i)));
+                        for (Edge edgeInMainGraph : sourceInMain.getEachLeavingEdge()) {
+                            if (Utils.getLabel(edgeInMainGraph).equals(oldLabel)) {
+                                Utils.setLabel(edgeInMainGraph, outputNames.get(i));
+                                Utils.setNameFromLabel(edgeInMainGraph);
                             }
                         }
-                        edge.setAttribute("label", outputNames.get(i));
-                        edge.setAttribute("name", utils.varNameFromLabel(outputNames.get(i)));
+                        Utils.setLabel(edge, outputNames.get(i));
+                        Utils.setNameFromLabel(edge);
                     }
 
                 }
@@ -403,30 +453,30 @@ public class FoldParallelSubgraphs implements Algorithm {
         }
 
         // if the output of the subgraphs is not an array, then transform it into an array
-        for (Graph subgraph: subgraphs) {
-            Node endNode = subgraph.getNode("End");
-            for(int i = 0; i < endNode.getInDegree(); i++) {
-                Edge edge = endNode.getEnteringEdge(i);
-                if (!edge.hasAttribute("array")) {
-                    String oldLabel = edge.getAttribute("label");
-                    Node sourceInFunction = edge.getSourceNode();
-                    String newLabel = transformScalarIntoArray(edge);
-                    Node sourceInMain = mainGraph.getNode(sourceInFunction.getId());
-                    for (Edge leavingSrcInMainEdge: sourceInMain.getEachLeavingEdge()) {
-                        if (leavingSrcInMainEdge.getAttribute("label").equals(oldLabel)) {
-                            Node targetInMain = leavingSrcInMainEdge.getTargetNode();
-                            for (Edge enteringInTarget: targetInMain.getEachEnteringEdge()) {
-                                if (enteringInTarget.getSourceNode().getId().equals(functionName)) {
-                                    if (enteringInTarget.getAttribute("pos").equals(leavingSrcInMainEdge.getAttribute("pos"))) {
-                                        enteringInTarget.setAttribute("label", newLabel);
-                                        enteringInTarget.setAttribute("name", utils.varNameFromLabel(newLabel));
-                                        enteringInTarget.setAttribute("array", true);
-                                        break;
-                                    }
+        // edges that come from the same node should have the same label
+        for (Graph subgraph : subgraphs) {
+            Node endNode = Utils.getEndNode(subgraph);
+            for (Edge edgeInSubgraph : endNode.getEachEnteringEdge()) {
+                if (!Utils.isArray(edgeInSubgraph)) {
+                    String newLabel;
+                    Node sourceInSubgraph = edgeInSubgraph.getSourceNode();
+                    if (nodeToOutputLabel.containsKey(sourceInSubgraph)) {
+                        newLabel = nodeToOutputLabel.get(sourceInSubgraph);
+                        setArrayAttributes(edgeInSubgraph, newLabel);
+                    } else {
+                        newLabel = transformScalarIntoArray(edgeInSubgraph);
+                        nodeToOutputLabel.put(sourceInSubgraph, newLabel);
+                    }
 
-                                }
+                    Edge edgeInMain = mainGraph.getEdge(edgeInSubgraph.getId());
+                    for (Edge enteringInTarget : edgeInMain.getTargetNode().getEachEnteringEdge()) {
+                        if (enteringInTarget.getSourceNode().getId().equals(functionName)) {
+                            if (Utils.getPos(enteringInTarget).equals(Utils.getPos(edgeInMain))) {
+                                Utils.setLabel(enteringInTarget, newLabel);
+                                Utils.setNameFromLabel(enteringInTarget);
+                                Utils.setArray(enteringInTarget);
+                                break;
                             }
-                            break;
                         }
                     }
                 }
@@ -438,7 +488,7 @@ public class FoldParallelSubgraphs implements Algorithm {
 
 
     private Graph foldSubgraphs(String functionName, List<Graph> subgraphList) {
-        FoldingAlgorithm foldingAlgorithm = new FoldingAlgorithm(config, subgraphList);
+        FoldingAlgorithm foldingAlgorithm = new FoldingAlgorithm(subgraphList);
         foldingAlgorithm.setFunctionName(functionName);
         foldingAlgorithm.init(mainGraph);
         foldingAlgorithm.compute();
@@ -454,21 +504,17 @@ public class FoldParallelSubgraphs implements Algorithm {
     }
 
     private void removeNodesFromMainGraph(List<HashSet<Node>> parallelSubgraphs) {
-        parallelSubgraphs.forEach(nodes -> {
-            nodes.forEach(node -> {
-                mainGraph.removeNode(node);
-            });
-        });
+        parallelSubgraphs.forEach(nodes -> nodes.forEach(node -> mainGraph.removeNode(node)));
     }
 
     /**
-     * When the outputs of the subgraphs were transformed from scalar variables to arrays,
+     * When the inputs and outputs of the subgraphs were transformed from scalar variables to arrays,
      * we stored the size of each new array in the varCounter map.
      * Thus, updateLocalInfo will add these new arrays to the local variables of the mainGraph.
      */
     void updateLocalInfo() {
         List<Var> localInfo = mainInfo.getLocalInfo();
-        varCounter.forEach( (label,count) -> {
+        varCounter.forEach((label, count) -> {
             List<Integer> indexes = new ArrayList<>();
             indexes.add(count);
             localInfo.add(new Var(varsToTypes.get(label), label + arraySuffixStr, true, indexes));
@@ -483,13 +529,13 @@ public class FoldParallelSubgraphs implements Algorithm {
         FoldInfo varsToFold = new FoldInfo();
 
         // Put the accesses to array indexes in a matrix per dimension
-        for (Edge e: subgraph.getEachEdge()) {
-            if (e.hasAttribute("array")) {
-                String name = e.getAttribute("name");
+        for (Edge e : subgraph.getEachEdge()) {
+            if (Utils.isArray(e)) {
+                String name = Utils.getName(e);
                 varNameToIndexes.putIfAbsent(name, new ArrayList<>());
                 varNameToMeans.putIfAbsent(name, new ArrayList<>());
                 varNameToStdDev.putIfAbsent(name, new ArrayList<>());
-                ArrayList<Integer> indexes = utils.getIndexes(e.getAttribute("label"));
+                ArrayList<Integer> indexes = Utils.getIndexes(Utils.getLabel(e));
                 for (int i = 0; i < indexes.size(); i++) {
                     ArrayList<ArrayList<Integer>> varToIndexesMatrix = varNameToIndexes.get(name);
                     if (varToIndexesMatrix.size() <= i) {
@@ -501,21 +547,19 @@ public class FoldParallelSubgraphs implements Algorithm {
         }
 
         // Compute the means of the array accesses per dimension
-        for (Map.Entry<String, ArrayList<ArrayList<Integer>>> varToIndexesMatrix : varNameToIndexes.entrySet() ) {
-            ArrayList<ArrayList<Integer>> matrix = varToIndexesMatrix.getValue();
-            for (int dim = 0; dim < matrix.size(); dim++) {
-                ArrayList<Integer> valuesInDimension = matrix.get(dim);
+        varNameToIndexes.forEach((key, matrix) -> {
+            for (ArrayList<Integer> valuesInDimension : matrix) {
                 float mean = 0;
-                for (int i = 0; i < valuesInDimension.size(); i++) {
-                    mean += valuesInDimension.get(i);
+                for (Integer integer : valuesInDimension) {
+                    mean += integer;
                 }
                 mean = mean / valuesInDimension.size();
-                varNameToMeans.get(varToIndexesMatrix.getKey()).add(mean);
+                varNameToMeans.get(key).add(mean);
             }
-        }
+        });
 
         // Computes the std deviations of the array accesses per dimension
-        for (Map.Entry<String, ArrayList<ArrayList<Integer>>> varToIndexesMatrix : varNameToIndexes.entrySet() ) {
+        for (Map.Entry<String, ArrayList<ArrayList<Integer>>> varToIndexesMatrix : varNameToIndexes.entrySet()) {
 
             String varName = varToIndexesMatrix.getKey();
             ArrayList<Float> meansPerDimension = varNameToMeans.get(varName);
@@ -524,8 +568,8 @@ public class FoldParallelSubgraphs implements Algorithm {
                 ArrayList<Integer> valuesInDimension = matrix.get(dim);
                 float dimensionMean = meansPerDimension.get(dim);
                 float stdDev = 0;
-                for (int i = 0; i < valuesInDimension.size(); i++) {
-                    stdDev += Math.abs(valuesInDimension.get(i) - dimensionMean);
+                for (Integer integer : valuesInDimension) {
+                    stdDev += Math.abs(integer - dimensionMean);
                 }
                 stdDev = stdDev / valuesInDimension.size();
                 varsToFold.addVar(varName, dim);
@@ -537,13 +581,13 @@ public class FoldParallelSubgraphs implements Algorithm {
     }
 
     void orderSubgraphs(List<Graph> subgraphs) {
-        Graph subgraph0 = subgraphs.get(0);
+        //Graph subgraph0 = subgraphs.get(0);
         // order by input
         //FoldInfo foldInfo = findVarsToFoldHeuristically(subgraph0);
         FoldInfo foldInfo = computeFoldInfoFromConfig();
         // order the Edges that leave the Start node
         subgraphs.forEach(subgraph -> {
-            Node start = subgraph.getNode("Start");
+            Node start = Utils.getStartNode(subgraph);
             List<Edge> edgesLeavingStart = StreamSupport.stream(start.getEachLeavingEdge().spliterator(), false).collect(Collectors.toList());
             EdgeComparator edgeComparator = new EdgeComparator();
             if (foldInfo.hasVarsToFold()) {
@@ -558,31 +602,31 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     private FoldInfo computeFoldInfoFromConfig() {
         FoldInfo foldInfo = new FoldInfo();
-        config.getVarsToPartition().forEach(varAndDim -> foldInfo.addVar(varAndDim.getVar(), varAndDim.getDim()));
+        Config.getVarsToPartition().forEach(varAndDim -> foldInfo.addVar(varAndDim.getVar(), varAndDim.getDim()));
         return foldInfo;
     }
 
     /**
      * If the output of all subgraphs is a single var that has the same name, then it should be replaced by a temporary
      * local array, so that the the subgraphs can be ordered and the folding can be completed.
-     * @param commonSubgraphs
+     *
+     * @param commonSubgraphs list of clusters of nodes
+     * @param callNode        Node used to call the function node
+     * @param functionNode    function node that represents the new subgraph
      */
     ArrayList<Graph> moveNodesToSubgraphList(List<List<Node>> commonSubgraphs, Node callNode, Node functionNode) {
         ArrayList<Graph> subgraphList = new ArrayList<>();
         commonSubgraphs.forEach(nodesToAdd -> {
-            MultiGraph subgraph = new MultiGraph("parallelGraph"+graphCounter++);
+            MultiGraph subgraph = new MultiGraph("parallelGraph" + graphCounter++);
             AddStartAndEnd addStartAndEnd = new AddStartAndEnd();
             addStartAndEnd.init(subgraph);
             addStartAndEnd.compute();
-            nodesToAdd.forEach(node -> {
-                copyNodeAndEdges(node, subgraph, nodesToAdd, callNode, functionNode);
-            });
+            nodesToAdd.forEach(node -> copyNodeAndEdges(node, subgraph, nodesToAdd, callNode, functionNode));
 
             subgraphList.add(subgraph);
         });
         return subgraphList;
     }
-
 
 
     void copyNodeAndEdges(Node node, Graph subgraph, List<Node> nodesToAdd, Node callNode, Node functionNode) {
@@ -601,8 +645,8 @@ public class FoldParallelSubgraphs implements Algorithm {
                 Graphs.copyAttributes(source, newSource);
             }
 
-            if (newSource == null || utils.isStartNode(newSource)) {
-                newSource = subgraph.getNode("Start");
+            if (newSource == null || Utils.isStartNode(newSource)) {
+                newSource = Utils.getStartNode(subgraph);
                 Edge edgeEnteringInCallNode = mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
                         edge.getSourceNode(), callNode, true);
                 Graphs.copyAttributes(edge, edgeEnteringInCallNode);
@@ -617,7 +661,7 @@ public class FoldParallelSubgraphs implements Algorithm {
                 Edge functionNodeToMainGraph = mainGraph.addEdge(functionNode.getId() + "_" + edgeCounter++ + "->" + target.getId(),
                         functionNode, target, true);
                 Graphs.copyAttributes(edge, functionNodeToMainGraph);
-                Node newTarget = subgraph.getNode("End");
+                Node newTarget = Utils.getEndNode(subgraph);
                 Edge newEdge = subgraph.addEdge(edge.getId(), finalN, newTarget, true);
                 Graphs.copyAttributes(edge, newEdge);
             }
@@ -625,19 +669,28 @@ public class FoldParallelSubgraphs implements Algorithm {
     }
 
     private String transformScalarIntoArray(Edge edge) {
-        String label = edge.getAttribute("label");
+        String label = Utils.getLabel(edge);
         if (label.startsWith("*")) {
             label = label.substring(1);
         }
-        varsToTypes.putIfAbsent(label, edge.getAttribute("att3"));
+        varsToTypes.putIfAbsent(label, Utils.getVarType(edge));
         int count = varCounter.getOrDefault(label, 0);
         String newName = label + arraySuffixStr;
         String newLabel = newName + "[" + count + "]";
-        edge.setAttribute("label", newLabel);
-        edge.setAttribute("name", newName);
         varCounter.put(label, count + 1);
-        edge.setAttribute("array", true);
+        setArrayAttributes(edge, newName, newLabel);
         return newLabel;
+    }
+
+    private void setArrayAttributes(Element element, String newName, String newLabel) {
+        Utils.setLabel(element, newLabel);
+        Utils.setName(element, newName);
+        Utils.setArray(element);
+    }
+
+    private void setArrayAttributes(Element element, String newLabel) {
+        String newName = Utils.varNameFromLabel(newLabel);
+        setArrayAttributes(element, newName, newLabel);
     }
 
 }

@@ -1,10 +1,15 @@
 package pt.up.fe.specs.utils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
+/**
+ * Contains the vars that should be folded and some information about the loop
+ */
 public class FoldInfo implements Cloneable {
 
     private HashMap<String, Integer> varsToFold = new HashMap<>();
+    private HashMap<String, Integer> varsHLSPartitionDimensions = new HashMap<>();
     private Integer width;
     private Integer increment;
     private Integer initialValue;
@@ -26,6 +31,23 @@ public class FoldInfo implements Cloneable {
 
     public boolean hasVarsToFold() {
         return !varsToFold.isEmpty();
+    }
+
+    public boolean hasVarHLSPartitionDim(String varName) {
+        return varsHLSPartitionDimensions.containsKey(varName);
+    }
+
+    public void setVarsHLSPartitionDimension(String varName, Integer dim) {
+        varsHLSPartitionDimensions.put(varName, dim);
+    }
+
+    /**
+     * Gets the dimension to be partition by the hls directive
+     * @param varName
+     * @return -1 case the var should not be partitioned using the #hls directive
+     */
+    public int getVarHLSPartitionDimension(String varName) {
+        return (hasVarHLSPartitionDim(varName) ? varsHLSPartitionDimensions.get(varName) : -1);
     }
 
     public void addVar(String varName, Integer dimension) {

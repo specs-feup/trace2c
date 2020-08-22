@@ -48,6 +48,15 @@ public class CInfo {
         return false;
     }
 
+    public boolean hasOutput(String varName) {
+        for (Var output: outputs ) {
+            if (output.getName().equals(varName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Var getInput(String varName) {
         for (Var input: inputs ) {
             if (input.getName().equals(varName)) {
@@ -75,6 +84,13 @@ public class CInfo {
         return null;
     }
 
+    public void addLocal(Var localVar) {
+        this.localInfo.add(localVar);
+    }
+
+    public boolean hasLocalVar(Var localVar) {
+        return this.localInfo.contains(localVar);
+    }
 
     public void addOutput(Var output) {
         this.outputs.add(output);

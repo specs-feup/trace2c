@@ -3,28 +3,19 @@
 /*
 
                 Find the set of k best points so far.
-
                 Points represent instances in the kNN model.
-
                 Those instances are the ones used in a previous learning phase.
 
 */
 
-void findBest(dtype distances[NUM_KNOWN_POINTS], ctype knownClasses[NUM_KNOWN_POINTS], dtype BestPointsDistances[K], ctype BestPointsClasses[K]) {
+void findBest(dtype distances[NUM_KNOWN_POINTS], ctype knownClasses[NUM_KNOWN_POINTS], dtype BestPointsDistances[K], ctype BestPointsClasses[K])
+{
 
-               
-
-                for(int j=0; j< NUM_KNOWN_POINTS; j++) {        
-
-                                updateBest(distances[j], knownClasses[j], BestPointsDistances, BestPointsClasses);
-
-                }
-
+    for (int j = 0; j < NUM_KNOWN_POINTS; j++)
+    {
+        updateBest(distances[j], knownClasses[j], BestPointsDistances, BestPointsClasses);
+    }
 }
-
- 
-
- 
 
 /**
 
@@ -34,94 +25,58 @@ void findBest(dtype distances[NUM_KNOWN_POINTS], ctype knownClasses[NUM_KNOWN_PO
 
 */
 
-ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][NUM_FEATURES], ctype knownClasses[NUM_KNOWN_POINTS]) {
+ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][NUM_FEATURES], ctype knownClasses[NUM_KNOWN_POINTS])
+{
 
- 
+    dtype BestPointsDistances[K]; // array with the distances of the K nearest points to the point to classify
+    ctype BestPointsClasses[K]; // array with the classes of the K nearest points to the point to classify
+    dtype distances[NUM_KNOWN_POINTS];
+    // initialize the data structures (array) with the K best points
 
-                dtype BestPointsDistances[K]; // array with the distances of the K nearest points to the point to classify
+    //initializeBest(BestPointsClasses, BestPointsDistances);
+    for(int i=0; i<K; i++) {
+		BestPointsDistances[i] = MAXDISTANCE;
+		BestPointsClasses[i] = NUM_CLASSES;
+	}
 
-                ctype BestPointsClasses[K]; // array with the classes of the K nearest points to the point to classify
+    
 
- 
+    // perform the Euclidean distance between the point to classify and each one in the model
 
- 
+    // and update the k best points if needed
 
-                // initialize the data structures (array) with the K best points
 
-                initializeBest(BestPointsClasses, BestPointsDistances);
+    for (int i = 0; i < NUM_KNOWN_POINTS; i++)
+    {
 
- 
+        dtype distance = (dtype)0;
 
-                dtype all_distances[NUM_KNOWN_POINTS];
 
- 
+        for (int j = 0; j < NUM_FEATURES; j++)
+        {
 
-                // perform the Euclidean distance between the point to classify and each one in the model
+            distance += sqr((dtype)xFeatures[j] - (dtype)knownFeatures[i][j]);
+        }
 
-                // and update the k best points if needed
+        distances[i] = sqrt(distance);
 
-                //omp_set_dynamic(0);
+    }
 
-                #pragma omp parallel for num_threads(4) schedule(static)
+    // maintains the k best points updated
 
-                for(int i=0; i<NUM_KNOWN_POINTS; i++) {
+    //findBest(all_distances, knownClasses, BestPointsDistances, BestPointsClasses);
+    for (int j = 0; j < NUM_KNOWN_POINTS; j++)
+    {
+        updateBest(distances[j], knownClasses[j], BestPointsDistances, BestPointsClasses);
+    }
 
-                                dtype distance = (dtype) 0;
+    // classify the point based on the K nearest points
 
-                               
+    ctype classifyID;
 
-                                // perform Euclidean distance
+    classifyID = classify3NN(BestPointsClasses, BestPointsDistances);
 
-                                #pragma omp linear(i:1)
+    showBestPoints(BestPointsClasses, BestPointsDistances);
 
-                                #pragma omp simd
-
-                                for(int j=0; j<NUM_FEATURES; j++) {
-
-                                                distance += sqr((dtype) xFeatures[j]-(dtype) knownFeatures[i][j]);
-
-                                }
-
-                                all_distances[i] = sqrt(distance);
-
-                                //printf("distance %e\n", distance);
-
-                               
-
-                }
-
-                // maintains the k best points updated
-
-                findBest(all_distances, knownClasses, BestPointsDistances, BestPointsClasses);
-
- 
-
-               
-
-                                // classify the point based on the K nearest points
-
-                ctype classifyID;
-
-                #if K == 1
-
-                                classifyID = classify1NN(BestPointsClasses);
-
-                #elif K == 3
-
-                                classifyID = classify3NN(BestPointsClasses, BestPointsDistances);
-
-                #else
-
-                                classifyID = classifyKNN(BestPointsClasses, BestPointsDistances);
-
-                #endif
-
- 
-
-                //showBestPoints(BestPointsClasses, BestPointsDistances);
-
-               
-
-                return classifyID;
-
+    return classifyID;
 }

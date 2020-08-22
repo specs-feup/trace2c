@@ -1,5 +1,8 @@
 package pt.up.fe.specs.utils;
 
+import pt.up.fe.specs.Config;
+import pt.up.fe.specs.customNodes.VarElement;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +16,7 @@ import java.util.List;
  */
 public class Var {
 
+    private final int maxHLSPartitionFactor = 32;
     protected boolean isArray;
     protected String name;
     protected String type;
@@ -36,7 +40,7 @@ public class Var {
         LinkedList<Integer> partitionsAtDim = partitionsMap.getOrDefault(dimToFold, new LinkedList<>());
         if (!partitionsAtDim.isEmpty()) {
             if (partitionsAtDim.size() == 1) {
-                return sizes.get(dim) - partitionsAtDim.getFirst();
+                return sizes.get(dimToFold) - partitionsAtDim.getFirst();
             } else {
                 return partitionsAtDim.getLast() - partitionsAtDim.getFirst();
             }
@@ -59,7 +63,13 @@ public class Var {
     }
 
     public void setHlsPartition(HLSPartition hlsPartition) {
-        this.hlsPartition = hlsPartition;
+        if (hlsPartition != null) {
+            if (hlsPartition.getFactor() > 1) {
+                this.hlsPartition = hlsPartition;
+            } else {
+                this.hlsPartition = null;
+            }
+        }
     }
 
     public boolean hasHlsPartition() {
@@ -77,6 +87,19 @@ public class Var {
 
     public boolean hasPartitions() {
         return !partitionsMap.isEmpty();
+    }
+
+    /**
+     * Can only be used when varElement is not an array, otherwise the sizes wont be correct
+     * @param varElement
+     */
+    public Var(VarElement varElement) {
+        this.name = varElement.getName();
+        this.type = varElement.getType();
+        this.isArray = false;
+        this.sizes.add(0);
+        this.dim = 0;
+
     }
 
     public Var(String type, String name, boolean isArray, List<Integer> sizes) {
@@ -158,6 +181,39 @@ public class Var {
         if (this == otherObj) return true;
         if (otherObj == null || getClass() != otherObj.getClass()) return false;
         Var other = (Var) otherObj;
+        if (name == null || other.name == null) {
+            System.out.println("Debug");
+        }
         return name.equals(other.name);
+    }
+
+    public int getArrayTotalSize() {
+        return this.sizes.stream().reduce(1, (subTotal, element) -> subTotal * element);
+    }
+
+    /**
+     *
+     * @param dimToFold
+     */
+    public void setHLSPartitionFromSize(int dimToFold) {
+        int arrayTotalSize = getArrayTotalSize();
+        int hlsPartitionFactor;
+        hlsPartitionFactor = sizes.get(dimToFold);
+        if (hasHlsPartition()) {
+            hlsPartitionFactor = Math.min(hlsPartition.getFactor(), hlsPartitionFactor);
+        }
+        if (Config.isSaveEnergy()) {
+            if (arrayTotalSize >= maxHLSPartitionFactor) {
+                hlsPartitionFactor = Math.min( sizes.get(dimToFold),(maxHLSPartitionFactor*maxHLSPartitionFactor)/arrayTotalSize + 2);
+                if (hasHlsPartition()) {
+                    hlsPartitionFactor = Math.min(hlsPartitionFactor, hlsPartition.getFactor());
+                }
+            }
+        }
+
+        if (hlsPartitionFactor > 1)
+            setHlsPartition(new HLSPartition(dimToFold, hlsPartitionFactor));
+
+
     }
 }

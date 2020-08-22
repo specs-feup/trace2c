@@ -12,12 +12,10 @@ import java.util.List;
 public class InfoFromConfig implements Algorithm {
 
     Graph graph;
-    Config config;
 
     @Override
     public void init(Graph graph) {
         this.graph = graph;
-        this.config = graph.getAttribute("config");
     }
 
     @Override
@@ -25,28 +23,28 @@ public class InfoFromConfig implements Algorithm {
         CInfo info = new CInfo();
         List<Integer> indexes;
         int dim;
-        if (config.getInputs().size() != config.getInput_types().size()) {
+        if (Config.getInputs().size() != Config.getInputTypes().size()) {
             System.err.println("Inputs and Input types do not match");
             return;
         }
-        if (config.getOutputs().size() != config.getOutput_types().size()) {
+        if (Config.getOutputs().size() != Config.getOutputTypes().size()) {
             System.err.println("Outputs and Output types do not match");
             return;
         }
-        for (int i = 0; i < config.getInputs().size(); i++) {
-            String input = config.getInputs().get(i);
+        for (int i = 0; i < Config.getInputs().size(); i++) {
+            String input = Config.getInputs().get(i);
             String inputVarName = parseVarName(input);
             indexes = Utils.getIndexes(input);
             dim = indexes.size();
-            Var in = new Var(config.getInput_types().get(i), inputVarName, dim > 0, indexes);
+            Var in = new Var(Config.getInputTypes().get(i), inputVarName, dim > 0, indexes);
             info.addInput(in);
         }
-        for (int i = 0; i < config.getOutputs().size(); i++) {
-            String output = config.getOutputs().get(i);
+        for (int i = 0; i < Config.getOutputs().size(); i++) {
+            String output = Config.getOutputs().get(i);
             String outputVarName = parseVarName(output);
             indexes = Utils.getIndexes(output);
             dim = indexes.size();
-            Var out = new Var(config.getOutput_types().get(i), outputVarName, dim > 0, indexes);
+            Var out = new Var(Config.getOutputTypes().get(i), outputVarName, dim > 0, indexes);
             info.addOutput(out);
         }
         graph.setAttribute("info", info);

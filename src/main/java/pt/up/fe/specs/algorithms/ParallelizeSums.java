@@ -26,9 +26,10 @@ public class ParallelizeSums implements Algorithm {
         Node startNode = graph.getNode("Start");
         int maxLevel = graph.getAttribute("maxlevel");
         for (int starterLevel = 1; starterLevel < maxLevel; starterLevel++) {
-            detectSequences(startNode, null, 0, starterLevel);
+            detectSequences2(startNode, starterLevel);
+            if (sumSequences.isEmpty()) break;
             rotateGraph();
-            clearInSeqAttributes();
+
         }
         System.out.println("ParallelizeSums half-finished, leveling again");
         if (performedRotations) {
@@ -39,9 +40,39 @@ public class ParallelizeSums implements Algorithm {
         System.out.println("ParallelizeSums finished");
     }
 
-    private void clearInSeqAttributes() {
-        for (Node n: graph) {
-            n.removeAttribute("inSeq");
+
+    private void detectSequences2(Node n, Integer minLevel) {
+        Stack<Node> stack = new Stack<>();
+        Set<Node> visited = new HashSet<>(); // efficient lookup
+        Node sequenceStarter = null;
+        int count = 0;
+
+        stack.push(n);
+        while(!stack.isEmpty()) {
+            Node node = stack.pop();
+            if (!visited.contains(node)) {
+                visited.add(node);
+                Node child = node.getLeavingEdge(0).getTargetNode();
+                Integer nodeLevel = Utils.getLevel(node);
+                if (Utils.isSumOperation(node) && nodeLevel >= minLevel) {
+                    if (count == 0) {
+                        sequenceStarter = node;
+                    }
+                    count++;
+
+                } else if (count >= MIN_COUNT) {
+                    if (Utils.isEndNode(child)) {
+                        sumSequences.put(sequenceStarter, count - 1);
+                    } else {
+                        sumSequences.put(sequenceStarter, count);
+                    }
+                    count = 0;
+                }
+                if (child.getOutDegree() > 0) {
+                    stack.push(child);
+                }
+
+            }
         }
     }
 
@@ -50,13 +81,13 @@ public class ParallelizeSums implements Algorithm {
             Edge e = currentNode.getLeavingEdge(0);
             Node child = e.getTargetNode();
             int childLevel = child.getAttribute("level");
-            if (Utils.isOperation(child) && childLevel >= minLevel) {
+            if (Utils.isSumOperation(child) && childLevel >= minLevel) {
                 if (count == 0) {
                     sequenceStarter = child;
                 }
                 detectSequences(child, sequenceStarter, count + 1, minLevel);
             } else if (count >= MIN_COUNT) {
-                if (child.getId().equals("End")) {
+                if (Utils.isEndNode(child)) {
                     sumSequences.put(sequenceStarter, count - 1); //there's no need to rotate if the child is an end node
                 } else {
                     sumSequences.put(sequenceStarter, count);

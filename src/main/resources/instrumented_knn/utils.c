@@ -1,7 +1,7 @@
 /**
 	k-NN
 	
-	Version by João MP Cardoso
+	Version by Joï¿½o MP Cardoso
 	Email: jmpc@fe.up.pt
 	
 	December 2016
@@ -88,6 +88,7 @@ void showPoint(ftype xFeatures[NUM_FEATURES], ctype classifID)  {
 	Show the K nearest points
 */
 void showBestPoints(ctype BestPointsClasses[K], dtype BestPointsDistances[K]) {
+	printf("\nShowing best points\n");
 	for(int i=0; i<K; i++) {
 		printf("Best point %d: \n", i);
 		printf("--> class: %d\n", BestPointsClasses[i]);

@@ -6,6 +6,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.graph.implementations.MultiGraph;
+import pt.up.fe.specs.Config;
 import pt.up.fe.specs.utils.AddStartAndEnd;
 import pt.up.fe.specs.utils.EdgeComparator;
 import pt.up.fe.specs.utils.Utils;
@@ -19,23 +20,23 @@ import java.util.stream.StreamSupport;
 
 public class WrapNodesIntoFunction implements Algorithm {
 
+    private final boolean isToFold;
     Graph mainGraph;
     Graph functionGraph;
     HashSet<Node> nodesToMove;
     String functionName;
     Node callNode;
     Node functionNode;
-    private static Integer nodeCounter = 0;
     private static Integer edgeCounter = 0;
-    Utils utils = new Utils();
-    private HashMap<String, Integer> varCounter = new HashMap<>();
-    private HashMap<String, String> varsToTypes = new HashMap<>();
+    private final HashMap<String, Integer> varCounter = new HashMap<>();
+    private final HashMap<String, String> varsToTypes = new HashMap<>();
     private final String arraySuffix = "_array";
     private boolean isToUpdateOutputs = true;
 
-    public WrapNodesIntoFunction(HashSet<Node> nodesToAdd, String functionName) {
+    public WrapNodesIntoFunction(HashSet<Node> nodesToAdd, String functionName, boolean isToFold) {
         this.nodesToMove = nodesToAdd;
         this.functionName = functionName;
+        this.isToFold = isToFold;
     }
 
     @Override
@@ -56,6 +57,18 @@ public class WrapNodesIntoFunction implements Algorithm {
         removeNodesFromMainGraph();
         setFunctionGraphCInfo();
         addFunctionToSubgraphList();
+        Leveling leveling = new Leveling();
+        leveling.init(functionGraph);
+        leveling.compute();
+
+        if (isToFold) {
+            /*
+            AllSubgraphsAlgorithm allSubgraphsAlgorithm = new AllSubgraphsAlgorithm();
+            allSubgraphsAlgorithm.init(functionGraph);
+            allSubgraphsAlgorithm.compute();
+            List<HashSet<Node>> mostRepeatableClusters = functionGraph.getAttribute("bestSequentialClusters");*/
+            System.out.println("TODO: create an algorithm to fold sequential clusters");
+        }
     }
 
     public void disableUpdateOutputs() {
@@ -75,9 +88,7 @@ public class WrapNodesIntoFunction implements Algorithm {
     }
 
     private void removeNodesFromMainGraph() {
-        nodesToMove.forEach(n -> {
-            mainGraph.removeNode(n);
-        });
+        nodesToMove.forEach(n -> mainGraph.removeNode(n));
     }
 
     private void createCallNode() {
@@ -101,9 +112,7 @@ public class WrapNodesIntoFunction implements Algorithm {
     }
 
     private void moveNodesToFunctionGraph(HashSet<Node> nodesToMove) {
-        nodesToMove.forEach(node -> {
-            copyNodeAndEdges(node, nodesToMove);
-        });
+        nodesToMove.forEach(node -> copyNodeAndEdges(node, nodesToMove));
     }
 
     private void setFunctionGraphCInfo() {
@@ -134,7 +143,7 @@ public class WrapNodesIntoFunction implements Algorithm {
                 Graphs.copyAttributes(source, newSource);
             }
 
-            if (newSource == null || utils.isStartNode(newSource)) {
+            if (newSource == null || Utils.isStartNode(newSource)) {
                 newSource = functionGraph.getNode("Start");
                 Edge edgeEnteringInCallNode = mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
                         edge.getSourceNode(), callNode, true);
@@ -178,44 +187,42 @@ public class WrapNodesIntoFunction implements Algorithm {
 
         Node endNode = functionGraph.getNode("End");
         // I have to sort the edges here;
-        List<Edge> edgesEnteringEnd = StreamSupport.stream(endNode.getEachEdge().spliterator(), false).collect(Collectors.toList());
-        edgesEnteringEnd.sort(new EdgeComparator());
+        List<Edge> edgesEnteringEnd = StreamSupport.stream(endNode.getEachEdge().spliterator(), false).sorted(new EdgeComparator()).collect(Collectors.toList());
         for (int i = 0; i < edgesEnteringEnd.size(); i++) {
             Edge edge = edgesEnteringEnd.get(i);
-            if (!edge.hasAttribute("array")) {
+            if (!Utils.isArray(edge)) {
                 if (outputNames.size() <= i) {
-                    outputNames.add(edge.getAttribute("label"));
+                    outputNames.add(Utils.getLabel(edge));
                 } else {
-                    String oldLabel = edge.getAttribute("label");
+                    String oldLabel = Utils.getLabel(edge);
                     Node sourceInMain = mainGraph.getNode(edge.getSourceNode().getId());
                     for (Edge edgeInMainGraph: sourceInMain.getEachLeavingEdge()) {
-                        if (edgeInMainGraph.getAttribute("label").equals(oldLabel)) {
+                        if (Utils.getLabel(edgeInMainGraph).equals(oldLabel)) {
                             edgeInMainGraph.setAttribute("label", outputNames.get(i));
-                            edgeInMainGraph.setAttribute("name", utils.varNameFromLabel(outputNames.get(i)));
+                            edgeInMainGraph.setAttribute("name", Utils.varNameFromLabel(outputNames.get(i)));
                         }
                     }
                     edge.setAttribute("label", outputNames.get(i));
-                    edge.setAttribute("name", utils.varNameFromLabel(outputNames.get(i)));
+                    edge.setAttribute("name", Utils.varNameFromLabel(outputNames.get(i)));
                 }
 
             }
         }
 
-        for(int i = 0; i < edgesEnteringEnd.size(); i++) {
-            Edge edge = edgesEnteringEnd.get(i);
-            if (!edge.hasAttribute("array")) {
-                String oldLabel = edge.getAttribute("label");
+        for (Edge edge : edgesEnteringEnd) {
+            if (!Utils.isArray(edge)) {
+                String oldLabel = Utils.getLabel(edge);
                 Node sourceInFunction = edge.getSourceNode();
                 String newLabel = transformScalarIntoArray(edge);
                 Node sourceInMain = mainGraph.getNode(sourceInFunction.getId());
-                for (Edge leavingSrcInMainEdge: sourceInMain.getEachLeavingEdge()) {
-                    if (leavingSrcInMainEdge.getAttribute("label").equals(oldLabel)) {
+                for (Edge leavingSrcInMainEdge : sourceInMain.getEachLeavingEdge()) {
+                    if (Utils.getLabel(leavingSrcInMainEdge).equals(oldLabel)) {
                         Node targetInMain = leavingSrcInMainEdge.getTargetNode();
-                        for (Edge enteringInTarget: targetInMain.getEachEnteringEdge()) {
+                        for (Edge enteringInTarget : targetInMain.getEachEnteringEdge()) {
                             boolean updateEdge = false;
                             if (enteringInTarget.getSourceNode().getId().equals(functionNode.getId())) {
                                 if (enteringInTarget.hasAttribute("pos") && leavingSrcInMainEdge.hasAttribute("pos")) {
-                                    if (enteringInTarget.getAttribute("pos").equals(leavingSrcInMainEdge.getAttribute("pos"))) {
+                                    if (Utils.getPos(enteringInTarget).equals(Utils.getPos(leavingSrcInMainEdge))) {
                                         updateEdge = true;
                                     }
                                 } else {
@@ -223,7 +230,7 @@ public class WrapNodesIntoFunction implements Algorithm {
                                 }
                                 if (updateEdge) {
                                     enteringInTarget.setAttribute("label", newLabel);
-                                    enteringInTarget.setAttribute("name", utils.varNameFromLabel(newLabel));
+                                    enteringInTarget.setAttribute("name", Utils.varNameFromLabel(newLabel));
                                     enteringInTarget.setAttribute("array", true);
                                     break;
                                 }

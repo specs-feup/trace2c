@@ -57,12 +57,13 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     FILE *log_file_0 = fopen("knn.dot", "w");
     int n_const = 0;
     int n_temp = 0;
-    int ne = 0; // edges
-    int n_op = 0; // operations
-    int n_mux = 0; // multiplexers
-    int n_aa = 0; // array accesses
-    int n_ca = 0; // complex assignments
+    int ne = 0;       // edges
+    int n_op = 0;     // operations
+    int n_mux = 0;    // multiplexers
+    int n_aa = 0;     // array accesses
+    int n_ca = 0;     // complex assignments
     int n_assign = 0; // simple assignments
+    int n_mergePoint = 0;
     int n_xFeatures[NUM_FEATURES] = {0};
     int n_knownFeatures[NUM_KNOWN_POINTS][NUM_FEATURES] = {0};
     int n_knownClasses[NUM_KNOWN_POINTS] = {0};
@@ -102,35 +103,60 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     for (int i = 0; i < NUM_KNOWN_POINTS; i++)
     {
         n_knownClasses[i]++;
-        fprintf(log_file_0, "\"knownClasses[%d]_%d_l\" [label=\"knownClasses[%d]\", att1=var, att2=param, att3=double ];\n", i, n_knownClasses[i], i);
+        fprintf(log_file_0, "\"knownClasses[%d]_%d_l\" [label=\"knownClasses[%d]\", att1=var, att2=param, att3=char ];\n", i, n_knownClasses[i], i);
     }
+
+     n_mergePoint++;
+     fprintf(log_file_0, "MergePoint_%d [label=MergePoint, att1=nop];\n", n_mergePoint);
 
     dtype BestPointsDistances[K];
     ctype BestPointsClasses[K];
-
-    for (int i = 0; i < K; i++)
+    for (int j = 0; j < NUM_KNOWN_POINTS; j++)
     {
-        //---------------------
-        n_const++;
-        fprintf(log_file_0, "const%d [label=\"MAXDISTANCE\", att1=const];\n", n_const);
-        n_BestPointsDistances[i]++;
-        fprintf(log_file_0, "\"BestPointsDistances[%d]_%d_l\" [label=\"BestPointsDistances[%d]\", att1=var, att2=loc, att3=double ];\n", i, n_BestPointsDistances[i], i);
-        ne++;
-        fprintf(log_file_0, "const%d->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_const, i, n_BestPointsDistances[i], ne, ne);
-        //---------------------
-        BestPointsDistances[i] = MAXDISTANCE;
+        for (int i = 0; i < K; i++)
+        {
+            //---------------------
 
+            fprintf(log_file_0, "\"BestPointsDistances[%d]_%d_l\" [label=\"BestPointsDistances[%d]\", att1=var, att2=loc, att3=double ];\n", i, j + 1, i);
+            if (j == 0)
+            {
+                n_assign++;
+                fprintf(log_file_0, "Assign_%d [label=Assign_%d, att1=assignment];\n", n_assign, n_assign);
+                n_const++;
+                fprintf(log_file_0, "const%d [label=\"MAXDISTANCE\", att1=const];\n", n_const);
+                ne++;
+                fprintf(log_file_0, "const%d->Assign_%d [label=\"%d\", ord=\"%d\"];\n", n_const, n_assign, ne, ne);
+                ne++;
+                fprintf(log_file_0, "Assign_%d->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_assign, i, j + 1, ne, ne);
+            }
 
-        //---------------------
-        n_const++;
-        fprintf(log_file_0, "const%d [label=\"NUM_CLASSES\", att1=const];\n", n_const);
-        n_BestPointsClasses[i]++;
-        fprintf(log_file_0, "\"BestPointsClasses[%d]_%d_l\" [label=\"BestPointsClasses[%d]\", att1=var, att2=loc, att3=char ];\n", i, n_BestPointsClasses[i], i);
-        ne++;
-        fprintf(log_file_0, "const%d->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_const, i, n_BestPointsClasses[i], ne, ne);
-        //---------------------
-        BestPointsClasses[i] = NUM_CLASSES;
+            //---------------------
+            BestPointsDistances[i] = MAXDISTANCE;
+            n_BestPointsDistances[i]++;
+
+            //---------------------
+            if (j == 0)
+            {
+                n_BestPointsClasses[i]++;
+                fprintf(log_file_0, "\"BestPointsClasses[%d]_%d_l\" [label=\"BestPointsClasses[%d]\", att1=var, att2=loc, att3=char ];\n", i, j + 1, i);
+
+                n_const++;
+                fprintf(log_file_0, "const%d [label=\"NUM_CLASSES\", att1=const];\n", n_const);
+                n_assign++;
+                fprintf(log_file_0, "Assign_%d [label=Assign_%d, att1=assignment];\n", n_assign, n_assign);
+                ne++;
+                fprintf(log_file_0, "const%d->Assign_%d [label=\"%d\", ord=\"%d\"];\n", n_const, n_assign, ne, ne);
+                ne++;
+                fprintf(log_file_0, "Assign_%d->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_assign, i, j + 1, ne, ne);
+                ne++;
+                fprintf(log_file_0, "\"BestPointsClasses[%d]_%d_l\"->MergePoint_%d [label=\"%d\", ord=\"%d\"];\n", i, j + 1, n_mergePoint, ne, ne);
+            }
+
+            //---------------------
+            BestPointsClasses[i] = NUM_CLASSES;
+        }
     }
+    
 
     //initializeBest(BestPointsClasses, BestPointsDistances);
 
@@ -162,13 +188,13 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
             n_op++;
             fprintf(log_file_0, "op%d [label=\"+\", att1=op];\n", n_op);
             ne++;
-            fprintf(log_file_0, "temp%d->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_temp, n_op, ne, ne);
+            fprintf(log_file_0, "temp%d->op%d [label=\"%d\", ord=\"%d\", pos=\"r\", mod=\"sqr(\"];\n", n_temp, n_op, ne, ne);
             ne++;
-            fprintf(log_file_0, "distance_%d->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_distance, n_op, ne, ne);
+            fprintf(log_file_0, "\"distance_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_distance, n_op, ne, ne);
             n_distance++;
-            fprintf(log_file_0, "\"distance_%d\" [label=distance, att1=var, att2=loc, att3=float ];\n", n_distance);
+            fprintf(log_file_0, "\"distance_%d\" [label=\"distance\", att1=var, att2=loc, att3=float ];\n", n_distance);
             ne++;
-            fprintf(log_file_0, "op%d->distance_%d [label=\"%d\", ord=\"%d\", mod=\"sqr(\"];\n", n_op, n_distance, ne, ne);
+            fprintf(log_file_0, "op%d->\"distance_%d\" [label=\"%d\", ord=\"%d\"];\n", n_op, n_distance, ne, ne);
             //---------------------
             distance += sqr((dtype)xFeatures[j] - (dtype)knownFeatures[i][j]);
         }
@@ -207,33 +233,41 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
         //---------------------
         int index = 0;
 
-        for (int i = 0; i < K; i++)
+        for (int k = 0; k < K; k++)
         {
             //---------------------
             n_dbest++;
             fprintf(log_file_0, "\"dbest_%d\" [label=\"dbest\", att1=var, att2=loc, att3=float ];\n", n_dbest);
+            n_assign++;
+            fprintf(log_file_0, "\"Assign_%d\" [label=\"Assign_%d\", att1=assignment];\n", n_assign, n_assign);
             ne++;
-            fprintf(log_file_0, "\"BestPointsDistances[%d]_%d_l\"->\"dbest_%d\" [label=\"%d\", ord=\"%d\"];\n", i, n_BestPointsDistances[i], n_dbest, ne, ne);
+            fprintf(log_file_0, "\"BestPointsDistances[%d]_%d_l\"->\"Assign_%d\" [label=\"%d\", ord=\"%d\"];\n", k, i + 1, n_assign, ne, ne);
+            ne++;
+            fprintf(log_file_0, "\"Assign_%d\"->\"dbest_%d\" [label=\"%d\", ord=\"%d\"];\n", n_assign, n_dbest, ne, ne);
             //---------------------
-            dtype dbest = BestPointsDistances[i];
+            dtype dbest = BestPointsDistances[k];
 
             //---------------------
             n_max_tmp++;
             fprintf(log_file_0, "\"max_tmp_%d\" [label=\"max_tmp\", att1=var, att2=loc, att3=double];\n", n_max_tmp);
+            n_assign++;
+            fprintf(log_file_0, "\"Assign_%d\" [label=\"Assign\", att1=assignment];\n", n_assign);
             ne++;
-            fprintf(log_file_0, "\"max_%d\"->\"max_tmp_%d\" [label=\"%d\", ord=\"%d\"];\n", n_max, n_max_tmp, ne, ne);
+            fprintf(log_file_0, "\"max_%d\"->\"Assign_%d\" [label=\"%d\", ord=\"%d\"];\n", n_max, n_assign, ne, ne);
+            ne++;
+            fprintf(log_file_0, "\"Assign_%d\"->\"max_tmp_%d\" [label=\"%d\", ord=\"%d\"];\n", n_assign, n_max_tmp, ne, ne);
             //---------------------
             dtype max_tmp = max;
 
             //---------------------
             n_op++;
-            fprintf(log_file_0, "op%d [label=\">\", att1=op];\n", n_op);
+            fprintf(log_file_0, "\"op%d\" [label=\">\", att1=op];\n", n_op);
             ne++;
             fprintf(log_file_0, "\"dbest_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_dbest, n_op, ne, ne);
             ne++;
             fprintf(log_file_0, "\"max_tmp_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_max_tmp, n_op, ne, ne);
             n_mux++;
-            fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+            fprintf(log_file_0, "mux%d [label=mux%d, att1=mux];\n", n_mux, n_mux);
             ne++;
             fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
             ne++;
@@ -243,23 +277,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
             n_max++;
             fprintf(log_file_0, "\"max_%d\" [label=\"max\", att1=var, att2=loc, att3=float ];\n", n_max);
             ne++;
-            fprintf(log_file_0, "\"mux%d\"->max_%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_max, ne, ne);
+            fprintf(log_file_0, "mux%d->max_%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_max, ne, ne);
             //---------------------
             max = (dbest > max_tmp) ? dbest : max;
 
             //---------------------
-            n_op++;
-            fprintf(log_file_0, "op%d [label=\">\", att1=op];\n", n_op);
-            ne++;
-            fprintf(log_file_0, "\"dbest_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_dbest, n_op, ne, ne);
-            ne++;
-            fprintf(log_file_0, "\"max_tmp_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_max_tmp, n_op, ne, ne);
             n_mux++;
-            fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+            fprintf(log_file_0, "mux%d [label=mux%d, att1=mux];\n", n_mux, n_mux);
             ne++;
             fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
             n_const++;
-            fprintf(log_file_0, "const%d [label=\"%d\", att1=const];\n", n_const, i);
+            fprintf(log_file_0, "const%d [label=\"%d\", att1=const];\n", n_const, k);
             ne++;
             fprintf(log_file_0, "\"const%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_const, n_mux, ne, ne);
             ne++;
@@ -267,17 +295,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
             n_index++;
             fprintf(log_file_0, "\"index_%d\" [label=\"index\", att1=var, att2=loc, att3=int ];\n", n_index);
             ne++;
-            fprintf(log_file_0, "\"mux%d\"->\"index_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_index, ne, ne);
+            fprintf(log_file_0, "mux%d->\"index_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_index, ne, ne);
             //---------------------
-            index = (dbest > max_tmp) ? i : index;
+            index = (dbest > max_tmp) ? k : index;
         }
 
         //---------------------
         n_aa++;
-        fprintf(log_file_0, "\"AA_%d\" [label=\"AA_%d\", att1=arrayAccess];\n", n_aa, n_aa);
-        
+        fprintf(log_file_0, "\"AA_%d\" [label=\"AA_%d\", att1=nop];\n", n_aa, n_aa);
+
         n_BestPointsDistancesAtIndex++;
-        fprintf(log_file_0, "\"BestPointsDistances[index]_%d\" [label=\"BestPointsDistances[index]\", att1=var, att2=double, att3=int];\n", n_BestPointsDistancesAtIndex);
+        fprintf(log_file_0, "\"BestPointsDistances[index]_%d\" [label=\"BestPointsDistances[index]\", att1=var, att2=loc, att3=double];\n", n_BestPointsDistancesAtIndex);
 
         n_dbest++;
         fprintf(log_file_0, "\"dbest_%d\" [label=\"dbest\", att1=var, att2=loc, att3=double ];\n", n_dbest);
@@ -293,7 +321,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
         ne++;
         fprintf(log_file_0, "\"BestPointsDistances[index]_%d\"->\"Assign_%d\" [label=\"%d\", ord=\"%d\"];\n", n_BestPointsDistancesAtIndex, n_assign, ne, ne);
-        
+
         ne++;
         fprintf(log_file_0, "\"Assign_%d\"->\"dbest_%d\" [label=\"%d\", ord=\"%d\"];\n", n_assign, n_dbest, ne, ne);
         //---------------------
@@ -301,13 +329,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
         //---------------------
         n_aa++;
-        fprintf(log_file_0, "\"AA_%d\" [label=\"AA_%d\", att1=arrayAccess];\n", n_aa, n_aa);
+        fprintf(log_file_0, "\"AA_%d\" [label=\"AA_%d\", att1=nop];\n", n_aa, n_aa);
 
         n_BestPointsClassesAtIndex++;
-        fprintf(log_file_0, "\"BestPointsClasses[index]_%d\" [label=\"BestPointsClasses[index]\", att1=var, att2=double, att3=int];\n", n_BestPointsClassesAtIndex);
+        fprintf(log_file_0, "\"BestPointsClasses[index]_%d\" [label=\"BestPointsClasses[index]\", att1=var, att2=loc, att3=char];\n", n_BestPointsClassesAtIndex);
+
+        //merge the initialization of best points classes
+        ne++;
+        fprintf(log_file_0, "MergePoint_%d->\"BestPointsClasses[index]_%d\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, n_BestPointsClassesAtIndex, ne, ne);
 
         n_cbest++;
-        fprintf(log_file_0, "\"cbest_%d\" [label=\"cbest\", att1=var, att2=loc, att3=double ];\n", n_cbest);
+        fprintf(log_file_0, "\"cbest_%d\" [label=\"cbest\", att1=var, att2=loc, att3=char ];\n", n_cbest);
 
         ne++;
         fprintf(log_file_0, "\"index_%d\"->\"AA_%d\" [label=\"%d\", ord=\"%d\"];\n", n_index, n_aa, ne, ne);
@@ -320,7 +352,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
         ne++;
         fprintf(log_file_0, "\"BestPointsClasses[index]_%d\"->\"Assign_%d\" [label=\"%d\", ord=\"%d\"];\n", n_BestPointsClassesAtIndex, n_assign, ne, ne);
-        
+
         ne++;
         fprintf(log_file_0, "\"Assign_%d\"->\"cbest_%d\" [label=\"%d\", ord=\"%d\"];\n", n_assign, n_cbest, ne, ne);
         //---------------------
@@ -328,20 +360,19 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
         //---------------------
         n_op++;
-        fprintf(log_file_0, "op%d [label=\">\", att1=op];\n", n_op);
+        fprintf(log_file_0, "op%d [label=\"<\", att1=op];\n", n_op);
         ne++;
         fprintf(log_file_0, "\"distance_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_distance, n_op, ne, ne);
         ne++;
         fprintf(log_file_0, "\"max_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_max, n_op, ne, ne);
         n_mux++;
-        fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+        fprintf(log_file_0, "mux%d [label=mux%d, att1=mux];\n", n_mux, n_mux);
         ne++;
         fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
         ne++;
         fprintf(log_file_0, "\"distance_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_distance, n_mux, ne, ne);
         ne++;
         fprintf(log_file_0, "\"dbest_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_dbest, n_mux, ne, ne);
-
 
         n_BestPointsDistancesAtIndex++;
         fprintf(log_file_0, "\"BestPointsDistances[index]_%d\" [label=\"BestPointsDistances[index]\", att1=var, att2=loc, att3=double ];\n", n_BestPointsDistancesAtIndex);
@@ -354,7 +385,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
         ne++;
         fprintf(log_file_0, "\"mux%d\"->\"CA_%d\" [label=\"%d\", ord=\"%d\", pos=r];\n", n_mux, n_ca, ne, ne);
-        
+
         ne++;
         fprintf(log_file_0, "\"CA_%d\"->\"BestPointsDistances[index]_%d\" [label=\"%d\", ord=\"%d\"];\n", n_ca, n_BestPointsDistancesAtIndex, ne, ne);
 
@@ -362,12 +393,6 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
         BestPointsDistances[index] = (distance < max) ? distance : dbest;
 
         //---------------------
-        n_op++;
-        fprintf(log_file_0, "op%d [label=\">\", att1=op];\n", n_op);
-        ne++;
-        fprintf(log_file_0, "\"distance_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_distance, n_op, ne, ne);
-        ne++;
-        fprintf(log_file_0, "\"max_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_max, n_op, ne, ne);
         n_mux++;
         fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
         ne++;
@@ -378,7 +403,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
         fprintf(log_file_0, "\"cbest_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_cbest, n_mux, ne, ne);
 
         n_BestPointsClassesAtIndex++;
-        fprintf(log_file_0, "\"BestPointsClasses[index]_%d\" [label=\"BestPointsClasses[index]\", att1=var, att2=loc, att3=double ];\n", n_BestPointsClassesAtIndex);
+        fprintf(log_file_0, "\"BestPointsClasses[index]_%d\" [label=\"BestPointsClasses[index]\", att1=var, att2=loc, att3=char ];\n", n_BestPointsClassesAtIndex);
 
         n_ca++;
         fprintf(log_file_0, "\"CA_%d\" [label=\"CA_%d\", att1=\"complexAssignment\"];\n", n_ca, n_ca);
@@ -387,13 +412,25 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
         fprintf(log_file_0, "\"index_%d\"->CA_%d [label=\"%d\", ord=\"%d\", pos=l];\n", n_index, n_ca, ne, ne);
 
         ne++;
-        fprintf(log_file_0, "\"mux%d\"->\"CA_%d\" [label=\"%d\", ord=\"%d\", pos=r];\n", n_mux, n_ca, ne, ne);
+        fprintf(log_file_0, "mux%d->\"CA_%d\" [label=\"%d\", ord=\"%d\", pos=r];\n", n_mux, n_ca, ne, ne);
 
         ne++;
         fprintf(log_file_0, "\"CA_%d\"->\"BestPointsClasses[index]_%d\" [label=\"%d\", ord=\"%d\"];\n", n_ca, n_BestPointsClassesAtIndex, ne, ne);
-       
+
         //---------------------
         BestPointsClasses[index] = (distance < max) ? knownClasses[i] : cbest;
+        // There's a dependency between calls to update best which we have to explicitly state
+        if (i != NUM_KNOWN_POINTS - 1)
+        {
+            n_mergePoint++;
+            fprintf(log_file_0, "MergePoint_%d [label=MergePoint, att1=nop];\n", n_mergePoint);
+            fprintf(log_file_0, "\"BestPointsClasses[index]_%d\"->MergePoint_%d;\n", n_BestPointsClassesAtIndex, n_mergePoint);
+            fprintf(log_file_0, "\"BestPointsDistances[index]_%d\"->MergePoint_%d;\n", n_BestPointsDistancesAtIndex, n_mergePoint);
+            for (int p = 0; p < K; p++)
+            {
+                fprintf(log_file_0, "MergePoint_%d->\"BestPointsDistances[%d]_%d_l\";\n", n_mergePoint, p, i + 2);
+            }
+        }
     }
 
     ctype classID;
@@ -402,35 +439,43 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 #elif K == 3
     //--------------------
     // Create a merge point
-    fprintf(log_file_0, "MergePoint [label=MergePoint, att1=nop];\n");
-    
+    n_mergePoint++;
+    fprintf(log_file_0, "MergePoint_%d [label=MergePoint, att1=nop];\n", n_mergePoint);
+
     // Merge point inputs
     ne++;
-    fprintf(log_file_0, "\"BestPointsClasses[index]_%d\"->MergePoint [label=\"%d\", ord=\"%d\"];\n", n_BestPointsClassesAtIndex, ne, ne);
+    fprintf(log_file_0, "\"BestPointsClasses[index]_%d\"->MergePoint_%d [label=\"%d\", ord=\"%d\"];\n", n_BestPointsClassesAtIndex, n_mergePoint, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"BestPointsDistances[index]_%d\"->MergePoint [label=\"%d\", ord=\"%d\"];\n", n_BestPointsDistancesAtIndex, ne, ne);
+    fprintf(log_file_0, "\"BestPointsDistances[index]_%d\"->MergePoint_%d [label=\"%d\", ord=\"%d\"];\n", n_BestPointsDistancesAtIndex, n_mergePoint, ne, ne);
 
     // Merge point outputs
-    ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 0, n_BestPointsClasses[0], ne, ne);
-    ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 1, n_BestPointsClasses[1], ne, ne);
-    ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 2, n_BestPointsClasses[2], ne, ne);
+
+    for (int i = 0; i < K; i++)
+    {
+        n_BestPointsClasses[i]++;
+        fprintf(log_file_0, "\"BestPointsClasses[%d]_%d_l\" [label=\"BestPointsClasses[%d]\", att1=var, att2=loc, att3=char];\n", i, n_BestPointsClasses[i], i);
+        n_BestPointsDistances[i]++;
+        fprintf(log_file_0, "\"BestPointsDistances[%d]_%d_l\" [label=\"BestPointsDistances[%d]\", att1=var, att2=loc, att3=double];\n", i, n_BestPointsDistances[i], i);
+    }
 
     ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 0, n_BestPointsDistances[0], ne, ne);
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 0, n_BestPointsClasses[0], ne, ne);
     ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 1, n_BestPointsDistances[1], ne, ne);
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 1, n_BestPointsClasses[1], ne, ne);
     ne++;
-    fprintf(log_file_0, "MergePoint->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", 2, n_BestPointsDistances[2], ne, ne);
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsClasses[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 2, n_BestPointsClasses[2], ne, ne);
 
-
-
+    ne++;
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 0, n_BestPointsDistances[0], ne, ne);
+    ne++;
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 1, n_BestPointsDistances[1], ne, ne);
+    ne++;
+    fprintf(log_file_0, "MergePoint_%d->\"BestPointsDistances[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_mergePoint, 2, n_BestPointsDistances[2], ne, ne);
 
     //---------------------
     n_c1++;
     fprintf(log_file_0, "\"c1_%d\" [label=\"c1\", att1=var, att2=loc, att3=char ];\n", n_c1);
+
     n_assign++;
     fprintf(log_file_0, "\"Assign_%d\" [label=\"Assign\", att1=assignment];\n", n_assign);
     ne++;
@@ -520,17 +565,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     ne++;
     fprintf(log_file_0, "\"d2_%d\"->\"op%d\" [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_d2, n_op, ne, ne);
     n_mux++;
-    fprintf(log_file_0, "\"mux%d\" [label=\"mux%d\", att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+    fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
     ne++;
-    fprintf(log_file_0, "\"op%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
+    fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"c2_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_c2, n_mux, ne, ne);
+    fprintf(log_file_0, "\"c2_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_c2, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"c1_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_c1, n_mux, ne, ne);
+    fprintf(log_file_0, "\"c1_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_c1, n_mux, ne, ne);
     n_classID++;
     fprintf(log_file_0, "\"classID_%d\" [label=\"classID\", att1=var, att2=loc, att3=char ];\n", n_classID);
     ne++;
-    fprintf(log_file_0, "\"mux%d\"->\"classID_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_classID, ne, ne);
+    fprintf(log_file_0, "mux%d->\"classID_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_classID, ne, ne);
     //---------------------
     classID = (mindist > d2) ? c2 : c1;
 
@@ -542,17 +587,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     ne++;
     fprintf(log_file_0, "\"d2_%d\"->\"op%d\" [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_d2, n_op, ne, ne);
     n_mux++;
-    fprintf(log_file_0, "\"mux%d\" [label=\"mux%d\", att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+    fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
     ne++;
-    fprintf(log_file_0, "\"op%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
+    fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"d2_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_d2, n_mux, ne, ne);
+    fprintf(log_file_0, "\"d2_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_d2, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"d1_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_d1, n_mux, ne, ne);
+    fprintf(log_file_0, "\"d1_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_d1, n_mux, ne, ne);
     n_mindist++;
     fprintf(log_file_0, "\"mindist_%d\" [label=\"mindist\", att1=var, att2=loc, att3=double ];\n", n_mindist);
     ne++;
-    fprintf(log_file_0, "\"mux%d\"->\"mindist_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_mindist, ne, ne);
+    fprintf(log_file_0, "mux%d->\"mindist_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_mindist, ne, ne);
     //---------------------
     mindist = (mindist > d2) ? d2 : d1;
 
@@ -564,17 +609,17 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     ne++;
     fprintf(log_file_0, "\"d3_%d\"->\"op%d\" [label=\"%d\", ord=\"%d\", pos=\"r\"];\n", n_d3, n_op, ne, ne);
     n_mux++;
-    fprintf(log_file_0, "\"mux%d\" [label=\"mux%d\", att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
+    fprintf(log_file_0, "mux%d [label=mux%d, att1=mux, att2=op%d];\n", n_mux, n_mux, n_op);
     ne++;
-    fprintf(log_file_0, "\"op%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
+    fprintf(log_file_0, "\"op%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"sel\"];\n", n_op, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"c3_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_c3, n_mux, ne, ne);
+    fprintf(log_file_0, "\"c3_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"t\"];\n", n_c3, n_mux, ne, ne);
     ne++;
-    fprintf(log_file_0, "\"classID_%d\"->\"mux%d\" [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_classID, n_mux, ne, ne);
+    fprintf(log_file_0, "\"classID_%d\"->mux%d [label=\"%d\", ord=\"%d\", pos=\"f\"];\n", n_classID, n_mux, ne, ne);
     n_classID++;
     fprintf(log_file_0, "\"classID_%d\" [label=\"classID\", att1=var, att2=loc, att3=char ];\n", n_classID);
     ne++;
-    fprintf(log_file_0, "\"mux%d\"->\"classID_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_classID, ne, ne);
+    fprintf(log_file_0, "mux%d->\"classID_%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_mux, n_classID, ne, ne);
     //---------------------
     classID = (mindist > d3) ? c3 : classID;
 
@@ -603,7 +648,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
     **/
     //---------------------
     n_op++;
-    fprintf(log_file_0, "\"op%d\" [label=\"=\", att1=op];\n", n_op);
+    fprintf(log_file_0, "\"op%d\" [label=\"==\", att1=op];\n", n_op);
     ne++;
     fprintf(log_file_0, "\"c2_%d\"->\"op%d\" [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_c2, n_op, ne, ne);
     ne++;
@@ -625,7 +670,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
     //---------------------
     n_op++;
-    fprintf(log_file_0, "op%d [label=\"=\", att1=op];\n", n_op);
+    fprintf(log_file_0, "op%d [label=\"==\", att1=op];\n", n_op);
     ne++;
     fprintf(log_file_0, "\"c1_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_c1, n_op, ne, ne);
     ne++;
@@ -647,7 +692,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 
     //---------------------
     n_op++;
-    fprintf(log_file_0, "op%d [label=\"=\", att1=op];\n", n_op);
+    fprintf(log_file_0, "op%d [label=\"==\", att1=op];\n", n_op);
     ne++;
     fprintf(log_file_0, "\"c1_%d\"->op%d [label=\"%d\", ord=\"%d\", pos=\"l\"];\n", n_c1, n_op, ne, ne);
     ne++;

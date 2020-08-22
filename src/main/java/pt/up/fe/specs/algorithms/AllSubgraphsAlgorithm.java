@@ -4,6 +4,7 @@ import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
+import pt.up.fe.specs.Config;
 import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.SubgraphSearchAux;
 
@@ -12,21 +13,21 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Calculates all possible subgraphs and gives a weight to each subgraph.
  * Subgraphs are clustered by weight.
  */
 public class AllSubgraphsAlgorithm implements Algorithm {
-    private final int maxNodesPerSubgraph;
+    private int maxNodesPerSubgraph;
+    private int maxFoldLevels;
+    private int minFoldLevels;
     private Graph graph;
-    private HashMap<Integer, List<HashSet<Node>>> allParallelSubgraphs = new HashMap<>(); //maps weight to subgraphs
-    private HashMap<Integer, List<HashSet<Node>>> allSequentialSubgraphs = new HashMap<>(); //maps weight to subgraphs
+    private final HashMap<Integer, List<HashSet<Node>>> allParallelSubgraphs = new HashMap<>(); //maps weight to subgraphs
+    private final HashMap<Integer, List<HashSet<Node>>> allSequentialSubgraphs = new HashMap<>(); //maps weight to subgraphs
     private List<Var> arrayInputs;
 
-    public AllSubgraphsAlgorithm(int maxNodesPerSubgraph) {
-        this.maxNodesPerSubgraph = maxNodesPerSubgraph;
-    }
 
     @Override
     public void init(Graph graph) {
@@ -34,13 +35,17 @@ public class AllSubgraphsAlgorithm implements Algorithm {
         allParallelSubgraphs.clear();
         allSequentialSubgraphs.clear();
         CInfo info = this.graph.getAttribute("info");
-        arrayInputs = info.getInputs().stream().filter(input -> input.isArray()).collect(Collectors.toList());
+        arrayInputs = info.getInputs().stream().filter(Var::isArray).collect(Collectors.toList());
+        maxFoldLevels = Config.getMaxFoldLevels();
+        minFoldLevels = Config.getMinFoldLevels();
+        maxNodesPerSubgraph = Config.getMaxNodesPerSubgraph();
     }
 
+
     /**
-     * Returns weight of the new subgraph
      * @param n
-     * @return
+     * @param addedNodes
+     * @param searchAux
      */
     private void addNodeToTempSubgraph(Node n, HashSet<Node> addedNodes, SubgraphSearchAux searchAux) {
 
@@ -49,7 +54,7 @@ public class AllSubgraphsAlgorithm implements Algorithm {
         HashSet<Node> connections = new HashSet<>();
         n.getEachLeavingEdge().forEach(e -> connections.add(e.getTargetNode()));
         n.getEachEnteringEdge().forEach(e -> connections.add(e.getSourceNode()));
-        for (Node node: connections) {
+        for (Node node : connections) {
             Integer nodeLevel = node.getAttribute("level");
             if (nodeLevel >= searchAux.getMinLevel() && nodeLevel <= searchAux.getMaxLevel() && !searchAux.wasNodeVisited(node)) {
                 addNodeToTempSubgraph(node, addedNodes, searchAux);
@@ -60,45 +65,75 @@ public class AllSubgraphsAlgorithm implements Algorithm {
 
     /**
      * Uses an heuristic to find the most repeatable parallel subgraph
-     * @param
-     * @return
+     *
+     * @return The most repeatable parallel subgraph
      */
-    public List<HashSet<Node>> getMostRepeatableParallelSubgraph() {
+    private List<HashSet<Node>> getMostRepeatableParallelSubgraph() {
+        int maxScore = 0;
+        List<HashSet<Node>> mostRepeatableSubgraph = new ArrayList<>();
+        List<List<HashSet<Node>>> filteredSubgraphs;
+        filteredSubgraphs = allParallelSubgraphs.values().stream()
+                .filter(clusters -> clusters.size() > 2 && clusters.get(0).size() < maxNodesPerSubgraph)
+                .collect(Collectors.toList());
+        if (Config.isSubgraphRepeatsSet()) {
+            filteredSubgraphs = filteredSubgraphs.stream()
+                    .filter(clusters -> clusters.size() == Config.getSubgraphRepeats())
+                    .collect(Collectors.toList());
+        }
+
+
+
+        for (List<HashSet<Node>> listOfSubgraphs : filteredSubgraphs) {
+            int numberOfParallelSubgraphs = listOfSubgraphs.size();
+            int score = numberOfParallelSubgraphs * listOfSubgraphs.get(0).size();
+            for (Var input : arrayInputs) {
+                if (input.getSizes().get(0) % numberOfParallelSubgraphs == 0) {
+                    score = score * 2;
+                }
+            }
+            if (score > maxScore) {
+                maxScore = score;
+                mostRepeatableSubgraph = listOfSubgraphs;
+            }
+
+        }
+        System.out.println("Best parallel subgraph repeats " + mostRepeatableSubgraph.size() + " times and has " + mostRepeatableSubgraph.get(0).size() + " repeatable nodes");
+        return mostRepeatableSubgraph;
+    }
+
+    private List<HashSet<Node>> getMostRepeatableSequentialSubgraph() {
         int maxScore = 0;
         List<HashSet<Node>> mostRepeatableSubgraph = new ArrayList<>();
 
-        for ( List<HashSet<Node>> listOfSubgraphs : allParallelSubgraphs.values()) {
-            int numberOfParallelSubgraphs = listOfSubgraphs.size();
-            if (listOfSubgraphs.get(0).size() < maxNodesPerSubgraph && numberOfParallelSubgraphs > 2) {
-                int score = numberOfParallelSubgraphs * listOfSubgraphs.get(0).size();
-                for (Var input : arrayInputs) {
-                    if (input.getSizes().get(0) % numberOfParallelSubgraphs == 0) {
-                        score = score * 2;
-                    }
-                }
+        for (List<HashSet<Node>> listOfSubgraphs : allSequentialSubgraphs.values()) {
+            int numberOfSequentialSubgraphs = listOfSubgraphs.size();
+            if (listOfSubgraphs.get(0).size() < maxNodesPerSubgraph && numberOfSequentialSubgraphs > 2) {
+                int score = numberOfSequentialSubgraphs * listOfSubgraphs.get(0).size();
                 if (score > maxScore) {
-                    maxScore = numberOfParallelSubgraphs * listOfSubgraphs.get(0).size();
+                    maxScore = score;
                     mostRepeatableSubgraph = listOfSubgraphs;
                 }
             }
         }
-        System.out.println("Best subgraph has: " + mostRepeatableSubgraph.size() + " repeatable nodes");
+        System.out.println("Best sequential subgraph repeats " + mostRepeatableSubgraph.size() + " times and has " + mostRepeatableSubgraph.get(0).size() + " repeatable nodes");
         return mostRepeatableSubgraph;
     }
 
     @Override
     public void compute() {
-
+        System.out.println("All subgraphs algorithm is starting");
         List<List<Node>> levelGraph = graph.getAttribute("levelgraph");
-        int maxLevels = graph.getAttribute("maxlevel");
-        for (int i = 1; i < maxLevels; i++) {
-            for (int j = i; j < maxLevels; j++) {
+        int graphMaxLevel = graph.getAttribute("maxlevel");
+        System.out.println("Max Level: " + graphMaxLevel);
+        for (int startLevel = 1; startLevel < graphMaxLevel; startLevel++) {
+            int maxLastLevel = Math.min(graphMaxLevel, startLevel + maxFoldLevels);
+            for (int lastLevel = startLevel + minFoldLevels - 1; lastLevel < maxLastLevel; lastLevel++) {
                 HashSet<Node> addedNodes = new HashSet<>();
-                for (Node n: levelGraph.get(i)) {
+                for (Node n : levelGraph.get(startLevel)) {
                     if (!addedNodes.contains(n)) {
-                        SubgraphSearchAux searchAux = new SubgraphSearchAux(i,j);
+                        SubgraphSearchAux searchAux = new SubgraphSearchAux(startLevel, lastLevel);
                         addNodeToTempSubgraph(n, addedNodes, searchAux);
-                        if (searchAux.getMaxLevelReached() == j) {
+                        if (searchAux.getMaxLevelReached() == lastLevel) {
                             allParallelSubgraphs.putIfAbsent(searchAux.getSubgraphParallelWeight(), new ArrayList<>());
                             allParallelSubgraphs.get(searchAux.getSubgraphParallelWeight()).add(searchAux.getTemporarySubgraph());
                             allSequentialSubgraphs.putIfAbsent(searchAux.getSubgraphSequentialWeight(), new ArrayList<>());
@@ -108,5 +143,8 @@ public class AllSubgraphsAlgorithm implements Algorithm {
                 }
             }
         }
+        graph.setAttribute("bestParallelClusters", getMostRepeatableParallelSubgraph());
+        graph.setAttribute("bestSequentialClusters", getMostRepeatableSequentialSubgraph());
+        System.out.println("All subgraphs algorithm finished");
     }
 }

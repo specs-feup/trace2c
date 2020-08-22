@@ -23,18 +23,17 @@ import java.util.List;
 public class CFunctionPrinter extends CPrinter {
     List<List<Node>> levelGraph;
     int maxLevel;
-    int loadStores;
     String graphType;
 
     /**
      *
      */
-    public CFunctionPrinter(BufferedWriter outBuffer, Graph graph, Config config) {
-        super(outBuffer, graph, config);
+    public CFunctionPrinter(BufferedWriter outBuffer, Graph graph) {
+        super(outBuffer, graph);
         ArrayList<Graph>  subgraphs = graph.getAttribute("subgraphs");
         if (subgraphs != null) {
             for (Graph subgraph: subgraphs) {
-                CPrinter printer = new CFunctionPrinter(outBuffer, subgraph, config);
+                CPrinter printer = new CFunctionPrinter(outBuffer, subgraph);
                 printer.print();
             }
         }
@@ -42,10 +41,6 @@ public class CFunctionPrinter extends CPrinter {
 
         this.maxLevel = graph.getAttribute("maxlevel");
         this.levelGraph = graph.getAttribute("levelgraph");
-        if (this.loadStores < 17)
-            this.loadStores = config.getLoadStores();
-        else
-            this.loadStores = 16;
         this.graphType = graph.hasAttribute("type") ? graph.getAttribute("type") : "normal";
     }
 
@@ -60,7 +55,7 @@ public class CFunctionPrinter extends CPrinter {
         try {
             writeFunctionHeader();
             if (graphType.equals("parallel")) {
-                CParallelLoopPrinter parallelLoopPrinter = new CParallelLoopPrinter(outBuffer, graph, config, 0);
+                CParallelLoopPrinter parallelLoopPrinter = new CParallelLoopPrinter(outBuffer, graph, 0);
                 parallelLoopPrinter.print();
             } else {
                 writeCodeByLevel(levelGraph, 0);
@@ -80,13 +75,13 @@ public class CFunctionPrinter extends CPrinter {
         if (!edge.hasAttribute("att1")) {
             throw new IOException("Edge without att1, label: " + Utils.getLabel(edge));
         }
-        if (edge.getAttribute("att1").equals("call")) {
+        if (Utils.isCall(edge)) {
             name = getCallStatement(edge);
         } else {
             if (!edge.hasAttribute("label")) {
                 throw new IOException("No label on edge");
             }
-            name = edge.getAttribute("label").toString();
+            name = Utils.getLabel(edge);
         }
         if (edge.hasAttribute("cast")) {
             name = edge.getAttribute("cast") + name;
@@ -98,13 +93,13 @@ public class CFunctionPrinter extends CPrinter {
     }
 
     @Override
-    protected String getAssignmentLabel(Edge edge) throws IOException {
-        return edge.getAttribute("label").toString();
+    protected String getAssignmentLabel(Edge edge) {
+        return Utils.getLabel(edge);
     }
 
 
-    private String getFunctionParameters(CInfo info) throws IOException {
-        String functionParams = new String();
+    private String getFunctionParameters(CInfo info) {
+        StringBuilder functionParams = new StringBuilder();
         ArrayList<Var> params = new ArrayList<>();
         params.addAll(info.getInputs());
         params.addAll(info.getOutputs());
@@ -112,21 +107,21 @@ public class CFunctionPrinter extends CPrinter {
 
         for (Var var : params) {
             if (!isFirstParam) {
-                functionParams += (", ");
+                functionParams.append(", ");
             }
             isFirstParam = false;
             if (var.isArray()) {
-                functionParams += (var.getType() + " " + var.getName());
+                functionParams.append(var.getType()).append(" ").append(var.getName());
                 List<Integer> indexes = var.getSizes();
                 for (int i = 0; i < var.getDim(); i++) {
-                    functionParams += ("[" + indexes.get(i) + "]");
+                    functionParams.append("[").append(indexes.get(i)).append("]");
                 }
 
             } else {
-                functionParams += (var.getType() + " " + var.getName());
+                functionParams.append(var.getType()).append(" ").append(var.getName());
             }
         }
-        return functionParams;
+        return functionParams.toString();
     }
 
     /**
@@ -139,7 +134,7 @@ public class CFunctionPrinter extends CPrinter {
         CInfo info = this.graph.getAttribute("info");
         String functionName = graph.getAttribute("functionName");
         String outputType = "void";
-        outBuffer.append("\n" + outputType + " " + functionName + "(");
+        outBuffer.append("\n").append(outputType).append(" ").append(functionName).append("(");
 
         outBuffer.append(getFunctionParameters(info));
         outBuffer.append(") {\n");
@@ -148,18 +143,15 @@ public class CFunctionPrinter extends CPrinter {
         outBuffer.append("// Step 2: Initialize local variables\n");
         info.getLocalInfo().sort(new VarComparator());
         for (Var var : info.getLocalInfo()) {
-            if (var.getType().equals("global")) {
-                continue;
-            }
             if (var.isArray()) {
-                outBuffer.append(var.getType() + " " + var.getName());
+                outBuffer.append(var.getType()).append(" ").append(var.getName());
                 for (int size: var.getSizes()) {
-                    outBuffer.append("[" + size + "]");
+                    outBuffer.append("[").append(String.valueOf(size)).append("]");
                 }
                 outBuffer.append(";\n");
             }
             else {
-                outBuffer.append(var.getType() + " " + var.getName() + ";\n");
+                outBuffer.append(var.getType()).append(" ").append(var.getName()).append(";\n");
             }
         }
         List<Var> allVars = new ArrayList<>();
@@ -169,8 +161,13 @@ public class CFunctionPrinter extends CPrinter {
         for (Var var: allVars) {
             if (var.hasHlsPartition()) {
                 HLSPartition hlsPartition = var.getHlsPartition();
-                outBuffer.append("#pragma HLS ARRAY_PARTITION variable=" + var.getName() +
-                        " cyclic factor=" + hlsPartition.getFactor() + " dim=" + hlsPartition.getDim() + "\n");
+                outBuffer.append("#pragma HLS ARRAY_PARTITION variable=")
+                        .append(var.getName()).append(" cyclic factor=")
+                        .append(String.valueOf(hlsPartition.getFactor()))
+                        .append(" dim=")
+                        .append(String.valueOf(hlsPartition.getDim() + 1))
+                        .append("\n");
+
             }
         }
         outBuffer.append("// Initialization done\n");

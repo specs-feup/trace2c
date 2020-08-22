@@ -4,7 +4,9 @@ import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class ArithmeticOptimizations implements Algorithm {
 
@@ -26,8 +28,17 @@ public class ArithmeticOptimizations implements Algorithm {
 
     @Override
     public void compute() {
+        System.out.println("Starting arithmetic optimizations for graph: " + graph.getId());
         optimizeMathFunctions();
         optimizeMultiplications();
+        if (graph.hasAttribute("subgraphs")) {
+            for (Graph subgraph : (ArrayList<Graph>) graph.getAttribute("subgraphs")) {
+                Algorithm algorithm = new ArithmeticOptimizations();
+                algorithm.init(subgraph);
+                algorithm.compute();
+            }
+        }
+        System.out.println("Arithmetic optimizations complete");
     }
 
     /**

@@ -1,5 +1,7 @@
 package pt.up.fe.specs;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -7,12 +9,13 @@ import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceFactory;
 import pt.up.fe.specs.algorithms.*;
+import pt.up.fe.specs.printers.CFunctionPrinter;
+import pt.up.fe.specs.printers.CFileHeaderPrinter;
+import pt.up.fe.specs.printers.CPrinter;
 import pt.up.fe.specs.utils.AddStartAndEnd;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -23,12 +26,8 @@ import java.util.Queue;
  */
 public class Launcher {
 
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         System.out.println("Framework");
-        // variables used for optimizations before configuration file
-        int loadStores;
-        boolean arithmetic ;
-        boolean access;
 
         // Clock timer
         long startTime = System.currentTimeMillis();
@@ -50,30 +49,49 @@ public class Launcher {
             System.out.println("File does no exist on path:");
             return;
         }
-        // Creating main part of tool and reading config file
-        LaunchAlgorithm launch = new LaunchAlgorithm();
-        Config config = launch.getConfiguration(configFile);
+
+        loadConfiguration(configFile);
         // Getting Graph
         FileSource fs = FileSourceFactory
-                .sourceFor(path + "\\" + config.graph);
+                .sourceFor(path + "\\" + Config.getGraph());
 
         fs.addSink(mainGraph);
-        fs.readAll(path + "\\" + config.graph);
-        mainGraph.addAttribute("config", config);
-        mainGraph.addAttribute("functionName", config.outputFile);
+        fs.readAll(path + "\\" + Config.getGraph());
+        mainGraph.addAttribute("functionName", Config.getOutputFile());
 
         long initTime = System.currentTimeMillis();
         System.out.println("init time:" + (initTime - startTime));
 
 
         Queue<Algorithm> algorithmsQueue = new LinkedList<>();
+
         algorithmsQueue.add(new AddStartAndEnd());
-        algorithmsQueue.add(new LocalVectorPruning());
+        if (Config.isPruneLocalArrays()) {
+            // should only be used if there are no arrays accesses that depend on input
+            algorithmsQueue.add(new LocalVectorPruning());
+        }
         algorithmsQueue.add(new SetVarsAttributes());
         algorithmsQueue.add(new InfoFromConfig());
         algorithmsQueue.add(new Pruning());
         algorithmsQueue.add(new Leveling());
-        algorithmsQueue.add(new ParallelizeSums());
+        if (Config.isToParallelizeSums()) algorithmsQueue.add(new ParallelizeSums());
+
+
+        if (Config.isToFold()) {
+            //algorithmsQueue.add(new Snapshot());
+            algorithmsQueue.add(new WeightAlgorithm());
+            algorithmsQueue.add(new AllSubgraphsAlgorithm());
+            algorithmsQueue.add(new FoldParallelSubgraphs());
+            algorithmsQueue.add(new CreatePrologue());
+            algorithmsQueue.add(new CreateEpilogue());
+        }
+
+        algorithmsQueue.add(new UpdateVarLabels());
+
+        if (Config.isArithmetic()) algorithmsQueue.add(new ArithmeticOptimizations());
+
+        algorithmsQueue.add(new UpdateLocalInfo());
+        algorithmsQueue.add(new OrderLevelGraph());
 
         while(!algorithmsQueue.isEmpty()) {
             Algorithm algorithm = algorithmsQueue.remove();
@@ -81,33 +99,58 @@ public class Launcher {
             algorithm.compute();
         }
 
-        if (config.folding.equals("high") || config.folding.equals("medium")) {
-            launch.runWeightAlgorithm(mainGraph);
-            long graphsMatchTime = System.currentTimeMillis();
-            System.out.println("Starting parallel Matching");
-            boolean isFolded = launch.foldParallel(mainGraph, config);
-            System.out.println("Fold parallel time:" + (graphsMatchTime - startTime));
-            List<Graph> subgraphs = mainGraph.getAttribute("subgraphs");
-
-            //launch.createPrologue(mainGraph);
-            if (isFolded) {
-                Graph epilogue = launch.createEpilogue(mainGraph);
-                //fsDOT.writeAll(epilogue, "./dotprod_N10_epilogue.dot");
-            }
-
-
-        }
-
-        launch.arithmeticOptimizations(mainGraph);
-        launch.updateVarLabels(mainGraph);
-        launch.orderLevelGraph(mainGraph);
-
-        launch.writeC(mainGraph, path.concat("\\"+config.outputFile + ".c"), config);
+        writeC(mainGraph, path.concat("\\"+Config.getOutputFile() + ".c"));
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
         shapeGraph(mainGraph, false);
         mainGraph.display();
+    }
+
+    /**
+     * Call the algorithm to generate C output.
+     *
+     * @param graph
+     *            Graph to print.
+     * @param path
+     *            path to place result
+     * @throws IOException
+     */
+    private static void writeC(Graph graph, String path) {
+
+        try {
+            File file = new File(path);
+            System.out.println("Path: " + path);
+            BufferedWriter outBuffer = new BufferedWriter(new FileWriter(file));
+            CFileHeaderPrinter cIncludesPrinter = new CFileHeaderPrinter(outBuffer);
+            cIncludesPrinter.print();
+            CPrinter printer = new CFunctionPrinter(outBuffer, graph);
+            printer.print();
+
+            outBuffer.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.println("Wrong path: " + path);
+            e.printStackTrace();
+            System.exit(0);
+        }
+
+    }
+
+    /**
+     * Method that read the configuration JSON file
+     *
+     * @param file
+     *            configuration Gson file
+     *
+     * @throws FileNotFoundException
+     */
+    private static void loadConfiguration(File file) throws FileNotFoundException {
+        Reader reader = new FileReader(file);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT);
+        Gson gson = gsonBuilder.create();
+        gson.fromJson(reader, Config.StaticConfig.class);
     }
 
 
@@ -117,9 +160,9 @@ public class Launcher {
      * @param g
      *            graph to shape
      * @param remove
-     *            boolean used to indicate wether the Start ENd nodes should be removed for the print out
+     *            boolean used to indicate whether the Start and End nodes should be removed for the print out
      */
-    public static void shapeGraph(Graph g, boolean remove) {
+    private static void shapeGraph(Graph g, boolean remove) {
         if (remove) {
             g.removeNode("Start");
             g.removeNode("End");
@@ -137,17 +180,19 @@ public class Launcher {
                     continue;
                 }
             }
-            if (att1.equals("nop"))
-                n.addAttribute("shape", "house");
-            else if (att1.equals("const"))
-                n.addAttribute("shape", "circle");
-            else if (att1.equals("var"))
-                n.addAttribute("shape", "box");
-            else if (att1.equals("hyper"))
-                n.addAttribute("shape", "hexagon");
+            switch (att1) {
+                case "nop":
+                    n.addAttribute("shape", "house");
+                    break;
+                case "var":
+                    n.addAttribute("shape", "box");
+                    break;
+                case "hyper":
+                    n.addAttribute("shape", "hexagon");
+                    break;
+            }
 
         }
-        return;
     }
 
 }

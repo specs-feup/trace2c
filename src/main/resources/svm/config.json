@@ -12,7 +12,7 @@
    ],
    "outputs":["*y"],
    "output_types": ["int"],
-   "folding" : "medium",
+   "folding" : true,
    "arithmetic" : false,
    "acc" : false,
    "full_part" : false,

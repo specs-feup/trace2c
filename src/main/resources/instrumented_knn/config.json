@@ -1,30 +1,34 @@
 {
    "inputs":[
-      "xFeatures[5]",
-      "knownFeatures[10][5]",
-      "knownClasses[10]"
+      "xFeatures[2048]",
+      "knownFeatures[8][2048]",
+      "knownClasses[8]"
    ],
    "input_types":[
-      "float",
-      "float",
+      "double",
+      "double",
       "char"
    ],
    "outputs":["*out"],
    "output_types": ["char"],
-   "folding" : "false",
-   "arithmetic" : false,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
-   "graph" : "knn.dot",
-   "outputFile": "knn_no_folding_output",
-   "parallelFunctions": 0,
-   "maxNodesPerSubgraph": 1000,
+   "fold" : true,
+   "parallelizeSums": false,
+   "foldPrologue": false,
+   "foldEpilogue": true,
+   "arithmetic" : true,
+   "pruneLocalArrays": false,
+   "graph" : "knn8p2048f.dot",
+   "outputFile": "knn_8p2048f_1parallel_saveEnergy",
+   "saveEnergy": true,
+   "parallelFunctions": 1,
+   "maxNodesPerSubgraph": 4000,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 2048,
+   "maxFoldLevels": 2050,
    "varsToPartition": [{
       "var": "knownFeatures",
       "dim": 0
-   }, {
-      "var": "knownClasses",
-      "dim": 0
-   }]
+   }],
+   "includes": ["<stdio.h>", "<math.h>", "<stdlib.h>", "<string.h>", "<float.h>"],
+   "defines": ["NUM_CLASSES 2", "MAXDISTANCE DBL_MAX", "sqr(x) ((x)*(x))"]
 }

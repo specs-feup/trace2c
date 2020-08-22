@@ -6,7 +6,7 @@
    ],
    "outputs":"c",
    "output_type": "int",
-   "folding" : "false",
+   "folding" : false,
    "arithmetic" : false,
    "acc" : false,
    "full_part" : true,

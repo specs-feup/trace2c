@@ -22,32 +22,34 @@ public class WeightAlgorithm implements Algorithm {
 
         operationTypeToInt.put("+", 1);
         operationTypeToInt.put("-", 2);
-        operationTypeToInt.put("*", 4);
-        operationTypeToInt.put("/", 8);
-        operationTypeToInt.put(">", 16);
-        operationTypeToInt.put("<", 32);
+        operationTypeToInt.put("*", 3);
+        operationTypeToInt.put("/", 5);
+        operationTypeToInt.put(">", 7);
+        operationTypeToInt.put("<", 11);
+        operationTypeToInt.put("==", 13);
 
-        nodeTypeToInt.put("nop", 3);
-        nodeTypeToInt.put("mux", 5);
-        nodeTypeToInt.put("call", 7);
-        nodeTypeToInt.put("assignment", 9);
-        nodeTypeToInt.put("arrayAccess",11);
-        nodeTypeToInt.put("complexAssignment", 13);
+        nodeTypeToInt.put("nop", 17);
+        nodeTypeToInt.put("mux", 19);
+        nodeTypeToInt.put("call", 23);
+        nodeTypeToInt.put("assignment", 29);
+        nodeTypeToInt.put("arrayAccess",31);
+        nodeTypeToInt.put("complexAssignment", 37);
 
-        edgeTypeToInt.put(null, 0);
-        edgeTypeToInt.put("var", 10);
-        edgeTypeToInt.put("const", 1);
+        edgeTypeToInt.put(null, 43);
+        edgeTypeToInt.put("var", 47);
+        edgeTypeToInt.put("const", 53);
 
-        positionToInt.put(null, 0);
-        positionToInt.put("l", 1);
-        positionToInt.put("r", 2);
-        positionToInt.put("sel", 4);
-        positionToInt.put("t", 8);
-        positionToInt.put("f", 16);
+        positionToInt.put("", 59);
+        positionToInt.put("l", 61);
+        positionToInt.put("r", 67);
+        positionToInt.put("sel", 71);
+        positionToInt.put("t", 73);
+        positionToInt.put("f", 79);
     }
 
     @Override
     public void compute() {
+        System.out.println("Computing graph weight");
         final int k1 = 1000;
         final int k2 = 100;
 
@@ -55,16 +57,19 @@ public class WeightAlgorithm implements Algorithm {
             String nodeType = n.getAttribute("att1");
             Integer typeWeight = Utils.isOperation(n) ? operationTypeToInt.get(Utils.getLabel(n)) : nodeTypeToInt.get(nodeType);
             Integer nodeLevel = n.getAttribute("level");
-            int sequential_weight = k2 * typeWeight + n.getDegree() * typeWeight;
+            if (typeWeight == null) {
+                System.err.println("Null type weight for node " + n.getId());
+            }
+            int sequential_weight = k2 * typeWeight * n.getDegree();
 
             for (Edge e: n.getEachEnteringEdge()) {
                 Integer edgeWeight = edgeTypeToInt.get(e.getAttribute("att1"));
-                edgeWeight += positionToInt.get(e.getAttribute("pos"));
-                if (e.hasAttribute("array")) {
-                    edgeWeight += Integer.valueOf(e.getAttribute("name").hashCode()) % 67;
+                edgeWeight += positionToInt.get(Utils.getPos(e));
+                if (Utils.isArray(e)) {
+                    edgeWeight += Integer.valueOf(Utils.getName(e).hashCode()) % 83;
                 }
                 if (e.hasAttribute("dim")) {
-                    edgeWeight += (int) e.getAttribute("dim");
+                    edgeWeight = edgeWeight * (int) e.getAttribute("dim");
                 }
                 sequential_weight += edgeWeight;
             }
@@ -73,5 +78,6 @@ public class WeightAlgorithm implements Algorithm {
             n.setAttribute("parallel_weight", parallel_weight);
             n.setAttribute("sequential_weight", sequential_weight);
         }
+        System.out.println("Weights computation finished");
     }
 }

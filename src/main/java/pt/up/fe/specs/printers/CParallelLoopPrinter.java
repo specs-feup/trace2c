@@ -15,8 +15,8 @@ import java.util.List;
 
 public class CParallelLoopPrinter extends CLoopPrinter {
 
-    public CParallelLoopPrinter(BufferedWriter outBuffer, Graph graph, Config config, int loopLevel) {
-        super(outBuffer, graph, config, loopLevel);
+    public CParallelLoopPrinter(BufferedWriter outBuffer, Graph graph,  int loopLevel) {
+        super(outBuffer, graph, loopLevel);
 
 
     }

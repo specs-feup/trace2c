@@ -10,10 +10,9 @@ import java.util.HashSet;
 import java.util.List;
 
 /**
- * 
- * Algorithm that levels a given dataflow. 
- * @author Afonso
+ * Algorithm that levels a given dataflow.
  *
+ * @author Afonso
  */
 public class Leveling implements Algorithm {
 
@@ -31,7 +30,7 @@ public class Leveling implements Algorithm {
      * selected as beginning of algorithm 
      */
     public void init(Graph graph) {
-        // TODO Auto-generated method stub
+        System.out.println("Initiating leveling");
         this.graph = graph;
         this.level = 0;
         this.nodeList = new HashSet<>();
@@ -50,6 +49,7 @@ public class Leveling implements Algorithm {
         nodeList.addAll(tempNodeList);
         tempNodeList.clear();
         graph.addAttribute("level", true);
+        System.out.println("Leveling initiated");
 
     }
 
@@ -57,15 +57,17 @@ public class Leveling implements Algorithm {
     /**
      * Main body of the algorithm. Applies the levels to the nodes. After graph is leveled
      * the algorithm is called for the lower levels.
-     * 
+     *
      */
     public void compute() {
         //System.out.println("Starting graph leveling ext");
         graph.addAttribute("level", true);
-
+        boolean printNodeListSizeFlag = false;
         while (!nodeList.isEmpty()) {
             level++;
             levelGraph.add(new ArrayList<>());
+            int prevNodeListSize = nodeList.size();
+
 
             for (Node n : nodeList) {
                 if (markforLevel(n, level)) {
@@ -86,6 +88,9 @@ public class Leveling implements Algorithm {
                 if (!nodeList.contains(n))
                     nodeList.add(n);
             }
+            if (prevNodeListSize == nodeList.size()) {
+                System.out.println("Leveling might be stuck in a loop at level: " + level + "; node list size: " + nodeList.size());
+            }
 
             tempNodeList.clear();
 
@@ -93,21 +98,32 @@ public class Leveling implements Algorithm {
 
         graph.addAttribute("levelgraph", levelGraph);
         graph.addAttribute("maxlevel", level);
-        System.out.println("Leveling finished");
+        System.out.println("Graph: " + graph.getId() + " has " + level + " levels");
+
+        if (graph.hasAttribute("subgraphs")) {
+            for (Graph subgraph: graph.<List<Graph>>getAttribute("subgraphs")) {
+                Leveling leveling = new Leveling();
+                leveling.init(subgraph);
+                leveling.compute();
+            }
+        }
     }
-    
+
     /**
      * Checks if node can be leveled
-     * 
-     * @param n      Node to mark.
-     * @param level  level to assign if possible.
-     * @return       true if node marked.
+     *
+     * @param n     Node to mark.
+     * @param level level to assign if possible.
+     * @return true if node marked.
      */
     private boolean markforLevel(Node n, int level) {
         boolean set = true;
         for (Edge e : n.getEachEnteringEdge()) {
-            if (!e.getNode0().hasAttribute("level"))
+            Node sourceNode = e.getSourceNode();
+            if (!sourceNode.hasAttribute("level")) {
                 set = false;
+                break;
+            }
         }
 
         if (set && !n.hasAttribute("level"))
@@ -116,35 +132,38 @@ public class Leveling implements Algorithm {
         return set;
 
     }
-    
+
+
     /**
      * Adds nodes connected to outgoing edges of a given node to a temporary list of nodes to be checked.
+     *
      * @param n Node from which the child nodes are obtained.
      */
     private void addChildrenToTempList(Node n) {
         for (Edge e : n.getEachLeavingEdge()) {
-            if (!e.getNode1().equals(n))
-                tempNodeList.add(e.getNode1());
+            if (!e.getTargetNode().equals(n))
+                tempNodeList.add(e.getTargetNode());
         }
     }
-    
+
     /**
      * Gets the highest level of the leveled graph.
+     *
      * @return
      */
     public int getLevel() {
         return level;
     }
-    
+
     /**
      * Gets the created leveled graph
-     * 
+     *
      * @return
      */
     public List<List<Node>> getLevelGraph() {
         return levelGraph;
     }
-    
+
     /**
      * Clears the information of a prior leveling from the graph.
      */

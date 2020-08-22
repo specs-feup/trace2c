@@ -51,6 +51,8 @@ public class Pruning implements Algorithm {
 
         for (Node n: nodes) {
             if (isDisconnected(n)) {
+                if (graph.getNode(n.getId()) != null) System.out.println("Found disconnected node: " + n.getId());
+
                 safeRemoveNode(n);
             } else {
                 if (Utils.isVar(n) || Utils.isConst(n)) {
@@ -66,7 +68,7 @@ public class Pruning implements Algorithm {
     }
 
     private boolean isDisconnected(Node n) {
-        return n.getInDegree() == 0 && n.getOutDegree() == 0;
+        return n.getOutDegree() == 0 && !Utils.isEndNode(n);
     }
 
 
@@ -80,8 +82,8 @@ public class Pruning implements Algorithm {
      */
     public void removeIntermediate(Node n) {
 
-        if (n.getInDegree() <= 1) {
-            Node prev = n.getEnteringEdge(0).getSourceNode();
+        for (Edge inEdge: n.getEachEnteringEdge()) {
+            Node prev = inEdge.getSourceNode();
             String mod = getModAttribute(n);
             for (Edge edgeToTarget: n.getEachLeavingEdge()) {
                 Node targetNode = edgeToTarget.getTargetNode();
@@ -103,8 +105,8 @@ public class Pruning implements Algorithm {
                     }
                 }
             }
-            safeRemoveNode(n);
         }
+        safeRemoveNode(n);
     }
 
     private void safeRemoveNode(Node n) {

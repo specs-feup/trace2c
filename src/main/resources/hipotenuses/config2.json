@@ -11,7 +11,7 @@
   "outputs": ["hypotenuse_array[10]"],
   "output_types": ["unsigned int"],
   "graph": "triangles_hypotenuse.dot",
-  "folding": "medium",
+  "folding": true,
   "arithmetic": false,
   "acc": false,
   "full_part": false,

@@ -1,14 +1,14 @@
 package pt.up.fe.specs.utils;
 
 import org.graphstream.graph.Edge;
-import sun.nio.ch.Util;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EdgeComparator implements Comparator<Edge> {
 
-    Utils utils = new Utils();
     String varToFold;
 
     public void setVarToFold(String s) {
@@ -16,8 +16,8 @@ public class EdgeComparator implements Comparator<Edge> {
     }
 
     private int compareIndexes(String label1, String label2) {
-        ArrayList<Integer> indexes1 = utils.getIndexes(label1);
-        ArrayList<Integer> indexes2 = utils.getIndexes(label2);
+        ArrayList<Integer> indexes1 = Utils.getIndexes(label1);
+        ArrayList<Integer> indexes2 = Utils.getIndexes(label2);
         if (indexes1.size() != indexes2.size()) {
             return indexes1.size() - indexes2.size();
         }
@@ -27,7 +27,7 @@ public class EdgeComparator implements Comparator<Edge> {
         for (int i = 0; i < indexes1.size(); i++) {
             Integer size1 = indexes1.get(i);
             Integer size2 = indexes2.get(i);
-            if (size1 != size2) {
+            if (!size1.equals(size2)) {
                 return size1 - size2;
             }
         }
@@ -40,6 +40,7 @@ public class EdgeComparator implements Comparator<Edge> {
         String label2 = Utils.getLabel(e2);
         if (label1 == null || label2 == null) {
             System.err.println("Debug null label");
+            return 0;
         }
         String name1 = Utils.getName(e1);
         String name2 = Utils.getName(e2);
@@ -77,6 +78,18 @@ public class EdgeComparator implements Comparator<Edge> {
         }
         if (Utils.isArray(e2)) {
             return 1;
+        }
+
+        // create regex to extract numbers from end of the labels;
+        Pattern pattern = Pattern.compile("(\\d*)$");
+        Matcher matcherLabel1 = pattern.matcher(label1);
+        Matcher matcherLabel2 = pattern.matcher(label2);
+        if (matcherLabel1.find() && matcherLabel2.find()) {
+            if (!matcherLabel1.group().isEmpty() && !matcherLabel2.group().isEmpty()) {
+                int match1 = Integer.parseInt(matcherLabel1.group());
+                int match2 = Integer.parseInt(matcherLabel2.group());
+                return match1 - match2;
+            }
         }
 
         return label1.compareTo(label2);

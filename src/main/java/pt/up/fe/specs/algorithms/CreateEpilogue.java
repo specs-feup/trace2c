@@ -5,6 +5,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
+import pt.up.fe.specs.Config;
+import pt.up.fe.specs.utils.Utils;
 import pt.up.fe.specs.utils.Var;
 
 import java.util.ArrayList;
@@ -25,27 +27,23 @@ public class CreateEpilogue implements Algorithm {
 
     @Override
     public void compute() {
-        HashSet<Node> nodesToMove = new HashSet<>();
-        getNodesToMove(nodesToMove);
-        WrapNodesIntoFunction wrapAlgorithm = new WrapNodesIntoFunction(nodesToMove, functionName);
-        wrapAlgorithm.disableUpdateOutputs();
-        wrapAlgorithm.init(mainGraph);
-        wrapAlgorithm.compute();
-        Node callNode = wrapAlgorithm.getCallNode();
-        Node functionNode = wrapAlgorithm.getFunctionNode();
-        epilogueGraph = wrapAlgorithm.getFunctionGraph();
-        addCallingEdges(epilogueGraph, callNode, functionNode);
-        Leveling levelingAlgorithmExt = new Leveling();
-        levelingAlgorithmExt.init(epilogueGraph);
-        levelingAlgorithmExt.compute();
-        levelingAlgorithmExt.init(mainGraph);
-        levelingAlgorithmExt.compute();
-    }
+        HashSet<Node> nodesToMove = getNodesToMove();
+        if (!nodesToMove.isEmpty()) {
+            WrapNodesIntoFunction wrapAlgorithm = new WrapNodesIntoFunction(nodesToMove, functionName, Config.isToFoldEpilogue());
+            wrapAlgorithm.disableUpdateOutputs();
+            wrapAlgorithm.init(mainGraph);
+            wrapAlgorithm.compute();
+            Node callNode = wrapAlgorithm.getCallNode();
+            Node functionNode = wrapAlgorithm.getFunctionNode();
+            epilogueGraph = wrapAlgorithm.getFunctionGraph();
+            addCallingEdges(callNode, functionNode);
+            Leveling leveling = new Leveling();
+            leveling.init(mainGraph);
+            leveling.compute();
+            mainGraph.setAttribute("epilogue", epilogueGraph);
+        }
 
-    public Graph getEpilogueGraph(){
-        return epilogueGraph;
     }
-
 
     private ArrayList<String> buildCallParams(CInfo prologueInfo) {
         ArrayList<String> callParams = new ArrayList<>();
@@ -62,8 +60,8 @@ public class CreateEpilogue implements Algorithm {
         return callParams;
     }
 
-    private void addCallingEdges(Graph functionGraph, Node callNode, Node functionNode) {
-        CInfo prologueInfo = functionGraph.getAttribute("info");
+    private void addCallingEdges(Node callNode, Node functionNode) {
+        CInfo prologueInfo = epilogueGraph.getAttribute("info");
         ArrayList<String> callParams = buildCallParams(prologueInfo);
         Edge callEdge = mainGraph.addEdge("call_" + functionName, callNode, functionNode, true);
         callEdge.setAttribute("att1", "call");
@@ -72,36 +70,15 @@ public class CreateEpilogue implements Algorithm {
     }
 
 
-    private void getNodesToMove(HashSet<Node> nodesToMove) {
-        ArrayList<ArrayList<Node>> levelGraph = mainGraph.getAttribute("levelgraph");
-
-        Node callNode = getFirstCallNode(levelGraph);
-        int callNodeLevel = callNode.getAttribute("level");
-        int functionNodeLevel = callNodeLevel + 1;
-        for (Node n: levelGraph.get(callNodeLevel)) {
-            if (!n.getAttribute("att1").equals("call")) {
+    private HashSet<Node> getNodesToMove() {
+        HashSet<Node> nodesToMove = new HashSet<>();
+        for (Node n : mainGraph.getEachNode()) {
+            if (!Utils.isCall(n) && !Utils.isFunction(n) && !Utils.isStartNode(n) && !Utils.isEndNode(n)) {
                 nodesToMove.add(n);
             }
         }
-        for (Node n: levelGraph.get(functionNodeLevel)) {
-            if (!n.getAttribute("att1").equals("function")) {
-                nodesToMove.add(n);
-            }
-        }
-        for (int i = functionNodeLevel + 1; i < levelGraph.size() - 1; i++) {
-            nodesToMove.addAll(levelGraph.get(i));
-        }
+        return nodesToMove;
     }
 
-    private Node getFirstCallNode(ArrayList<ArrayList<Node>> levelGraph) {
-        for (ArrayList<Node> level: levelGraph) {
-            for (Node n: level) {
-                if (n.getAttribute("att1").equals("call")) {
-                    return n;
-                }
-            }
-        }
-        return null;
-    }
 
 }

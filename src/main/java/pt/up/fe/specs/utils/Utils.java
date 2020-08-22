@@ -1,12 +1,16 @@
 package pt.up.fe.specs.utils;
 
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Element;
+import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import java.util.*;
 
 public class Utils {
 
+    private static final String startNodeID = "Start";
+    private static final String endNodeID = "End";
 
     /**
      * Receives a variable that is an array, and returns the sizes of all of it's partitions.
@@ -116,25 +120,41 @@ public class Utils {
     public static int compareIndexes(List<Integer> indexes1, List<Integer> indexes2) {
         if (indexes1.size() != indexes2.size()) return indexes1.size() - indexes2.size();
         for (int dim = 0; dim < indexes1.size(); dim++) {
-            int index1 = indexes1.get(dim);
-            int index2 = indexes2.get(dim);
-            if (index1 != index2) {
+            Integer index1 = indexes1.get(dim);
+            Integer index2 = indexes2.get(dim);
+            if (index2 == null || index1 == null) {
+                continue;
+            }
+            if (!index1.equals(index2)) {
                 return index1 - index2;
             }
         }
         return 0;
     }
 
+    public static Node getStartNode(Graph graph) {
+        return graph.getNode(startNodeID);
+    }
+
+    public static Node getEndNode(Graph graph) {
+        return graph.getNode(endNodeID);
+    }
 
     public static String getLabel(Element element) {
         return element.getAttribute("label");
     }
 
-    public static String getName(Element element) { return element.getAttribute("name");}
+    public static String getName(Element element) {
+        return element.hasAttribute("name") ? element.getAttribute("name") : getLabel(element);}
+
+    public static String getPos(Element element) {
+        if (!element.hasAttribute("pos")) return "";
+        return element.getAttribute("pos");
+    }
 
     public static boolean isArray(Element element) {
         if (!element.hasAttribute("label")) return false;
-        return getLabel(element).contains("[");
+        return getLabel(element).contains("[") || (element.hasAttribute("array") && element.getAttribute("array").equals(true));
     }
 
     public static boolean isStartNode(Node node) {
@@ -153,42 +173,64 @@ public class Utils {
         }
     }
 
+    public static void setNameFromLabel(Element e) {
+        e.setAttribute("name", varNameFromLabel(getLabel(e)));
+    }
+
+    public static boolean hasName(Element e) {
+        return e.hasAttribute("name");
+    }
+
+    public static void setName(Element e, String newName) {
+        e.setAttribute("name", newName);
+    }
+
+    public static void setLabel(Element e, String label) {
+        e.setAttribute("label", label);
+    }
+
+    public static void markVisited(Element e) {
+        e.setAttribute("visited", true);
+    }
+
+    public static boolean isVisited(Element e) {
+        if (!e.hasAttribute("visited")) return false;
+        return e.getAttribute("visited").equals(true);
+    }
+
+    public static void setArray(Element e) {
+        e.setAttribute("array", true);
+    }
+
     public static boolean isVar(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("var")) return true;
-        return  false;
+        return element.getAttribute("att1").equals("var");
     }
 
     public static boolean isConst(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("const")) return true;
-        return  false;
+        return element.getAttribute("att1").equals("const");
     }
 
     public static boolean isComplexAssignment(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("complexAssignment")) return true;
-        return false;
+        return element.getAttribute("att1").equals("complexAssignment");
     }
 
-    public static boolean isArrayAccess(Element element) {
-        if (!element.hasAttribute("att1") || !element.hasAttribute("att2")) return false;
-        if (element.getAttribute("att1").equals("arrayAccess")) return true;
-        return false;
+    public static String getVarType(Element element) {
+        return element.getAttribute("att3");
     }
 
     public static boolean isNOP(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("nop")) return true;
-        return false;
+        return element.getAttribute("att1").equals("nop");
     }
 
 
     public static boolean isLocalVar(Element element) {
         if (!isVar(element)) return false;
         if (!element.hasAttribute("att2")) return false;
-        if (element.getAttribute("att2").equals("loc")) return true;
-        return false;
+        return element.getAttribute("att2").equals("loc");
     }
 
 
@@ -196,39 +238,37 @@ public class Utils {
         if (!isVar(element)) return false;
         if (!element.hasAttribute("att2")) return false;
         String att2 = element.getAttribute("att2");
-        if (att2.equals("param") || att2.equals("inte")) return true;
-        return false;
+        return att2.equals("param") || att2.equals("inte");
     }
 
     public static boolean isGlobalVar(Element element) {
         if (!isVar(element)) return false;
         if (!element.hasAttribute("att2")) return false;
-        if (element.getAttribute("att2").equals("global")) return true;
-        return false;
+        return element.getAttribute("att2").equals("global");
     }
 
     public static boolean isOperation(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("op")) return true;
-        return false;
+        return element.getAttribute("att1").equals("op");
     }
 
     public static boolean isMux(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("mux")) return true;
-        return false;
+        return element.getAttribute("att1").equals("mux");
+    }
+
+    public static Integer getLevel(Element element) {
+        return element.getAttribute("level");
     }
 
     public static boolean isSumOperation(Element element) {
         if (!isOperation(element)) return false;
-        if (getLabel(element).equals("+")) return true;
-        return false;
+        return getLabel(element).equals("+");
     }
 
     public static boolean isAssignment(Element element) {
         if (!element.hasAttribute("att1")) return false;
-        if (element.getAttribute("att1").equals("assignment")) return true;
-        return false;
+        return element.getAttribute("att1").equals("assignment");
     }
 
 
@@ -258,6 +298,39 @@ public class Utils {
     }
 
 
+    public static boolean isCall(Element e) {
+        if (!e.hasAttribute("att1")) return false;
+        return e.getAttribute("att1").equals("call");
+    }
 
+    public static boolean isFunction(Element e) {
+        if (!e.hasAttribute("att1")) return false;
+        return e.getAttribute("att1").equals("function");
+    }
+
+    public static void setLoopInfo(Element e) {
+        e.setAttribute("loopinfo");
+    }
+
+    public static LoopInfo getLoopInfo(Element e) {
+        return e.getAttribute("loopinfo");
+    }
+
+
+    public static boolean hasLoopInfo(Element e) {
+        return e.hasAttribute("loopinfo");
+    }
+
+    public static void setFoldInfo(Graph g, FoldInfo foldInfo) {
+       g.setAttribute("foldInfo", foldInfo);
+    }
+
+    public static FoldInfo getFoldInfo(Graph g) {
+        return g.getAttribute("foldInfo");
+    }
+
+    public static boolean hasFoldInfo(Graph g) {
+        return g.hasAttribute("foldInfo");
+    }
 
 }

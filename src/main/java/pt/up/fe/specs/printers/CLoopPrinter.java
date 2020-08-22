@@ -29,8 +29,8 @@ public class CLoopPrinter extends CPrinter {
     FoldInfo foldInfo;
 
 
-    public CLoopPrinter(BufferedWriter outBuffer, Graph graph, Config config, int loopLevel) {
-        super(outBuffer, graph, config);
+    public CLoopPrinter(BufferedWriter outBuffer, Graph graph, int loopLevel) {
+        super(outBuffer, graph);
         this.loopLevel = loopLevel;
         init();
     }
