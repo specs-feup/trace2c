@@ -357,7 +357,7 @@ public class FoldParallelSubgraphs implements Algorithm {
                             indexAcc += newVars.get(arraySuffix).getSizes().get(i);
                             arraySuffix++;
                         }
-                        int newIndex = indexAcc > 0 ? oldIndex % indexAcc : oldIndex;
+                        int newIndex = indexAcc > 0 ? oldIndex - indexAcc : oldIndex;
 
                         newLabelSuffix = newLabelSuffix.concat("[" + newIndex + "]");
                     }
