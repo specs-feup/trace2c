@@ -41,22 +41,24 @@ public class Launcher {
         }
         String configFilename = args[0];
         String path = "";
-        if (configFilename.contains("\\"))
-            path = configFilename.substring(0, configFilename.lastIndexOf("\\"));
+        if (configFilename.contains("/"))
+            path = configFilename.substring(0, configFilename.lastIndexOf("/"));
 
         File configFile = new File(configFilename);
         if (!configFile.exists()) {
-            System.out.println("File does no exist on path:");
+            System.out.println("File does no exist on path:" + configFile.getAbsolutePath() );
             return;
         }
 
         loadConfiguration(configFile);
-        // Getting Graph
+        // Getting Graph`
+        String graphPath = path + "/" + Config.getGraph();
+        System.out.println("Graph path:" + graphPath);
         FileSource fs = FileSourceFactory
-                .sourceFor(path + "\\" + Config.getGraph());
+                .sourceFor(graphPath);
 
         fs.addSink(mainGraph);
-        fs.readAll(path + "\\" + Config.getGraph());
+        fs.readAll(graphPath);
         mainGraph.addAttribute("functionName", Config.getOutputFile());
 
         long initTime = System.currentTimeMillis();
@@ -78,10 +80,10 @@ public class Launcher {
 
 
         if (Config.isToFold()) {
-            //algorithmsQueue.add(new Snapshot());
             algorithmsQueue.add(new WeightAlgorithm());
             algorithmsQueue.add(new AllSubgraphsAlgorithm());
             algorithmsQueue.add(new FoldParallelSubgraphs());
+            algorithmsQueue.add(new Snapshot());
             algorithmsQueue.add(new CreatePrologue());
             algorithmsQueue.add(new CreateEpilogue());
         }
@@ -92,6 +94,7 @@ public class Launcher {
 
         algorithmsQueue.add(new UpdateLocalInfo());
         algorithmsQueue.add(new OrderLevelGraph());
+        //algorithmsQueue.add(new Snapshot());
 
         while(!algorithmsQueue.isEmpty()) {
             Algorithm algorithm = algorithmsQueue.remove();
@@ -99,7 +102,7 @@ public class Launcher {
             algorithm.compute();
         }
 
-        writeC(mainGraph, path.concat("\\"+Config.getOutputFile() + ".c"));
+        writeC(mainGraph, path.concat("/"+Config.getOutputFile() + ".c"));
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));

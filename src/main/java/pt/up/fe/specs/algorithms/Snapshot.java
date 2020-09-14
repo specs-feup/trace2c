@@ -5,6 +5,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.stream.file.FileSinkDOT;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Snapshot implements Algorithm {
     private Graph graph;
@@ -18,9 +19,15 @@ public class Snapshot implements Algorithm {
     public void compute() {
         FileSinkDOT fsDot = new FileSinkDOT();
         try {
-            graph.write(fsDot, "snaphshot" + counter++ + ".dot");
+            graph.write(fsDot, "snaphshot_" + graph.getId() + "_" + counter++ + ".dot");
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (graph.hasAttribute("subgraphs")) {
+            for (Graph subgraph: (List<Graph>) graph.getAttribute("subgraphs")) {
+                init(subgraph);
+                compute();
+            }
         }
     }
 }
