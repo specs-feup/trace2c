@@ -106,6 +106,10 @@ public class FoldParallelSubgraphs implements Algorithm {
         splitVars(foldedGraph.getAttribute("foldInfo"));
     }
 
+    /*
+    Order inputs of each subgraph.
+    If an input is a scalar variable, transforms it into an array
+     */
     private void updateInputNames(ArrayList<Graph> allSubgraphs) {
         List<List<Edge>> inputs = allSubgraphs.stream().map(subgraph ->
                 StreamSupport.stream(Utils.getStartNode(subgraph).getEachLeavingEdge().spliterator(), false)
@@ -114,10 +118,10 @@ public class FoldParallelSubgraphs implements Algorithm {
             inputsOfSubgraph.sort(new EdgeComparator());
         }
         List<Edge> inputsOfSubgraph0 = inputs.get(0);
-        List<Edge> inputsOfSubgraph1 = inputs.get(1);
+        //List<Edge> inputsOfSubgraph1 = inputs.get(1);
         for (int i = 0; i < inputsOfSubgraph0.size(); i++) {
             Edge edgeOfSubgraph0 = inputsOfSubgraph0.get(i);
-            Edge edgeOfSubgraph1 = inputsOfSubgraph1.get(i);
+            //Edge edgeOfSubgraph1 = inputsOfSubgraph1.get(i);
             if (!Utils.isArray(edgeOfSubgraph0) && Utils.isVar(edgeOfSubgraph0)) {
                 //if (!Utils.getName(edgeOfSubgraph0).equals(Utils.getName(edgeOfSubgraph1))) {
                 // give the edges all the same name and transform them into arrays
@@ -357,7 +361,7 @@ public class FoldParallelSubgraphs implements Algorithm {
                             indexAcc += newVars.get(arraySuffix).getSizes().get(i);
                             arraySuffix++;
                         }
-                        int newIndex = indexAcc > 0 ? oldIndex % indexAcc : oldIndex;
+                        int newIndex = indexAcc > 0 ? oldIndex - indexAcc : oldIndex;
 
                         newLabelSuffix = newLabelSuffix.concat("[" + newIndex + "]");
                     }

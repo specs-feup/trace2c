@@ -23,10 +23,10 @@ public class ParallelizeSums implements Algorithm {
 
     @Override
     public void compute() {
-        Node startNode = graph.getNode("Start");
+        Node startNode = Utils.getStartNode(graph);
         int maxLevel = graph.getAttribute("maxlevel");
         for (int starterLevel = 1; starterLevel < maxLevel; starterLevel++) {
-            detectSequences2(startNode, starterLevel);
+            detectSequences(startNode, starterLevel);
             if (sumSequences.isEmpty()) break;
             rotateGraph();
 
@@ -41,7 +41,7 @@ public class ParallelizeSums implements Algorithm {
     }
 
 
-    private void detectSequences2(Node n, Integer minLevel) {
+    private void detectSequences(Node n, Integer minLevel) {
         Stack<Node> stack = new Stack<>();
         Set<Node> visited = new HashSet<>(); // efficient lookup
         Node sequenceStarter = null;
@@ -68,7 +68,12 @@ public class ParallelizeSums implements Algorithm {
                     }
                     count = 0;
                 }
-                if (child.getOutDegree() > 0) {
+                if (Utils.isEndNode(child)) {
+                    if (count >= MIN_COUNT) {
+                        sumSequences.put(sequenceStarter, count - 1);
+                    }
+                }
+                else if (child.getOutDegree() > 0) {
                     stack.push(child);
                 }
 
@@ -76,29 +81,6 @@ public class ParallelizeSums implements Algorithm {
         }
     }
 
-    private void detectSequences(Node currentNode, Node sequenceStarter, Integer count, Integer minLevel) {
-        if (currentNode.getOutDegree() > 0) {
-            Edge e = currentNode.getLeavingEdge(0);
-            Node child = e.getTargetNode();
-            int childLevel = child.getAttribute("level");
-            if (Utils.isSumOperation(child) && childLevel >= minLevel) {
-                if (count == 0) {
-                    sequenceStarter = child;
-                }
-                detectSequences(child, sequenceStarter, count + 1, minLevel);
-            } else if (count >= MIN_COUNT) {
-                if (Utils.isEndNode(child)) {
-                    sumSequences.put(sequenceStarter, count - 1); //there's no need to rotate if the child is an end node
-                } else {
-                    sumSequences.put(sequenceStarter, count);
-                }
-
-                detectSequences(child, null, 0, minLevel);
-            } else {
-                detectSequences(child, null, 0, minLevel);
-            }
-        }
-    }
 
     public boolean performedRotations() {
         return performedRotations;

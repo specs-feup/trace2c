@@ -1,0 +1,1 @@
+gcc knn_test.c knn_8p128f_1parallel.c utils.c knnGolden.c -Wall -g -o test.exe

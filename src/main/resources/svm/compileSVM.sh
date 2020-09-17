@@ -1,0 +1,1 @@
+gcc svm_graph.c -lm -o svm.exe

@@ -4,7 +4,7 @@
 	Versions 
 	- v0.1, November 2020
 	
-	by João MP Cardoso
+	by Joï¿½o MP Cardoso
 	Email: jmpc@fe.up.pt
 	
 	SPeCS, FEUP.DEI, Porto, Portugal
@@ -18,10 +18,10 @@
 #include "dataproperties.h"  // where the definitions are located
 #include "knn.h"
 
-#define WINDOWS_TIMING // for considering timing measurements in Windows
+//#define WINDOWS_TIMING // for considering timing measurements in Windows
 
 #ifdef WINDOWS_TIMING
-	#include <windows.h>
+	//#include <windows.h>
 #endif
 
 // constants are defines in dataproperties.h
@@ -41,7 +41,7 @@ void newPoint(ftype xFeatures[NUM_FEATURES], int IDUnknown)  {
 }
 
 int main() {
-
+/*
 #ifdef WINDOWS_TIMING
 	 __int64 freq, start, end;
     long elapsedTime;
@@ -52,7 +52,7 @@ int main() {
     // start timer
     QueryPerformanceCounter( ( LARGE_INTEGER* )&start );
 #endif
-   	
+*/
    
 	printf("Initializing data points...\n");
 	initializekNNModel(instancesXfeatures, classifIDs);
@@ -79,12 +79,12 @@ int main() {
    	
    	printf("\n#### kNN classification of x: %d \n", classifyID);
 	
-
+/*
 #ifdef WINDOWS_TIMING	
 	QueryPerformanceCounter( ( LARGE_INTEGER* )&end );
     elapsedTime = ( ( end - start ) * 1000 ) / freq;
     printf( "It took %ld ms\n", elapsedTime );
 #endif
-
+*/
 	return 0;
 }

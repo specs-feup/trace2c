@@ -1,24 +1,44 @@
 {
-   "loadstores":2,
-   "inputs":[
+   "inputs": [
       "test_vector[18]",
-	  "sup_vectors[18][1024]",
-	  "sv_coeff[1024]"
+      "sup_vectors[18][1274]",
+      "sv_coeff[1274]"
    ],
-   "input_types":[
+   "input_types": [
       "float",
-	  "float",
-	  "float"
+      "float",
+      "float"
    ],
-   "outputs":["*y"],
-   "output_types": ["int"],
-   "folding" : true,
-   "arithmetic" : false,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
-   "graph" : "svm.dot",
-   "outputFile": "svmResult",
+   "outputs": [
+      "*y"
+   ],
+   "output_types": [
+      "int"
+   ],
+   "fold": true,
+   "parallelizeSums": true,
+   "foldPrologue": false,
+   "foldEpilogue": true,
+   "arithmetic": true,
+   "pruneLocalArrays": true,
+   "graph": "svm1274.dot",
+   "outputFile": "svm1274parallel1_v2",
+   "saveEnergy": false,
    "parallelFunctions": 1,
-   "maxNodesPerSubgraph": 50
+   "maxNodesPerSubgraph": 1000,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 0,
+   "maxFoldLevels": 4000,
+   "varsToPartition": [
+      {
+         "var": "sup_vectors",
+         "dim": 1
+      },
+      {
+         "var": "sv_coeff",
+         "dim": 0
+      }
+   ],
+   "includes": [],
+   "defines": []
 }

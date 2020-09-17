@@ -90,11 +90,12 @@ public class AllSubgraphsAlgorithm implements Algorithm {
         for (List<HashSet<Node>> listOfSubgraphs : filteredSubgraphs) {
             int numberOfParallelSubgraphs = listOfSubgraphs.size();
             int score = numberOfParallelSubgraphs * listOfSubgraphs.get(0).size();
+            /*
             for (Var input : arrayInputs) {
                 if (input.getSizes().get(0) % numberOfParallelSubgraphs == 0) {
                     score = score * 2;
                 }
-            }
+            }*/
             if (score > maxScore) {
                 maxScore = score;
                 mostRepeatableSubgraph = listOfSubgraphs;

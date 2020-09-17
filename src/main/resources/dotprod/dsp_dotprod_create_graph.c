@@ -49,8 +49,8 @@ int DSP_dotprod_graph(const short *x, const short *y, int nx)
     for (i = 0; i < nx; i++){
         sum += x[i] * y[i];
 		
-	  	fprintf(f,"\"x[%d]_%d_l\" [label=\"x[%d]\", att1=var, att2=inte, att3=short ];\n" ,i, n_x[i] ,i);//nc-5
-		fprintf(f,"\"y[%d]_%d_r\" [label=\"y[%d]\", att1=var, att2=inte, att3=short ];\n" ,i, n_y[i] ,i);//nc-5
+	  	fprintf(f,"\"x[%d]_%d_l\" [label=\"x[%d]\", att1=var, att2=param, att3=short ];\n" ,i, n_x[i] ,i);//nc-5
+		fprintf(f,"\"y[%d]_%d_r\" [label=\"y[%d]\", att1=var, att2=param, att3=short ];\n" ,i, n_y[i] ,i);//nc-5
 		n_op++;
 		fprintf(f,"op%d [label=\"*\", att1=op];\n",n_op);//nc-3
 		n_temp++;
@@ -79,7 +79,7 @@ int DSP_dotprod_graph(const short *x, const short *y, int nx)
 	}
 	
 	fprintf(f,"\"sum_%d\" [label=sum, att1=var, att2=loc, att3=int ];\n",n_sum);
-	fprintf(f,"\"out_%d\" [label=\"*out\", att1=var, att2=inte, att3=int ];\n",n_out);
+	fprintf(f,"\"out_%d\" [label=\"*out\", att1=var, att2=param, att3=int ];\n",n_out);
 	fprintf(f,"\"sum_%d\"->out_%d [label=\"%d\", ord=\"%d\"];\n",n_sum,n_out,ne,ne);
 	ne++;
 	

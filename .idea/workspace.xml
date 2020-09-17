@@ -23,53 +23,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8d4b14d6-083f-4158-8252-b493008713d4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.project" beforeDir="false" afterPath="$PROJECT_DIR$/.project" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_balanced.dot.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_epilogue.dot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_epilogue.dot.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_main_end.dot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_main_end.dot.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_main_folded.dot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_main_folded.dot.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_parallelGraph0_folded.dot.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/dotprod_N10_parallelGraph0_folded.dot.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Config.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Launcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/Launcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/ParallelizeSums.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/ParallelizeSums.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dotprod/config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/dotprod_viv.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dotprod/dotprod_viv.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/n4000_dotprod_parallel1.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dotprod/n4000_dotprod_parallel1.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/dsp_dotprod_create_graph.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/dotprod/dsp_dotprod_create_graph.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/n10_dotprod_parallel1.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/dotprod/n10_dotprod_parallel2.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/config.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/dataproperties.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/dataproperties.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knnGolden.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knnGolden.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_1parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_1parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_2parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_2parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_4parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_4parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_8parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_8parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p128f_nofold.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_1parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_1parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_2parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_2parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_4parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_4parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_8parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_8parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p32f_nofold.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_1parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_1parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_2parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_2parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_4parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_4parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_8parallel.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_8parallel_saveEnergy.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/knn_8p64f_nofold.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/dataproperties.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/knn.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/knn.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/knnGolden.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/macros.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/main.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/utils.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/knnForParallel/utils.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/instrumented_knn/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/instrumented_knn/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/svm/config.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/svm/config.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -123,6 +100,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -134,6 +112,7 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
     <property name="settings.editor.selected.configurable" value="profiler.jvm" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -171,7 +150,7 @@
     <configuration name="SVM Launcher" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
       <module name="trace2c.main" />
-      <option name="PROGRAM_PARAMETERS" value="src\main\resources\svm\config.json" />
+      <option name="PROGRAM_PARAMETERS" value="src/main/resources/svm/config.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -195,7 +174,7 @@
     <configuration name="dotprod" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
       <module name="trace2c.main" />
-      <option name="PROGRAM_PARAMETERS" value="src\main\resources\dotprod\config.json" />
+      <option name="PROGRAM_PARAMETERS" value="src/main/resources/dotprod/config.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -273,7 +252,7 @@
     <configuration name="knn" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="pt.up.fe.specs.Launcher" />
       <module name="trace2c.main" />
-      <option name="PROGRAM_PARAMETERS" value="src\main\resources\instrumented_knn\config.json" />
+      <option name="PROGRAM_PARAMETERS" value="src/main/resources/instrumented_knn/config.json" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -446,14 +425,19 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="733" y="189" key="#Auto_Import/0.0.1920.1040@0.0.1920.1040" timestamp="1596634646974" />
-    <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1596636997762">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="117" y="27" width="1084" height="710" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1598463167509">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state x="570" y="350" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1596636997762" />
+    <state x="117" y="27" width="1084" height="710" key="#com.intellij.execution.impl.EditConfigurationsDialog/72.27.1294.741@72.27.1294.741" timestamp="1598463167509" />
     <state x="731" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1594721979414">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="731" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1594721979414" />
+    <state x="607" y="121" width="424" height="591" key="#com.intellij.ide.macro.MacrosDialog" timestamp="1598458714124">
+      <screen x="72" y="27" width="1294" height="741" />
+    </state>
+    <state x="607" y="121" width="424" height="591" key="#com.intellij.ide.macro.MacrosDialog/72.27.1294.741@72.27.1294.741" timestamp="1598458714124" />
     <state x="765" y="229" key="#com.intellij.ide.util.MemberChooser" timestamp="1598017027821">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -490,54 +474,69 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="466" height="466" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1597758600168" />
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom" timestamp="1600359746034">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="571" y="222" width="424" height="491" key="FileChooserDialogImpl" timestamp="1598452304602">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1600359746034" />
-    <state width="1877" height="281" key="GridCell.Tab.0.center" timestamp="1600359746033">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="571" y="222" width="424" height="491" key="FileChooserDialogImpl/72.27.1294.741@72.27.1294.741" timestamp="1598452304602" />
+    <state width="1248" height="184" key="GridCell.Tab.0.bottom" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1600359746033" />
-    <state width="1877" height="281" key="GridCell.Tab.0.left" timestamp="1600359746033">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="276" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1598111924551" />
+    <state width="1248" height="184" key="GridCell.Tab.0.bottom/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state width="1248" height="184" key="GridCell.Tab.0.center" timestamp="1600082122590">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1600359746033" />
-    <state width="1877" height="281" key="GridCell.Tab.0.right" timestamp="1600359746034">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="276" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1598111924551" />
+    <state width="1248" height="184" key="GridCell.Tab.0.center/72.27.1294.741@72.27.1294.741" timestamp="1600082122590" />
+    <state width="1248" height="184" key="GridCell.Tab.0.left" timestamp="1600082122590">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state width="1877" height="281" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1600359746034" />
-    <state width="1877" height="426" key="GridCell.Tab.1.bottom" timestamp="1598055305684">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="276" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1598111924551" />
+    <state width="1248" height="184" key="GridCell.Tab.0.left/72.27.1294.741@72.27.1294.741" timestamp="1600082122590" />
+    <state width="1248" height="184" key="GridCell.Tab.0.right" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
+    </state>
+    <state width="1877" height="276" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1598111924551" />
+    <state width="1248" height="184" key="GridCell.Tab.0.right/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state width="1248" height="184" key="GridCell.Tab.1.bottom" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state width="1877" height="426" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1598055305684" />
-    <state width="1877" height="426" key="GridCell.Tab.1.center" timestamp="1598055305684">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1248" height="184" key="GridCell.Tab.1.bottom/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state width="1248" height="184" key="GridCell.Tab.1.center" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state width="1877" height="426" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1598055305684" />
-    <state width="1877" height="426" key="GridCell.Tab.1.left" timestamp="1598055305684">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1248" height="184" key="GridCell.Tab.1.center/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state width="1248" height="184" key="GridCell.Tab.1.left" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state width="1877" height="426" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1598055305684" />
-    <state width="1877" height="426" key="GridCell.Tab.1.right" timestamp="1598055305684">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1248" height="184" key="GridCell.Tab.1.left/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state width="1248" height="184" key="GridCell.Tab.1.right" timestamp="1600082122591">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state width="1877" height="426" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1598055305684" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1600357076803">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1248" height="184" key="GridCell.Tab.1.right/72.27.1294.741@72.27.1294.741" timestamp="1600082122591" />
+    <state x="166" y="27" width="1022" height="737" key="SettingsEditor" timestamp="1598454887747">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1600357076803" />
-    <state x="1043" y="131" width="737" height="909" key="find.popup" timestamp="1597760713820">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="166" y="27" width="1022" height="737" key="SettingsEditor/72.27.1294.741@72.27.1294.741" timestamp="1598454887747" />
+    <state x="775" y="120" width="588" height="648" key="find.popup" timestamp="1598452381048">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state x="1043" y="131" width="737" height="909" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597760713820" />
-    <state x="616" y="240" key="run.anything.popup" timestamp="1597746472245">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="775" y="120" width="588" height="648" key="find.popup/72.27.1294.741@72.27.1294.741" timestamp="1598452381048" />
+    <state x="487" y="198" key="run.anything.popup" timestamp="1598452646625">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597746472245" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1600250115967">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="487" y="198" key="run.anything.popup/72.27.1294.741@72.27.1294.741" timestamp="1598452646625" />
+    <state x="492" y="187" width="672" height="484" key="search.everywhere.popup" timestamp="1600076423369">
+      <screen x="72" y="27" width="1294" height="741" />
     </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1600250115967" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1597849821649" />
+    <state x="492" y="187" width="672" height="484" key="search.everywhere.popup/72.27.1294.741@72.27.1294.741" timestamp="1600076423369" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -603,44 +602,54 @@
           <option name="timeStamp" value="916" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/ParallelizeSums.java</url>
-          <line>83</line>
-          <option name="timeStamp" value="917" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>159</line>
+          <line>163</line>
           <option name="timeStamp" value="1030" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>160</line>
+          <line>164</line>
           <option name="timeStamp" value="1031" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>167</line>
+          <line>171</line>
           <option name="timeStamp" value="1061" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldingAlgorithm.java</url>
-          <line>43</line>
-          <option name="timeStamp" value="1071" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldingAlgorithm.java</url>
-          <line>45</line>
-          <option name="timeStamp" value="1072" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>126</line>
-          <option name="timeStamp" value="1077" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
-          <line>300</line>
+          <line>304</line>
           <option name="timeStamp" value="1078" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/AllSubgraphsAlgorithm.java</url>
+          <line>124</line>
+          <option name="timeStamp" value="1083" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/ParallelizeSums.java</url>
+          <line>63</line>
+          <option name="timeStamp" value="1090" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/ParallelizeSums.java</url>
+          <line>65</line>
+          <option name="timeStamp" value="1091" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
+          <line>341</line>
+          <option name="timeStamp" value="1095" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
+          <line>349</line>
+          <option name="timeStamp" value="1098" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/pt/up/fe/specs/algorithms/FoldParallelSubgraphs.java</url>
+          <line>353</line>
+          <option name="timeStamp" value="1099" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
