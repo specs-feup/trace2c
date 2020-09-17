@@ -1,5 +1,4 @@
 {
-   "loadstores":2,
    "inputs":[
       "x[10]",
       "y[10]"
@@ -10,20 +9,27 @@
    ],
    "outputs":["*out"],
    "output_types": ["int"],
-   "folding" : true,
-   "arithmetic" : false,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
-   "graph" : "dotprod_graph.dot",
-   "outputFile": "n10_dotprod_parallel2",
-   "parallelFunctions": 2,
+   "fold" : true,
+   "parallelizeSums": true,
+   "foldPrologue": false,
+   "foldEpilogue": true,
+   "arithmetic" : true,
+   "pruneLocalArrays": true,
+   "graph" : "dotprod_n10.dot",
+   "outputFile": "dotprod_output_n10",
+   "saveEnergy": false,
+   "parallelFunctions": 1,
    "maxNodesPerSubgraph": 1000,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 0,
+   "maxFoldLevels": 100,
    "varsToPartition": [{
       "var": "x",
       "dim": 0
    }, {
       "var": "y",
       "dim": 0
-   }]
+   }],
+   "includes": [],
+   "defines": []
 }

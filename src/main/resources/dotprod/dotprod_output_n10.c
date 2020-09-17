@@ -28,30 +28,23 @@ int temp_l83_i10_w1;
 int temp_l83_i1_w1;
 // Initialization done
 sum_w5 = sum_array_0[0] + sum_array_0[1];
-sum_w3 = sum_array_0[2] + sum_array_0[3];
+sum_w1 = sum_array_0[2] + sum_array_0[3];
 temp_l83_i1_w1 = x_0[0] * y_0[0];
 temp_l83_i10_w1 = x_2[0] * y_2[0];
 
 sum_w4 = 0 + temp_l83_i1_w1;
 
-sum_w2 = sum_w4 + sum_w5;
+sum_w3 = sum_w4 + sum_w5;
 
-sum_w1 = sum_w2 + sum_w3;
+sum_w2 = sum_w3 + sum_w1;
 
-*out = sum_w1 + temp_l83_i10_w1;
+*out = sum_w2 + temp_l83_i10_w1;
 
 }
 
-void n10_dotprod_parallel1(short x_0[1], short x_1[8], short x_2[1], short y_0[1], short y_1[8], short y_2[1], int *out) {
+void dotprod_output_n10(short x_0[1], short x_1[8], short x_2[1], short y_0[1], short y_1[8], short y_2[1], int *out) {
 // Step 2: Initialize local variables
 int sum_array_0[4];
-#pragma HLS ARRAY_PARTITION variable=x_0 cyclic factor=1 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_1 cyclic factor=2 dim=0
-#pragma HLS ARRAY_PARTITION variable=x_2 cyclic factor=1 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_0 cyclic factor=1 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_1 cyclic factor=2 dim=0
-#pragma HLS ARRAY_PARTITION variable=y_2 cyclic factor=1 dim=0
-#pragma HLS ARRAY_PARTITION variable=sum_array_0 cyclic factor=2 dim=0
 // Initialization done
 #pragma HLS dataflow
 
