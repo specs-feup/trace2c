@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#define NX 10
+#define NX 4000
 
 int DSP_dotprod_golden_c(const short *x, const short *y, int nx);
 void DSP_dotprod_hard_c( short x[NX], short y[NX], int *out);

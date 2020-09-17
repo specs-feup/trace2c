@@ -1,8 +1,8 @@
 {
    "loadstores":2,
    "inputs":[
-      "x[10]",
-      "y[10]"
+      "x[4000]",
+      "y[4000]"
    ],
    "input_types":[
       "short",
@@ -10,14 +10,19 @@
    ],
    "outputs":["*out"],
    "output_types": ["int"],
-   "folding" : true,
-   "arithmetic" : false,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
+   "fold" : true,
+   "parallelizeSums": true,
+   "foldPrologue": false,
+   "foldEpilogue": true,
+   "arithmetic" : true,
+   "pruneLocalArrays": true,
    "graph" : "dotprod_graph.dot",
-   "outputFile": "n10_dotprod_parallel2",
-   "parallelFunctions": 2,
+   "outputFile": "n4000_dotprod_parallel1",
+   "parallelFunctions": 1,
+   "saveEnergy": true,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 0,
+   "maxFoldLevels": 1000,
    "maxNodesPerSubgraph": 1000,
    "varsToPartition": [{
       "var": "x",
