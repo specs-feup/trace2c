@@ -298,39 +298,11 @@ public class FoldParallelSubgraphs implements Algorithm {
         List<Var> localInfo = mainInfo.getLocalInfo();
         List<Var> mainInputs = mainInfo.getInputs();
         HashMap<Var, List<Var>> inputsToRemove = new HashMap<>();
-        for (Var var : mainInputs) {
-            if (var.isArray()) {
-                if (foldInfo.hasVar(var)) {
-                    if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
-                        var.setHLSPartitionFromSize(foldInfo.getVarHLSPartitionDimension(var.getName()));
-                    }
-                    List<Var> newVars = splitSingleVar(var, numberOfParallelFunctions, foldInfo.getDimOfVar(var));
-
-                    inputsToRemove.put(var, newVars);
-                } else if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
-                    int dimToPartition = foldInfo.getVarHLSPartitionDimension(var.getName());
-                    var.setHlsPartition(new HLSPartition(dimToPartition, var.getSizes().get(dimToPartition)));
-                }
-            }
-
-        }
-
         HashMap<Var, List<Var>> localVarsToRemove = new HashMap<>();
+        splitVarsInList(foldInfo, numberOfParallelFunctions, mainInputs, inputsToRemove);
+        splitVarsInList(foldInfo, numberOfParallelFunctions, localInfo, localVarsToRemove);
 
-        for (Var var : localInfo) {
-            if (var.isArray()) {
-                if (foldInfo.hasVar(var)) {
-                    if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
-                        var.setHLSPartitionFromSize(foldInfo.getVarHLSPartitionDimension(var.getName()));
-                    }
-                    List<Var> newVars = splitSingleVar(var, numberOfParallelFunctions, foldInfo.getDimOfVar(var));
-                    localVarsToRemove.put(var, newVars);
-                } else if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
-                    int dimToPartition = foldInfo.getVarHLSPartitionDimension(var.getName());
-                    var.setHlsPartition(new HLSPartition(dimToPartition, var.getSizes().get(dimToPartition)));
-                }
-            }
-        }
+
         inputsToRemove.forEach((varToRemove, newVars) -> {
             mainInputs.remove(varToRemove);
             mainInputs.addAll(newVars);
@@ -342,6 +314,24 @@ public class FoldParallelSubgraphs implements Algorithm {
         inputsToRemove.forEach(this::updateAccessesToVar);
         localVarsToRemove.forEach(this::updateAccessesToVar);
 
+    }
+
+    private void splitVarsInList(FoldInfo foldInfo, int numberOfParallelFunctions, List<Var> varsList, HashMap<Var, List<Var>> varsToRemove) {
+        for (Var var : varsList) {
+            if (var.isArray()) {
+                if (foldInfo.hasVar(var)) {
+                    if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                        var.setHLSPartitionFromSize(foldInfo.getVarHLSPartitionDimension(var.getName()));
+                    }
+                    List<Var> newVars = splitSingleVar(var, numberOfParallelFunctions, foldInfo.getDimOfVar(var));
+                    varsToRemove.put(var, newVars);
+                } else if (foldInfo.hasVarHLSPartitionDim(var.getName())) {
+                    int dimToPartition = foldInfo.getVarHLSPartitionDimension(var.getName());
+                    var.setHlsPartition(new HLSPartition(dimToPartition, var.getSizes().get(dimToPartition)));
+                }
+            }
+
+        }
     }
 
     private void updateAccessesToVar(Var varToUpdate, List<Var> newVars) {
