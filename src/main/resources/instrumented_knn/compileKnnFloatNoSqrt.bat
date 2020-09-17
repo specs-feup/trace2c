@@ -1,0 +1,1 @@
+gcc knnFloatNoSqrt.c utils.c main.c -Wall -o knnFloatNoSqrt.exe

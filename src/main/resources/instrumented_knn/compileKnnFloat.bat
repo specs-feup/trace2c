@@ -1,0 +1,1 @@
+gcc knnFloat.c utils.c main.c -Wall -o knnFloat.exe
