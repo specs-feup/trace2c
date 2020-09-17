@@ -23,7 +23,7 @@ public class ParallelizeSums implements Algorithm {
 
     @Override
     public void compute() {
-        Node startNode = graph.getNode("Start");
+        Node startNode = Utils.getStartNode(graph);
         int maxLevel = graph.getAttribute("maxlevel");
         for (int starterLevel = 1; starterLevel < maxLevel; starterLevel++) {
             detectSequences(startNode, starterLevel);
