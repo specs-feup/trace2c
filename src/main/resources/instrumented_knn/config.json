@@ -1,34 +1,50 @@
 {
-   "inputs":[
-      "xFeatures[2048]",
-      "knownFeatures[8][2048]",
-      "knownClasses[8]"
-   ],
-   "input_types":[
-      "double",
-      "double",
-      "char"
-   ],
-   "outputs":["*out"],
-   "output_types": ["char"],
-   "fold" : true,
-   "parallelizeSums": false,
-   "foldPrologue": false,
-   "foldEpilogue": true,
-   "arithmetic" : true,
-   "pruneLocalArrays": false,
-   "graph" : "knn8p2048f.dot",
-   "outputFile": "knn_8p2048f_1parallel_saveEnergy",
-   "saveEnergy": true,
-   "parallelFunctions": 1,
-   "maxNodesPerSubgraph": 4000,
-   "subgraphRepeats": 0,
-   "minFoldLevels": 2048,
-   "maxFoldLevels": 2050,
-   "varsToPartition": [{
+  "inputs": [
+    "xFeatures[32]",
+    "knownFeatures[8][32]",
+    "knownClasses[8]"
+  ],
+  "input_types": [
+    "double",
+    "double",
+    "char"
+  ],
+  "outputs": [
+    "*out"
+  ],
+  "output_types": [
+    "char"
+  ],
+  "fold": true,
+  "parallelizeSums": false,
+  "foldPrologue": false,
+  "foldEpilogue": true,
+  "arithmetic": true,
+  "pruneLocalArrays": false,
+  "graph": "knn8p32f.dot",
+  "outputFile": "knn_output",
+  "saveEnergy": true,
+  "parallelFunctions": 2,
+  "maxNodesPerSubgraph": 1000,
+  "subgraphRepeats": 0,
+  "minFoldLevels": 30,
+  "maxFoldLevels": 70,
+  "varsToPartition": [
+    {
       "var": "knownFeatures",
       "dim": 0
-   }],
-   "includes": ["<stdio.h>", "<math.h>", "<stdlib.h>", "<string.h>", "<float.h>"],
-   "defines": ["NUM_CLASSES 2", "MAXDISTANCE DBL_MAX", "sqr(x) ((x)*(x))"]
+    }
+  ],
+  "includes": [
+    "<stdio.h>",
+    "<math.h>",
+    "<stdlib.h>",
+    "<string.h>",
+    "<float.h>"
+  ],
+  "defines": [
+    "NUM_CLASSES 2",
+    "MAXDISTANCE DBL_MAX",
+    "sqr(x) ((x)*(x))"
+  ]
 }

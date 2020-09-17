@@ -12,7 +12,7 @@
 #define DATAPROPERTIES_H
 
 /* BEGIN: parameters according to the use case. */
-#define NUM_FEATURES 2048       //5 // number of features used
+#define NUM_FEATURES 64     //5 // number of features used
 #define K 3                    // value of k in kNN
 #define NUM_CLASSES 2//8          // number of classes considered
 #define NUM_KNOWN_POINTS 8 //10000 //8 //instances of the model used after training
