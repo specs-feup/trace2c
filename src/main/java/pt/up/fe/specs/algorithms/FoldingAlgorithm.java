@@ -57,9 +57,18 @@ public class FoldingAlgorithm implements Algorithm {
         Leveling leveling = new Leveling();
         leveling.init(functionGraph);
         leveling.compute();
-        Algorithm parallelizeSums = new ParallelizeSums();
-        parallelizeSums.init(functionGraph);
-        parallelizeSums.compute();
+
+        /**
+         * Remove once the parallelize sums algorithm runs for all paths
+         * The current parallelize sums may not parallelize all chains because it follows only 1 path
+         * Thus, when we dont parallelize before folding, we can try to parallelize after folding
+         */
+        if (!Config.isToParallelizeSums()) {
+            Algorithm parallelizeSums = new ParallelizeSums();
+            parallelizeSums.init(functionGraph);
+            parallelizeSums.compute();
+        }
+
 
         ArrayList<Graph> subgraphs = graph.getAttribute("subgraphs");
         if (subgraphs == null) {
