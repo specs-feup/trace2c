@@ -333,4 +333,30 @@ public class Utils {
         return g.hasAttribute("foldInfo");
     }
 
+    public static void setLevel(Node node, int level) {
+        node.setAttribute("level", level);
+    }
+
+    public static void setMaxLevel(Graph graph, int maxLevel) {
+        graph.setAttribute("maxlevel", maxLevel);
+    }
+
+    public static boolean isLeveled(Node node) {
+        return node.hasAttribute("level");
+    }
+
+    public static void setLevelGraph(Graph graph, List<List<Node>> levelGraph) {
+        graph.setAttribute("levelgraph", levelGraph);
+        graph.addAttribute("level", true);
+    }
+
+    public static List<List> getLevelGraph(Graph graph) {
+        return graph.getAttribute("levelgraph");
+    }
+
+    public static void clearLevelingAttributes(Graph graph) {
+        graph.removeAttribute("levelgraph");
+        graph.removeAttribute("level");
+        graph.removeAttribute("maxlevel");
+    }
 }
