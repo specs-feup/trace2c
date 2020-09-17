@@ -1,0 +1,203 @@
+
+
+================================================================
+== Vivado HLS Report for 'updateBest'
+================================================================
+* Date:           Sat Aug 22 17:16:05 2020
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        knn
+* Solution:       solution1
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 7.919 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |  Latency (cycles) |   Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max    | min | max |   Type  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+    |        9|        9| 90.000 ns | 90.000 ns |    9|    9|   none  |
+    +---------+---------+-----------+-----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |          |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
+        | Loop Name|   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+        |- Loop 1  |        6|        6|         2|          -|          -|     3|    no    |
+        +----------+---------+---------+----------+-----------+-----------+------+----------+
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-------+--------+-------+-----+
+|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  | URAM|
++-----------------+---------+-------+--------+-------+-----+
+|DSP              |        -|      -|       -|      -|    -|
+|Expression       |        -|      -|       0|    706|    -|
+|FIFO             |        -|      -|       -|      -|    -|
+|Instance         |        -|      0|     130|    559|    -|
+|Memory           |        -|      -|       -|      -|    -|
+|Multiplexer      |        -|      -|       -|     90|    -|
+|Register         |        -|      -|     317|      -|    -|
++-----------------+---------+-------+--------+-------+-----+
+|Total            |        0|      0|     447|   1355|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Available        |      280|    220|  106400|  53200|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Utilization (%)  |        0|      0|   ~0   |      2|    0|
++-----------------+---------+-------+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    +-------------------------+----------------------+---------+-------+-----+-----+-----+
+    |         Instance        |        Module        | BRAM_18K| DSP48E|  FF | LUT | URAM|
+    +-------------------------+----------------------+---------+-------+-----+-----+-----+
+    |knn_dcmp_64ns_64nbkb_U1  |knn_dcmp_64ns_64nbkb  |        0|      0|  130|  469|    0|
+    |knn_mux_32_64_1_1_U2     |knn_mux_32_64_1_1     |        0|      0|    0|   15|    0|
+    |knn_mux_32_64_1_1_U3     |knn_mux_32_64_1_1     |        0|      0|    0|   15|    0|
+    |knn_mux_32_8_1_1_U4      |knn_mux_32_8_1_1      |        0|      0|    0|   15|    0|
+    |knn_mux_42_8_1_1_U5      |knn_mux_42_8_1_1      |        0|      0|    0|   15|    0|
+    |knn_mux_42_8_1_1_U6      |knn_mux_42_8_1_1      |        0|      0|    0|   15|    0|
+    |knn_mux_42_8_1_1_U7      |knn_mux_42_8_1_1      |        0|      0|    0|   15|    0|
+    +-------------------------+----------------------+---------+-------+-----+-----+-----+
+    |Total                    |                      |        0|      0|  130|  559|    0|
+    +-------------------------+----------------------+---------+-------+-----+-----+-----+
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-------------------------+----------+-------+---+----+------------+------------+
+    |      Variable Name      | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-------------------------+----------+-------+---+----+------------+------------+
+    |i_fu_199_p2              |     +    |      0|  0|  10|           2|           1|
+    |and_ln32_1_fu_314_p2     |    and   |      0|  0|   2|           1|           1|
+    |and_ln32_fu_308_p2       |    and   |      0|  0|   2|           1|           1|
+    |and_ln46_1_fu_411_p2     |    and   |      0|  0|   2|           1|           1|
+    |and_ln46_fu_405_p2       |    and   |      0|  0|   2|           1|           1|
+    |icmp_ln24_fu_193_p2      |   icmp   |      0|  0|   8|           2|           2|
+    |icmp_ln32_1_fu_278_p2    |   icmp   |      0|  0|  29|          52|           1|
+    |icmp_ln32_2_fu_290_p2    |   icmp   |      0|  0|  13|          11|           2|
+    |icmp_ln32_3_fu_296_p2    |   icmp   |      0|  0|  29|          52|           1|
+    |icmp_ln32_fu_272_p2      |   icmp   |      0|  0|  13|          11|           2|
+    |icmp_ln46_1_fu_375_p2    |   icmp   |      0|  0|  29|          52|           1|
+    |icmp_ln46_2_fu_387_p2    |   icmp   |      0|  0|  13|          11|           2|
+    |icmp_ln46_3_fu_393_p2    |   icmp   |      0|  0|  29|          52|           1|
+    |icmp_ln46_4_fu_429_p2    |   icmp   |      0|  0|   8|           2|           1|
+    |icmp_ln46_5_fu_440_p2    |   icmp   |      0|  0|   8|           2|           1|
+    |icmp_ln46_fu_369_p2      |   icmp   |      0|  0|  13|          11|           2|
+    |or_ln32_1_fu_302_p2      |    or    |      0|  0|   2|           1|           1|
+    |or_ln32_fu_284_p2        |    or    |      0|  0|   2|           1|           1|
+    |or_ln46_1_fu_399_p2      |    or    |      0|  0|   2|           1|           1|
+    |or_ln46_fu_381_p2        |    or    |      0|  0|   2|           1|           1|
+    |dbest_3_fu_320_p3        |  select  |      0|  0|  64|           1|          64|
+    |index_fu_327_p3          |  select  |      0|  0|  32|           1|          32|
+    |select_ln46_1_fu_485_p3  |  select  |      0|  0|  64|           1|          64|
+    |select_ln46_2_fu_417_p3  |  select  |      0|  0|  64|           1|          64|
+    |select_ln46_fu_434_p3    |  select  |      0|  0|  64|           1|          64|
+    |select_ln47_fu_423_p3    |  select  |      0|  0|   8|           1|           8|
+    |select_ln48_1_fu_470_p3  |  select  |      0|  0|  64|           1|          64|
+    |select_ln48_2_fu_491_p3  |  select  |      0|  0|  64|           1|          64|
+    |select_ln48_fu_445_p3    |  select  |      0|  0|  64|           1|          64|
+    +-------------------------+----------+-------+---+----+------------+------------+
+    |Total                    |          |      0|  0| 706|         277|         513|
+    +-------------------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    +-----------------+----+-----------+-----+-----------+
+    |       Name      | LUT| Input Size| Bits| Total Bits|
+    +-----------------+----+-----------+-----+-----------+
+    |ap_NS_fsm        |  33|          6|    1|          6|
+    |grp_fu_183_p0    |  15|          3|   64|        192|
+    |grp_fu_183_p1    |  15|          3|   64|        192|
+    |i_0_reg_172      |   9|          2|    2|          4|
+    |index_0_reg_160  |   9|          2|   32|         64|
+    |max_tmp_reg_148  |   9|          2|   64|        128|
+    +-----------------+----+-----------+-----+-----------+
+    |Total            |  90|         18|  227|        586|
+    +-----------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-----------------------+----+----+-----+-----------+
+    |          Name         | FF | LUT| Bits| Const Bits|
+    +-----------------------+----+----+-----+-----------+
+    |ap_CS_fsm              |   5|   0|    5|          0|
+    |cbest_reg_650          |   8|   0|    8|          0|
+    |dbest_1_reg_629        |  64|   0|   64|          0|
+    |dbest_reg_645          |  64|   0|   64|          0|
+    |i_0_reg_172            |   2|   0|    2|          0|
+    |i_reg_624              |   2|   0|    2|          0|
+    |index_0_reg_160        |  32|   0|   32|          0|
+    |max_tmp_reg_148        |  64|   0|   64|          0|
+    |select_ln46_2_reg_665  |  64|   0|   64|          0|
+    |select_ln47_reg_672    |   8|   0|    8|          0|
+    |trunc_ln43_reg_636     |   2|   0|    2|          0|
+    |zext_ln24_reg_616      |   2|   0|   32|         30|
+    +-----------------------+----+----+-----+-----------+
+    |Total                  | 317|   0|  347|         30|
+    +-----------------------+----+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++------------------------+-----+-----+------------+------------------------+--------------+
+|        RTL Ports       | Dir | Bits|  Protocol  |      Source Object     |    C Type    |
++------------------------+-----+-----+------------+------------------------+--------------+
+|ap_clk                  |  in |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_rst                  |  in |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_start                |  in |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_done                 | out |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_idle                 | out |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_ready                | out |    1| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_0             | out |   64| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_1             | out |   64| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_2             | out |   64| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_3             | out |    8| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_4             | out |    8| ap_ctrl_hs |       updateBest       | return value |
+|ap_return_5             | out |    8| ap_ctrl_hs |       updateBest       | return value |
+|distance                |  in |   64|   ap_none  |        distance        |    scalar    |
+|classifID               |  in |    8|   ap_none  |        classifID       |    scalar    |
+|BestPointsDistances_6   |  in |   64|   ap_none  |  BestPointsDistances_6 |    scalar    |
+|BestPointsDistances_s   |  in |   64|   ap_none  |  BestPointsDistances_s |    scalar    |
+|BestPointsDistances_8   |  in |   64|   ap_none  |  BestPointsDistances_8 |    scalar    |
+|BestPointsDistances_7   |  in |   64|   ap_none  |  BestPointsDistances_7 |    scalar    |
+|BestPointsDistances_10  |  in |   64|   ap_none  | BestPointsDistances_10 |    scalar    |
+|BestPointsDistances_9   |  in |   64|   ap_none  |  BestPointsDistances_9 |    scalar    |
+|BestPointsClasses_0_2   |  in |    8|   ap_none  |  BestPointsClasses_0_2 |    scalar    |
+|BestPointsClasses_0     |  in |    8|   ap_none  |   BestPointsClasses_0  |    scalar    |
+|BestPointsClasses_1_2   |  in |    8|   ap_none  |  BestPointsClasses_1_2 |    scalar    |
+|BestPointsClasses_1     |  in |    8|   ap_none  |   BestPointsClasses_1  |    scalar    |
+|BestPointsClasses_2_2   |  in |    8|   ap_none  |  BestPointsClasses_2_2 |    scalar    |
+|BestPointsClasses_2     |  in |    8|   ap_none  |   BestPointsClasses_2  |    scalar    |
++------------------------+-----+-----+------------+------------------------+--------------+
+
