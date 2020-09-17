@@ -5,15 +5,12 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.Config;
+import pt.up.fe.specs.utils.Utils;
 import pt.up.fe.specs.utils.Var;
 import pt.up.fe.specs.utils.SubgraphSearchAux;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Calculates all possible subgraphs and gives a weight to each subgraph.
@@ -49,17 +46,24 @@ public class AllSubgraphsAlgorithm implements Algorithm {
      */
     private void addNodeToTempSubgraph(Node n, HashSet<Node> addedNodes, SubgraphSearchAux searchAux) {
 
-        addedNodes.add(n);
-        searchAux.addNode(n);
-        HashSet<Node> connections = new HashSet<>();
-        n.getEachLeavingEdge().forEach(e -> connections.add(e.getTargetNode()));
-        n.getEachEnteringEdge().forEach(e -> connections.add(e.getSourceNode()));
-        for (Node node : connections) {
-            Integer nodeLevel = node.getAttribute("level");
-            if (nodeLevel >= searchAux.getMinLevel() && nodeLevel <= searchAux.getMaxLevel() && !searchAux.wasNodeVisited(node)) {
-                addNodeToTempSubgraph(node, addedNodes, searchAux);
+        Stack<Node> nodeStack = new Stack<>();
+        nodeStack.add(n);
+        while (!nodeStack.empty()) {
+            Node node = nodeStack.pop();
+            addedNodes.add(node);
+            searchAux.addNode(node);
+
+            HashSet<Node> connections = new HashSet<>();
+            node.getEachLeavingEdge().forEach(e -> connections.add(e.getTargetNode()));
+            node.getEachEnteringEdge().forEach(e -> connections.add(e.getSourceNode()));
+            for (Node connectionNode : connections) {
+                Integer nodeLevel = Utils.getLevel(connectionNode);
+                if (nodeLevel >= searchAux.getMinLevel() && nodeLevel <= searchAux.getMaxLevel() && !searchAux.wasNodeVisited(connectionNode)) {
+                    nodeStack.add(connectionNode);
+                }
             }
         }
+
 
     }
 
