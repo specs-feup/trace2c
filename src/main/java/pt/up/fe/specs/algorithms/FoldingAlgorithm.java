@@ -40,6 +40,7 @@ public class FoldingAlgorithm implements Algorithm {
 
     @Override
     public void compute() {
+        System.out.println("Folding algorithm starting");
         // I have to update var accesses on the subgraphList here
         computeVarsMinAccessesInfo(subgraphList.get(0));
         computeVarsMaxAccessesInfo(subgraphList.get(subgraphList.size() - 1));

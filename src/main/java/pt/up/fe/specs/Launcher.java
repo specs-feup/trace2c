@@ -12,7 +12,7 @@ import pt.up.fe.specs.algorithms.*;
 import pt.up.fe.specs.printers.CFunctionPrinter;
 import pt.up.fe.specs.printers.CFileHeaderPrinter;
 import pt.up.fe.specs.printers.CPrinter;
-import pt.up.fe.specs.utils.AddStartAndEnd;
+import pt.up.fe.specs.algorithms.AddStartAndEnd;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -83,7 +83,7 @@ public class Launcher {
             algorithmsQueue.add(new WeightAlgorithm());
             algorithmsQueue.add(new AllSubgraphsAlgorithm());
             algorithmsQueue.add(new FoldParallelSubgraphs());
-            algorithmsQueue.add(new Snapshot());
+            //algorithmsQueue.add(new Snapshot());
             algorithmsQueue.add(new CreatePrologue());
             algorithmsQueue.add(new CreateEpilogue());
         }
@@ -106,8 +106,8 @@ public class Launcher {
 
         long endTime = System.currentTimeMillis();
         System.out.println("End time:" + (endTime - startTime));
-        shapeGraph(mainGraph, false);
-        mainGraph.display();
+        //shapeGraph(mainGraph, false);
+        //mainGraph.display();
     }
 
     /**
