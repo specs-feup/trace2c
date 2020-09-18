@@ -82,7 +82,7 @@ public class SetGraphCInfo implements Algorithm {
     private List<Var> getInfoFromEdges(Iterable<Edge> edgesToAnalyze) {
         List<Var> varsInfo = new ArrayList<>();
         for (Edge edge: edgesToAnalyze) {
-            if (!Utils.isVar(edge)) continue;
+            if (!Utils.isVar(edge) || Utils.isGlobalVar(edge)) continue;
             if (Utils.isArray(edge)) {
                 String varName = Utils.getName(edge);
                 List<Integer> indexes = unfoldIndexes(edge);

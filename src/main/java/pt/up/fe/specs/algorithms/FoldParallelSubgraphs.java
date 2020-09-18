@@ -122,7 +122,7 @@ public class FoldParallelSubgraphs implements Algorithm {
         for (int i = 0; i < inputsOfSubgraph0.size(); i++) {
             Edge edgeOfSubgraph0 = inputsOfSubgraph0.get(i);
             //Edge edgeOfSubgraph1 = inputsOfSubgraph1.get(i);
-            if (!Utils.isArray(edgeOfSubgraph0) && Utils.isVar(edgeOfSubgraph0)) {
+            if (!Utils.isArray(edgeOfSubgraph0) && Utils.isVar(edgeOfSubgraph0) && !Utils.isGlobalVar(edgeOfSubgraph0)) {
                 //if (!Utils.getName(edgeOfSubgraph0).equals(Utils.getName(edgeOfSubgraph1))) {
                 // give the edges all the same name and transform them into arrays
                 Utils.setLabel(edgeOfSubgraph0, Utils.getLabel(edgeOfSubgraph0) + "_in");
