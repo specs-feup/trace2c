@@ -1,9 +1,10 @@
-package pt.up.fe.specs.utils;
+package pt.up.fe.specs.algorithms;
 
 
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import pt.up.fe.specs.utils.Utils;
 
 public class AddStartAndEnd implements Algorithm {
 
@@ -22,8 +23,8 @@ public class AddStartAndEnd implements Algorithm {
          * @param g
          *            Graph to change.
          */
-        Node startNode = graph.getNode("Start");
-        Node endNode = graph.getNode("End");
+        Node startNode = Utils.getStartNode(graph);
+        Node endNode = Utils.getEndNode(graph);
         if (startNode == null) {
             startNode = graph.addNode("Start");
             startNode.addAttribute("label", "start");
@@ -40,6 +41,5 @@ public class AddStartAndEnd implements Algorithm {
             else if (n.getOutDegree() == 0 && !n.equals(endNode) && !n.equals(startNode))
                 graph.addEdge("end from:" + n.getId(), n, endNode, true);
         }
-        System.out.println("AddStartAndEnd finished on graph " + graph.getId());
     }
 }
