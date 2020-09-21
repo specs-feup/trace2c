@@ -73,23 +73,20 @@ public class Leveling implements Algorithm {
         while (!nodeSet.isEmpty()) {
             level++;
             levelGraph.add(new ArrayList<>());
-            int prevNodeListSize = nodeSet.size();
 
+            Set<Node> childrenToAdd = new HashSet<>();
 
             for (Node n : nodeSet) {
                 levelNode(n, level);
                 if (n.getOutDegree() != 0) {
-                    nodeSet.addAll(getChildren(n));
+                    childrenToAdd.addAll(getChildren(n));
                 }
                 nodesLeveled.add(n);
             }
 
             nodeSet.removeAll(nodesLeveled);
+            nodeSet.addAll(childrenToAdd);
             nodesLeveled.clear();
-
-            if (prevNodeListSize == nodeSet.size()) {
-                System.out.println("Leveling might be stuck in a loop at level: " + level + "; node list size: " + nodeSet.size());
-            }
 
         }
 
