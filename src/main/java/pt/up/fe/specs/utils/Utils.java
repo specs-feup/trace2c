@@ -350,7 +350,7 @@ public class Utils {
         graph.addAttribute("level", true);
     }
 
-    public static List<List> getLevelGraph(Graph graph) {
+    public static List<List<Node>> getLevelGraph(Graph graph) {
         return graph.getAttribute("levelgraph");
     }
 
@@ -358,5 +358,13 @@ public class Utils {
         graph.removeAttribute("levelgraph");
         graph.removeAttribute("level");
         graph.removeAttribute("maxlevel");
+    }
+
+    public static List<Node> getChildren(Node node) {
+        List<Node> children = new ArrayList<>();
+        for (Edge e: node.getEachLeavingEdge()) {
+            children.add(e.getTargetNode());
+        }
+        return children;
     }
 }

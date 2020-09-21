@@ -4,22 +4,23 @@ import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import pt.up.fe.specs.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Algorithm that levels a given dataflow.
  *
- * @author Afonso
+ * @author Renato
  */
 public class Leveling implements Algorithm {
 
     Graph graph;
-    private HashSet<Node> nodeList = new HashSet<>();
-    private HashSet<Node> tempNodeList = new HashSet<>();
-    private List<Node> clearNodeList = new ArrayList<>();
+    private HashSet<Node> nodeSet = new HashSet<>();
+    private List<Node> nodesLeveled = new ArrayList<>();
     private List<List<Node>> levelGraph = new ArrayList<List<Node>>();
     private int level;
 
@@ -33,9 +34,8 @@ public class Leveling implements Algorithm {
         System.out.println("Initiating leveling");
         this.graph = graph;
         this.level = 0;
-        this.nodeList = new HashSet<>();
-        tempNodeList = new HashSet<>();
-        clearNodeList = new ArrayList<>();
+        this.nodeSet = new HashSet<>();
+        nodesLeveled = new ArrayList<>();
         levelGraph = new ArrayList<>();
         // graph.display();
         clearLeveling();
@@ -45,12 +45,19 @@ public class Leveling implements Algorithm {
 
         start.addAttribute("level", this.level);
         levelGraph.get(level).add(start);
-        addChildrenToTempList(start);
-        nodeList.addAll(tempNodeList);
-        tempNodeList.clear();
+        nodeSet.addAll(getChildren(start));
         graph.addAttribute("level", true);
         System.out.println("Leveling initiated");
 
+    }
+
+    private boolean areAllParentsLeveled(Node n) {
+        for (Edge e: n.getEachEnteringEdge()) {
+            if (!Utils.isLeveled(e.getSourceNode())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -63,36 +70,26 @@ public class Leveling implements Algorithm {
         //System.out.println("Starting graph leveling ext");
         graph.addAttribute("level", true);
         boolean printNodeListSizeFlag = false;
-        while (!nodeList.isEmpty()) {
+        while (!nodeSet.isEmpty()) {
             level++;
             levelGraph.add(new ArrayList<>());
-            int prevNodeListSize = nodeList.size();
+            int prevNodeListSize = nodeSet.size();
 
 
-            for (Node n : nodeList) {
-                if (markforLevel(n, level)) {
-                    if (n.getOutDegree() != 0)
-                        addChildrenToTempList(n);
-                    clearNodeList.add(n);
+            for (Node n : nodeSet) {
+                levelNode(n, level);
+                if (n.getOutDegree() != 0) {
+                    nodeSet.addAll(getChildren(n));
                 }
+                nodesLeveled.add(n);
             }
 
-            for (Node n : clearNodeList) {
-                n.addAttribute("level", level);
-                nodeList.remove(n);
-            }
+            nodeSet.removeAll(nodesLeveled);
+            nodesLeveled.clear();
 
-            clearNodeList.clear();
-
-            for (Node n : tempNodeList) {
-                if (!nodeList.contains(n))
-                    nodeList.add(n);
+            if (prevNodeListSize == nodeSet.size()) {
+                System.out.println("Leveling might be stuck in a loop at level: " + level + "; node list size: " + nodeSet.size());
             }
-            if (prevNodeListSize == nodeList.size()) {
-                System.out.println("Leveling might be stuck in a loop at level: " + level + "; node list size: " + nodeList.size());
-            }
-
-            tempNodeList.clear();
 
         }
 
@@ -116,34 +113,27 @@ public class Leveling implements Algorithm {
      * @param level level to assign if possible.
      * @return true if node marked.
      */
-    private boolean markforLevel(Node n, int level) {
-        boolean set = true;
-        for (Edge e : n.getEachEnteringEdge()) {
-            Node sourceNode = e.getSourceNode();
-            if (!sourceNode.hasAttribute("level")) {
-                set = false;
-                break;
-            }
-        }
-
-        if (set && !n.hasAttribute("level"))
+    private void levelNode(Node n, int level) {
             levelGraph.get(level).add(n);
-
-        return set;
-
+            n.addAttribute("level", level);
     }
 
 
     /**
-     * Adds nodes connected to outgoing edges of a given node to a temporary list of nodes to be checked.
+     * Gets children that can be leveled
      *
      * @param n Node from which the child nodes are obtained.
      */
-    private void addChildrenToTempList(Node n) {
+    private Set<Node> getChildren(Node n) {
+        Set<Node> children = new HashSet<>();
         for (Edge e : n.getEachLeavingEdge()) {
-            if (!e.getTargetNode().equals(n))
-                tempNodeList.add(e.getTargetNode());
+            Node child = e.getTargetNode();
+            if (!child.equals(n) && areAllParentsLeveled(child)) {
+                children.add(child);
+            }
+
         }
+        return children;
     }
 
     /**
