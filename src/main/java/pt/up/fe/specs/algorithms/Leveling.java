@@ -31,8 +31,11 @@ public class Leveling implements Algorithm {
      * selected as beginning of algorithm
      */
     public void init(Graph graph) {
-        System.out.println("Initiating leveling");
+        System.out.println("Initiating leveling on graph " + graph.getId());
         this.graph = graph;
+        if (graph.getId().equals("mainGraph")) {
+            System.out.println("Debug");
+        }
         this.level = 0;
         this.nodeSet = new HashSet<>();
         nodesLeveled = new ArrayList<>();
@@ -47,7 +50,7 @@ public class Leveling implements Algorithm {
         levelGraph.get(level).add(start);
         nodeSet.addAll(getChildren(start));
         graph.addAttribute("level", true);
-        System.out.println("Leveling initiated");
+        System.out.println("Leveling initiated on graph" + graph.getId());
 
     }
 
@@ -67,10 +70,10 @@ public class Leveling implements Algorithm {
      *
      */
     public void compute() {
-        //System.out.println("Starting graph leveling ext");
+        System.out.println("Starting graph leveling compute function");
         graph.addAttribute("level", true);
-        boolean printNodeListSizeFlag = false;
         while (!nodeSet.isEmpty()) {
+            if (level % 10000 == 0) System.out.println("Processing level " + level);
             level++;
             levelGraph.add(new ArrayList<>());
 
@@ -92,13 +95,12 @@ public class Leveling implements Algorithm {
 
         graph.addAttribute("levelgraph", levelGraph);
         graph.addAttribute("maxlevel", level);
-        System.out.println("Graph: " + graph.getId() + " has " + (level+1) + " levels");
+        System.out.println("Leveling Finished: graph " + graph.getId() + " has " + (level+1) + " levels");
 
         if (graph.hasAttribute("subgraphs")) {
             for (Graph subgraph: graph.<List<Graph>>getAttribute("subgraphs")) {
-                Leveling leveling = new Leveling();
-                leveling.init(subgraph);
-                leveling.compute();
+                init(subgraph);
+                compute();
             }
         }
     }
@@ -111,6 +113,7 @@ public class Leveling implements Algorithm {
      * @return true if node marked.
      */
     private void levelNode(Node n, int level) {
+        if (Utils.isLeveled(n)) System.err.println("Leveling: Cyclic graph at node " + n.getId());
             levelGraph.get(level).add(n);
             n.addAttribute("level", level);
     }
@@ -125,10 +128,11 @@ public class Leveling implements Algorithm {
         Set<Node> children = new HashSet<>();
         for (Edge e : n.getEachLeavingEdge()) {
             Node child = e.getTargetNode();
-            if (!child.equals(n) && areAllParentsLeveled(child)) {
-                children.add(child);
+            if (!children.contains(child)) {
+                if (!child.equals(n) && areAllParentsLeveled(child)) {
+                    children.add(child);
+                }
             }
-
         }
         return children;
     }

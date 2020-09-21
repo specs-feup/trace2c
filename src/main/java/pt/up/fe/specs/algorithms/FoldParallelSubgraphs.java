@@ -641,9 +641,12 @@ public class FoldParallelSubgraphs implements Algorithm {
 
             if (newSource == null || Utils.isStartNode(newSource)) {
                 newSource = Utils.getStartNode(subgraph);
+                /*
                 Edge edgeEnteringInCallNode = mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
                         edge.getSourceNode(), callNode, true);
                 Graphs.copyAttributes(edge, edgeEnteringInCallNode);
+                */
+
 
             }
             Edge newEdge = subgraph.addEdge(edge.getId(), newSource, finalN, true);
