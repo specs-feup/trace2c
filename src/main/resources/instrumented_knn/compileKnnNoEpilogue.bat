@@ -1,0 +1,1 @@
+gcc knnNoEpilogue.c utils.c main.c -Wall -o knnNoEpilogue.exe -g3
