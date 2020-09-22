@@ -72,6 +72,7 @@ public class FoldParallelSubgraphs implements Algorithm {
 
     @Override
     public void compute() {
+        System.out.println("Initiating Fold Parallel Subgraphs");
         if (allNodeClusters.size() > 2) {
             if (graph2Width == 0) {
                 computeFor1Function();
@@ -641,12 +642,10 @@ public class FoldParallelSubgraphs implements Algorithm {
 
             if (newSource == null || Utils.isStartNode(newSource)) {
                 newSource = Utils.getStartNode(subgraph);
-                /*
-                Edge edgeEnteringInCallNode = mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
-                        edge.getSourceNode(), callNode, true);
-                Graphs.copyAttributes(edge, edgeEnteringInCallNode);
-                */
-
+                if (!Utils.areConnected(edge.getSourceNode(), callNode)) {
+                     mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
+                            edge.getSourceNode(), callNode, true);
+                }
 
             }
             Edge newEdge = subgraph.addEdge(edge.getId(), newSource, finalN, true);

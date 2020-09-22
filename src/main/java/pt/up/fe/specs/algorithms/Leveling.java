@@ -33,9 +33,6 @@ public class Leveling implements Algorithm {
     public void init(Graph graph) {
         System.out.println("Initiating leveling on graph " + graph.getId());
         this.graph = graph;
-        if (graph.getId().equals("mainGraph")) {
-            System.out.println("Debug");
-        }
         this.level = 0;
         this.nodeSet = new HashSet<>();
         nodesLeveled = new ArrayList<>();

@@ -367,4 +367,17 @@ public class Utils {
         }
         return children;
     }
+
+    /**
+     * Checks if two nodes are directly connected
+     * @param parent
+     * @param child
+     * @return
+     */
+    public static boolean areConnected(Node parent, Node child) {
+        for (Edge e: child.getEachEnteringEdge()) {
+            if (e.getSourceNode().equals(parent)) return true;
+        }
+        return false;
+    }
 }

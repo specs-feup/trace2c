@@ -33,7 +33,7 @@ public class LocalVectorPruning implements Algorithm {
 
         for (Node n : graph) {
             if (Utils.isLocalVar(n) && Utils.isArray(n)) {
-                label = n.getAttribute("label").toString();
+                label = Utils.getLabel(n);
                 label = label.replace("[", "");
                 label = label.replace("]", "");
                 n.setAttribute("label", label);
