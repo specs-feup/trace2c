@@ -1,0 +1,268 @@
+
+
+================================================================
+== Vivado HLS Report for 'knnNoEpilogue10000p1_1'
+================================================================
+* Date:           Tue Sep 22 15:28:53 2020
+
+* Version:        2019.2 (Build 2704478 on Wed Nov 06 22:10:23 MST 2019)
+* Project:        knn
+* Solution:       solution1
+* Product family: zynq
+* Target device:  xc7z020-clg484-1
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  | 10.00 ns | 3.634 ns |   1.25 ns  |
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute) |  Interval | Pipeline|
+    |   min   |   max   |    min   |    max   | min | max |   Type  |
+    +---------+---------+----------+----------+-----+-----+---------+
+    |        0|        0|   0 ns   |   0 ns   |    0|    0|   none  |
+    +---------+---------+----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        N/A
+
+
+
+================================================================
+== Utilization Estimates
+================================================================
+* Summary: 
++-----------------+---------+-------+--------+-------+-----+
+|       Name      | BRAM_18K| DSP48E|   FF   |  LUT  | URAM|
++-----------------+---------+-------+--------+-------+-----+
+|DSP              |        -|      -|       -|      -|    -|
+|Expression       |        -|      -|       0|      2|    -|
+|FIFO             |        -|      -|       -|      -|    -|
+|Instance         |        -|      -|       -|      -|    -|
+|Memory           |        -|      -|       -|      -|    -|
+|Multiplexer      |        -|      -|       -|    297|    -|
+|Register         |        -|      -|       2|      -|    -|
++-----------------+---------+-------+--------+-------+-----+
+|Total            |        0|      0|       2|    299|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Available        |      280|    220|  106400|  53200|    0|
++-----------------+---------+-------+--------+-------+-----+
+|Utilization (%)  |        0|      0|   ~0   |   ~0  |    0|
++-----------------+---------+-------+--------+-------+-----+
+
++ Detail: 
+    * Instance: 
+    N/A
+
+    * DSP48E: 
+    N/A
+
+    * Memory: 
+    N/A
+
+    * FIFO: 
+    N/A
+
+    * Expression: 
+    +-----------------+----------+-------+---+----+------------+------------+
+    |  Variable Name  | Operation| DSP48E| FF| LUT| Bitwidth P0| Bitwidth P1|
+    +-----------------+----------+-------+---+----+------------+------------+
+    |ap_block_state1  |    or    |      0|  0|   2|           1|           1|
+    +-----------------+----------+-------+---+----+------------+------------+
+    |Total            |          |      0|  0|   2|           1|           1|
+    +-----------------+----------+-------+---+----+------------+------------+
+
+    * Multiplexer: 
+    +--------------------------+----+-----------+-----+-----------+
+    |           Name           | LUT| Input Size| Bits| Total Bits|
+    +--------------------------+----+-----------+-----+-----------+
+    |ap_done                   |   9|          2|    1|          2|
+    |xFeatures_0_out1_blk_n    |   9|          2|    1|          2|
+    |xFeatures_0_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_10_out11_blk_n  |   9|          2|    1|          2|
+    |xFeatures_10_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_11_out12_blk_n  |   9|          2|    1|          2|
+    |xFeatures_11_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_12_out13_blk_n  |   9|          2|    1|          2|
+    |xFeatures_12_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_13_out14_blk_n  |   9|          2|    1|          2|
+    |xFeatures_13_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_14_out15_blk_n  |   9|          2|    1|          2|
+    |xFeatures_14_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_15_out16_blk_n  |   9|          2|    1|          2|
+    |xFeatures_15_out_blk_n    |   9|          2|    1|          2|
+    |xFeatures_1_out2_blk_n    |   9|          2|    1|          2|
+    |xFeatures_1_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_2_out3_blk_n    |   9|          2|    1|          2|
+    |xFeatures_2_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_3_out4_blk_n    |   9|          2|    1|          2|
+    |xFeatures_3_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_4_out5_blk_n    |   9|          2|    1|          2|
+    |xFeatures_4_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_5_out6_blk_n    |   9|          2|    1|          2|
+    |xFeatures_5_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_6_out7_blk_n    |   9|          2|    1|          2|
+    |xFeatures_6_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_7_out8_blk_n    |   9|          2|    1|          2|
+    |xFeatures_7_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_8_out9_blk_n    |   9|          2|    1|          2|
+    |xFeatures_8_out_blk_n     |   9|          2|    1|          2|
+    |xFeatures_9_out10_blk_n   |   9|          2|    1|          2|
+    |xFeatures_9_out_blk_n     |   9|          2|    1|          2|
+    +--------------------------+----+-----------+-----+-----------+
+    |Total                     | 297|         66|   33|         66|
+    +--------------------------+----+-----------+-----+-----------+
+
+    * Register: 
+    +-------------+---+----+-----+-----------+
+    |     Name    | FF| LUT| Bits| Const Bits|
+    +-------------+---+----+-----+-----------+
+    |ap_CS_fsm    |  1|   0|    1|          0|
+    |ap_done_reg  |  1|   0|    1|          0|
+    +-------------+---+----+-----+-----------+
+    |Total        |  2|   0|    2|          0|
+    +-------------+---+----+-----+-----------+
+
+
+
+================================================================
+== Interface
+================================================================
+* Summary: 
++---------------------------+-----+-----+------------+------------------------+--------------+
+|         RTL Ports         | Dir | Bits|  Protocol  |      Source Object     |    C Type    |
++---------------------------+-----+-----+------------+------------------------+--------------+
+|ap_clk                     |  in |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_rst                     |  in |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_start                   |  in |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_done                    | out |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_continue                |  in |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_idle                    | out |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|ap_ready                   | out |    1| ap_ctrl_hs | knnNoEpilogue10000p1.1 | return value |
+|xFeatures_0                |  in |   32|   ap_none  |       xFeatures_0      |    pointer   |
+|xFeatures_1                |  in |   32|   ap_none  |       xFeatures_1      |    pointer   |
+|xFeatures_2                |  in |   32|   ap_none  |       xFeatures_2      |    pointer   |
+|xFeatures_3                |  in |   32|   ap_none  |       xFeatures_3      |    pointer   |
+|xFeatures_4                |  in |   32|   ap_none  |       xFeatures_4      |    pointer   |
+|xFeatures_5                |  in |   32|   ap_none  |       xFeatures_5      |    pointer   |
+|xFeatures_6                |  in |   32|   ap_none  |       xFeatures_6      |    pointer   |
+|xFeatures_7                |  in |   32|   ap_none  |       xFeatures_7      |    pointer   |
+|xFeatures_8                |  in |   32|   ap_none  |       xFeatures_8      |    pointer   |
+|xFeatures_9                |  in |   32|   ap_none  |       xFeatures_9      |    pointer   |
+|xFeatures_10               |  in |   32|   ap_none  |      xFeatures_10      |    pointer   |
+|xFeatures_11               |  in |   32|   ap_none  |      xFeatures_11      |    pointer   |
+|xFeatures_12               |  in |   32|   ap_none  |      xFeatures_12      |    pointer   |
+|xFeatures_13               |  in |   32|   ap_none  |      xFeatures_13      |    pointer   |
+|xFeatures_14               |  in |   32|   ap_none  |      xFeatures_14      |    pointer   |
+|xFeatures_15               |  in |   32|   ap_none  |      xFeatures_15      |    pointer   |
+|xFeatures_0_out_din        | out |   32|   ap_fifo  |     xFeatures_0_out    |    pointer   |
+|xFeatures_0_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_0_out    |    pointer   |
+|xFeatures_0_out_write      | out |    1|   ap_fifo  |     xFeatures_0_out    |    pointer   |
+|xFeatures_0_out1_din       | out |   32|   ap_fifo  |    xFeatures_0_out1    |    pointer   |
+|xFeatures_0_out1_full_n    |  in |    1|   ap_fifo  |    xFeatures_0_out1    |    pointer   |
+|xFeatures_0_out1_write     | out |    1|   ap_fifo  |    xFeatures_0_out1    |    pointer   |
+|xFeatures_1_out_din        | out |   32|   ap_fifo  |     xFeatures_1_out    |    pointer   |
+|xFeatures_1_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_1_out    |    pointer   |
+|xFeatures_1_out_write      | out |    1|   ap_fifo  |     xFeatures_1_out    |    pointer   |
+|xFeatures_1_out2_din       | out |   32|   ap_fifo  |    xFeatures_1_out2    |    pointer   |
+|xFeatures_1_out2_full_n    |  in |    1|   ap_fifo  |    xFeatures_1_out2    |    pointer   |
+|xFeatures_1_out2_write     | out |    1|   ap_fifo  |    xFeatures_1_out2    |    pointer   |
+|xFeatures_2_out_din        | out |   32|   ap_fifo  |     xFeatures_2_out    |    pointer   |
+|xFeatures_2_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_2_out    |    pointer   |
+|xFeatures_2_out_write      | out |    1|   ap_fifo  |     xFeatures_2_out    |    pointer   |
+|xFeatures_2_out3_din       | out |   32|   ap_fifo  |    xFeatures_2_out3    |    pointer   |
+|xFeatures_2_out3_full_n    |  in |    1|   ap_fifo  |    xFeatures_2_out3    |    pointer   |
+|xFeatures_2_out3_write     | out |    1|   ap_fifo  |    xFeatures_2_out3    |    pointer   |
+|xFeatures_3_out_din        | out |   32|   ap_fifo  |     xFeatures_3_out    |    pointer   |
+|xFeatures_3_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_3_out    |    pointer   |
+|xFeatures_3_out_write      | out |    1|   ap_fifo  |     xFeatures_3_out    |    pointer   |
+|xFeatures_3_out4_din       | out |   32|   ap_fifo  |    xFeatures_3_out4    |    pointer   |
+|xFeatures_3_out4_full_n    |  in |    1|   ap_fifo  |    xFeatures_3_out4    |    pointer   |
+|xFeatures_3_out4_write     | out |    1|   ap_fifo  |    xFeatures_3_out4    |    pointer   |
+|xFeatures_4_out_din        | out |   32|   ap_fifo  |     xFeatures_4_out    |    pointer   |
+|xFeatures_4_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_4_out    |    pointer   |
+|xFeatures_4_out_write      | out |    1|   ap_fifo  |     xFeatures_4_out    |    pointer   |
+|xFeatures_4_out5_din       | out |   32|   ap_fifo  |    xFeatures_4_out5    |    pointer   |
+|xFeatures_4_out5_full_n    |  in |    1|   ap_fifo  |    xFeatures_4_out5    |    pointer   |
+|xFeatures_4_out5_write     | out |    1|   ap_fifo  |    xFeatures_4_out5    |    pointer   |
+|xFeatures_5_out_din        | out |   32|   ap_fifo  |     xFeatures_5_out    |    pointer   |
+|xFeatures_5_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_5_out    |    pointer   |
+|xFeatures_5_out_write      | out |    1|   ap_fifo  |     xFeatures_5_out    |    pointer   |
+|xFeatures_5_out6_din       | out |   32|   ap_fifo  |    xFeatures_5_out6    |    pointer   |
+|xFeatures_5_out6_full_n    |  in |    1|   ap_fifo  |    xFeatures_5_out6    |    pointer   |
+|xFeatures_5_out6_write     | out |    1|   ap_fifo  |    xFeatures_5_out6    |    pointer   |
+|xFeatures_6_out_din        | out |   32|   ap_fifo  |     xFeatures_6_out    |    pointer   |
+|xFeatures_6_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_6_out    |    pointer   |
+|xFeatures_6_out_write      | out |    1|   ap_fifo  |     xFeatures_6_out    |    pointer   |
+|xFeatures_6_out7_din       | out |   32|   ap_fifo  |    xFeatures_6_out7    |    pointer   |
+|xFeatures_6_out7_full_n    |  in |    1|   ap_fifo  |    xFeatures_6_out7    |    pointer   |
+|xFeatures_6_out7_write     | out |    1|   ap_fifo  |    xFeatures_6_out7    |    pointer   |
+|xFeatures_7_out_din        | out |   32|   ap_fifo  |     xFeatures_7_out    |    pointer   |
+|xFeatures_7_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_7_out    |    pointer   |
+|xFeatures_7_out_write      | out |    1|   ap_fifo  |     xFeatures_7_out    |    pointer   |
+|xFeatures_7_out8_din       | out |   32|   ap_fifo  |    xFeatures_7_out8    |    pointer   |
+|xFeatures_7_out8_full_n    |  in |    1|   ap_fifo  |    xFeatures_7_out8    |    pointer   |
+|xFeatures_7_out8_write     | out |    1|   ap_fifo  |    xFeatures_7_out8    |    pointer   |
+|xFeatures_8_out_din        | out |   32|   ap_fifo  |     xFeatures_8_out    |    pointer   |
+|xFeatures_8_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_8_out    |    pointer   |
+|xFeatures_8_out_write      | out |    1|   ap_fifo  |     xFeatures_8_out    |    pointer   |
+|xFeatures_8_out9_din       | out |   32|   ap_fifo  |    xFeatures_8_out9    |    pointer   |
+|xFeatures_8_out9_full_n    |  in |    1|   ap_fifo  |    xFeatures_8_out9    |    pointer   |
+|xFeatures_8_out9_write     | out |    1|   ap_fifo  |    xFeatures_8_out9    |    pointer   |
+|xFeatures_9_out_din        | out |   32|   ap_fifo  |     xFeatures_9_out    |    pointer   |
+|xFeatures_9_out_full_n     |  in |    1|   ap_fifo  |     xFeatures_9_out    |    pointer   |
+|xFeatures_9_out_write      | out |    1|   ap_fifo  |     xFeatures_9_out    |    pointer   |
+|xFeatures_9_out10_din      | out |   32|   ap_fifo  |    xFeatures_9_out10   |    pointer   |
+|xFeatures_9_out10_full_n   |  in |    1|   ap_fifo  |    xFeatures_9_out10   |    pointer   |
+|xFeatures_9_out10_write    | out |    1|   ap_fifo  |    xFeatures_9_out10   |    pointer   |
+|xFeatures_10_out_din       | out |   32|   ap_fifo  |    xFeatures_10_out    |    pointer   |
+|xFeatures_10_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_10_out    |    pointer   |
+|xFeatures_10_out_write     | out |    1|   ap_fifo  |    xFeatures_10_out    |    pointer   |
+|xFeatures_10_out11_din     | out |   32|   ap_fifo  |   xFeatures_10_out11   |    pointer   |
+|xFeatures_10_out11_full_n  |  in |    1|   ap_fifo  |   xFeatures_10_out11   |    pointer   |
+|xFeatures_10_out11_write   | out |    1|   ap_fifo  |   xFeatures_10_out11   |    pointer   |
+|xFeatures_11_out_din       | out |   32|   ap_fifo  |    xFeatures_11_out    |    pointer   |
+|xFeatures_11_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_11_out    |    pointer   |
+|xFeatures_11_out_write     | out |    1|   ap_fifo  |    xFeatures_11_out    |    pointer   |
+|xFeatures_11_out12_din     | out |   32|   ap_fifo  |   xFeatures_11_out12   |    pointer   |
+|xFeatures_11_out12_full_n  |  in |    1|   ap_fifo  |   xFeatures_11_out12   |    pointer   |
+|xFeatures_11_out12_write   | out |    1|   ap_fifo  |   xFeatures_11_out12   |    pointer   |
+|xFeatures_12_out_din       | out |   32|   ap_fifo  |    xFeatures_12_out    |    pointer   |
+|xFeatures_12_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_12_out    |    pointer   |
+|xFeatures_12_out_write     | out |    1|   ap_fifo  |    xFeatures_12_out    |    pointer   |
+|xFeatures_12_out13_din     | out |   32|   ap_fifo  |   xFeatures_12_out13   |    pointer   |
+|xFeatures_12_out13_full_n  |  in |    1|   ap_fifo  |   xFeatures_12_out13   |    pointer   |
+|xFeatures_12_out13_write   | out |    1|   ap_fifo  |   xFeatures_12_out13   |    pointer   |
+|xFeatures_13_out_din       | out |   32|   ap_fifo  |    xFeatures_13_out    |    pointer   |
+|xFeatures_13_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_13_out    |    pointer   |
+|xFeatures_13_out_write     | out |    1|   ap_fifo  |    xFeatures_13_out    |    pointer   |
+|xFeatures_13_out14_din     | out |   32|   ap_fifo  |   xFeatures_13_out14   |    pointer   |
+|xFeatures_13_out14_full_n  |  in |    1|   ap_fifo  |   xFeatures_13_out14   |    pointer   |
+|xFeatures_13_out14_write   | out |    1|   ap_fifo  |   xFeatures_13_out14   |    pointer   |
+|xFeatures_14_out_din       | out |   32|   ap_fifo  |    xFeatures_14_out    |    pointer   |
+|xFeatures_14_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_14_out    |    pointer   |
+|xFeatures_14_out_write     | out |    1|   ap_fifo  |    xFeatures_14_out    |    pointer   |
+|xFeatures_14_out15_din     | out |   32|   ap_fifo  |   xFeatures_14_out15   |    pointer   |
+|xFeatures_14_out15_full_n  |  in |    1|   ap_fifo  |   xFeatures_14_out15   |    pointer   |
+|xFeatures_14_out15_write   | out |    1|   ap_fifo  |   xFeatures_14_out15   |    pointer   |
+|xFeatures_15_out_din       | out |   32|   ap_fifo  |    xFeatures_15_out    |    pointer   |
+|xFeatures_15_out_full_n    |  in |    1|   ap_fifo  |    xFeatures_15_out    |    pointer   |
+|xFeatures_15_out_write     | out |    1|   ap_fifo  |    xFeatures_15_out    |    pointer   |
+|xFeatures_15_out16_din     | out |   32|   ap_fifo  |   xFeatures_15_out16   |    pointer   |
+|xFeatures_15_out16_full_n  |  in |    1|   ap_fifo  |   xFeatures_15_out16   |    pointer   |
+|xFeatures_15_out16_write   | out |    1|   ap_fifo  |   xFeatures_15_out16   |    pointer   |
++---------------------------+-----+-----+------------+------------------------+--------------+
+
