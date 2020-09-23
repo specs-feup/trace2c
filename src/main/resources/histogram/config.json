@@ -1,15 +1,12 @@
 {
    "loadstores":2,
-   "inputs":["image[128][128]", "histogram[254]", "gray_level_mapping[256]"
+   "inputs":["histogram[256]", "glm[256]"
    ],
-   "input_types":["int", "int", "int"
+   "input_types":["int", "int"
    ],
-   "outputs":"histogram[254]",
+   "outputs":"image[128][128]",
    "output_type": "int",
-   "folding" : true,
+   "fold" : true,
    "arithmetic" : true,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
    "graph" : "histogram.dot"
 }

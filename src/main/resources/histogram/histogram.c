@@ -14,41 +14,43 @@
 #define N 128
 #define L 256
 
-void hist(int image[N][N], int histogram[L], int gray_level_mapping[L])
+void hist(int image[N][N], int histogram[L], int glm[L])
 {
     //---------------------
     FILE *f = fopen("histogram.dot", "w");
     int n_const = 0;
     int n_temp = 0;
     int ne = 0;
+    int n_assign = 0;
     int n_op = 0;
-
+    int n_ca = 0;
+    int n_aa = 0;
     int n_cdf = 0;
-    int n_b2 = 0;
     int n_pixels = 0;
 
     int n_image[N][N] = {0};
     int n_histogram[L] = {0};
-    int n_gray_level_mapping[L] = {0};
+    int n_glm[L] = {0};
+    int n_histogramAtImage[N][N] = {0};
+    int n_glmAtImage[N][N] = {0};
     fprintf(f, "Digraph G{\n");
     for (int i = 0; i < L; i++)
     {
         n_histogram[i]++;
-        fprintf(f, "\"histogram[%d]_%d_l\" [label=\"histogram[%d]\", att1=var, att2=inte, att3=float ];\n", i, n_histogram[i], i);
-        n_gray_level_mapping[i]++;
-        fprintf(f, "\"gray_level_mapping[%d]_%d_l\" [label=\"gray_level_mapping[%d]\", att1=var, att2=inte, att3=float ];\n", i, n_gray_level_mapping[i], i);
+        fprintf(f, "\"histogram[%d]_%d_l\" [label=\"histogram[%d]\", att1=var, att2=param, att3=float ];\n", i, n_histogram[i], i);
+        n_glm[i]++;
+        fprintf(f, "\"glm[%d]_%d_l\" [label=\"glm[%d]\", att1=var, att2=param, att3=float ];\n", i, n_glm[i], i);
     }
     for (int i = 0; i < N; i++)
     {
         for (int j = 0; j < N; j++)
         {
             n_image[i][j]++;
-            fprintf(f, "\"n_image[%d][%d]_%d_l\" [label=\"data_imag[%d][%d]\", att1=var, att2=inte, att3=float ];\n", i, j, n_image[i][j], i, j);
+            fprintf(f, "\"image[%d][%d]_%d\" [label=\"image[%d][%d]\", att1=var, att2=param, att3=float ];\n", i, j, n_image[i][j], i, j);
         }
     }
     //---------------------
     float cdf;
-    float b2;
     float pixels;
 
     /* Compute the image's histogram */
@@ -64,12 +66,27 @@ void hist(int image[N][N], int histogram[L], int gray_level_mapping[L])
             fprintf(f, "op%d [label=\"+\", att1=op];\n", n_op);
             ne++;
             fprintf(f, "\"const%d\"->\"op%d\" [label=\"%d\", ord=\"%d\"];\n", n_const, n_op, ne, ne);
+            n_ca++;
+            fprintf(f, "CA_%d [label=CA_%d, att1=complexAssignment];\n", n_ca, n_ca);
+            n_aa++;
+            fprintf(f, "AA_%d [label=AA_%d, att1=nop];\n", n_aa, n_aa);
             ne++;
-            fprintf(f, "\"histogram[%d]_%d_l\"->\"op%d\" [label=\"%d\", ord=\"%d\"];\n", image[i][j], n_histogram[image[i][j]], n_op, ne, ne);
-            n_histogram[image[i][j]]++;
-            fprintf(f, "\"histogram[%d]_%d_l\" [label=\"histogram[%d]\", att1=var, att2=inte, att3=float ];\n", image[i][j], n_histogram[image[i][j]], image[i][j]);
+            fprintf(f, "\"image[%d][%d]_%d\"->AA_%d [label=%d];\n", i, j, n_image[i][j], n_aa, ne);
+            n_histogramAtImage[i][j]++;
+            fprintf(f, "\"histogram[image[%d][%d]]_%d\" [label=\"histogram[image[%d][%d]]\", att1=var, att2=param, att3=int];\n", i,j,n_histogramAtImage[i][j], i, j);
             ne++;
-            fprintf(f, "\"op%d\"->\"histogram[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_op, image[i][j], n_histogram[image[i][j]], ne, ne);
+            fprintf(f, "AA_%d->\"histogram[image[%d][%d]]_%d\" [label=%d];\n", n_aa, i, j, n_histogramAtImage[i][j], ne);
+            
+            ne++;
+            fprintf(f, "\"histogram[image[%d][%d]]_%d\"->\"op%d\" [label=\"%d\"];\n", i,j,n_histogramAtImage[i][j], n_op, ne);
+            n_histogramAtImage[i][j]++;
+            fprintf(f, "\"histogram[image[%d][%d]]_%d\" [label=\"histogram[image[%d][%d]]\", att1=var, att2=param, att3=int];\n", i,j,n_histogramAtImage[i][j],i,j);
+            ne++;
+            fprintf(f, "\"op%d\"->CA_%d [label=\"%d\", pos=r];\n", n_op, n_ca, ne);
+            ne++;
+            fprintf(f, "\"image[%d][%d]_%d\"->CA_%d [label=%d, pos=l];\n", i, j, n_image[i][j], n_ca, ne);
+            ne++;
+            fprintf(f, "CA_%d->\"histogram[image[%d][%d]]_%d\" [label=%d];\n", n_ca,i,j, n_histogramAtImage[i][j], ne);
             //---------------------
             histogram[image[i][j]] += 1;
         }
@@ -103,9 +120,9 @@ void hist(int image[N][N], int histogram[L], int gray_level_mapping[L])
         n_op++;
         fprintf(f, "op%d [label=\"/\", att1=op];\n", n_op);
         ne++;
-        fprintf(f, "\"histogram[%d]_%d_l\"->\"op%d\" [label=\"%d\", ord=\"%d\"];\n", i, n_histogram[i], n_op, ne, ne);
+        fprintf(f, "\"histogram[%d]_%d_l\"->\"op%d\" [label=\"%d\", pos=l];\n", i, n_histogram[i], n_op, ne);
         ne++;
-        fprintf(f, "\"pixels_%d\"->\"op%d\" [label=\"%d\", ord=\"%d\"];\n", n_pixels, n_op, ne, ne);
+        fprintf(f, "\"pixels_%d\"->\"op%d\" [label=\"%d\", pos=r];\n", n_pixels, n_op, ne);
         n_temp++;
         fprintf(f, "temp%d [label=\"temp_l70_i%d\", att1=var, att2=loc, att3=float ];\n", n_temp, n_temp);
         ne++;
@@ -136,12 +153,12 @@ void hist(int image[N][N], int histogram[L], int gray_level_mapping[L])
         fprintf(f, "temp%d [label=\"temp_l70_i%d\", att1=var, att2=loc, att3=float ];\n", n_temp, n_temp);
         ne++;
         fprintf(f, "\"op%d\"->\"temp_%d\" [label=\"%d\", ord=\"%d\"];\n", n_op, n_temp, ne, ne);
-        n_gray_level_mapping[i]++;
-        fprintf(f, "\"gray_level_mapping[%d]_%d_l\" [label=\"gray_level_mapping[%d]\", att1=var, att2=inte, att3=int ];\n", i, n_gray_level_mapping[i], i);
+        n_glm[i]++;
+        fprintf(f, "\"glm[%d]_%d_l\" [label=\"glm[%d]\", att1=var, att2=param, att3=int ];\n", i, n_glm[i], i);
         ne++;
-        fprintf(f, "\"temp%d\"->\"gray_level_mapping[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_temp, i, n_gray_level_mapping[i], ne, ne);
+        fprintf(f, "\"temp%d\"->\"glm[%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", n_temp, i, n_glm[i], ne, ne);
         //---------------------
-        gray_level_mapping[i] = (int)(255.0 * cdf);
+        glm[i] = (int)(255.0 * cdf);
     }
 
     /* Map the old gray levels in the original image to the new gray levels. */
@@ -151,12 +168,24 @@ void hist(int image[N][N], int histogram[L], int gray_level_mapping[L])
         for (int j = 0; j < N; ++j)
         {
             //---------------------
-            n_image[i][j]++;
-            fprintf(f, "\"image[%d][%d]_%d_l\" [label=\"image[%d][%d]\", att1=var, att2=inte, att3=int ];\n", i, j, n_image[i][j], i, j);
+            n_glmAtImage[i][j]++;
+            fprintf(f, "\"glm[image[%d][%d]]_%d\" [label=\"glm[image[%d][%d]]\", att1=var, att2=param, att3=int];\n",i,j,n_glmAtImage[i][j],i,j);
+            n_aa++;
+            fprintf(f, "AA_%d [label=AA_%d, att1=nop];\n", n_aa, n_aa);
             ne++;
-            fprintf(f, "\"gray_level_mapping[%d]_%d_l\"->\"image[%d][%d]_%d_l\" [label=\"%d\", ord=\"%d\"];\n", image[i][j], n_gray_level_mapping[image[i][j]], i, j, n_image[i][j], ne, ne);
+            fprintf(f, "\"image[%d][%d]_%d\"->AA_%d [label=%d];\n", i, j, n_image[i][j], n_aa, ne);
+            ne++;
+            fprintf(f, "AA_%d->\"glm[image[%d][%d]]_%d\" [label=%d];\n", n_aa,i,j,n_glmAtImage[i][j], ne);
+            n_image[i][j]++;
+            fprintf(f, "\"image[%d][%d]_%d\" [label=\"image[%d][%d]\", att1=var, att2=param, att3=int ];\n", i, j, n_image[i][j], i, j);
+            n_assign++;
+            fprintf(f, "Assign_%d [label=Assign_%d, att1=assignment];\n", n_assign, n_assign);
+            ne++;
+            fprintf(f, "\"glm[image[%d][%d]]_%d\"->Assign_%d [label=\"%d\"];\n",i,j,n_glmAtImage[i][j],n_assign, ne);
+            ne++;
+            fprintf(f, "Assign_%d->\"image[%d][%d]_%d\" [label=%d]", n_assign, i, j, n_image[i][j], ne);
             //---------------------
-            image[i][j] = gray_level_mapping[image[i][j]];
+            image[i][j] = glm[image[i][j]];
         }
     }
     //---------------------
@@ -170,15 +199,15 @@ int main()
     /* Get the original image */
     int image[N][N] = {0};
     int histogram[L] = {0};
-    int gray_level_mapping[L] = {0};
+    int glm[L] = {0};
 
     input_dsp(image, N * N, 1);
 
-    hist(image, histogram, gray_level_mapping);
+    hist(image, histogram, glm);
 
     /* Return the histogram equalized image. */
 
     output_dsp(image, N * N, 1);
     output_dsp(histogram, L, 1);
-    output_dsp(gray_level_mapping, L, 1);
+    output_dsp(glm, L, 1);
 }

@@ -1,0 +1,1 @@
+gcc histogram.c IO.c -Wall -o histogram.exe
