@@ -65,7 +65,7 @@ public class FoldingAlgorithm implements Algorithm {
          * Thus, when we dont parallelize before folding, we can try to parallelize after folding
          */
         if (!Config.isToParallelizeSums()) {
-            Algorithm parallelizeSums = new ParallelizeSums();
+            Algorithm parallelizeSums = new BalanceAdditionChains();
             parallelizeSums.init(functionGraph);
             parallelizeSums.compute();
         }

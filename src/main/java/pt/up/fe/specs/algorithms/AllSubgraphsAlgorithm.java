@@ -1,16 +1,21 @@
 package pt.up.fe.specs.algorithms;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Stack;
+import java.util.stream.Collectors;
+
 import org.graphstream.algorithm.Algorithm;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+
 import pt.up.fe.specs.CInfo;
 import pt.up.fe.specs.Config;
+import pt.up.fe.specs.utils.SubgraphSearchAux;
 import pt.up.fe.specs.utils.Utils;
 import pt.up.fe.specs.utils.Var;
-import pt.up.fe.specs.utils.SubgraphSearchAux;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Calculates all possible subgraphs and gives a weight to each subgraph.
@@ -58,7 +63,9 @@ public class AllSubgraphsAlgorithm implements Algorithm {
             node.getEachEnteringEdge().forEach(e -> connections.add(e.getSourceNode()));
             for (Node connectionNode : connections) {
                 Integer nodeLevel = Utils.getLevel(connectionNode);
-                if (nodeLevel >= searchAux.getMinLevel() && nodeLevel <= searchAux.getMaxLevel() && !searchAux.wasNodeVisited(connectionNode)) {
+                if (nodeLevel >= searchAux.getMinLevel() &&
+                        nodeLevel <= searchAux.getMaxLevel() &&
+                        !searchAux.wasNodeVisited(connectionNode)) {
                     nodeStack.add(connectionNode);
                 }
             }
@@ -84,7 +91,6 @@ public class AllSubgraphsAlgorithm implements Algorithm {
                     .filter(clusters -> clusters.size() == Config.getSubgraphRepeats())
                     .collect(Collectors.toList());
         }
-
 
 
         for (List<HashSet<Node>> listOfSubgraphs : filteredSubgraphs) {
@@ -127,14 +133,14 @@ public class AllSubgraphsAlgorithm implements Algorithm {
     @Override
     public void compute() {
         System.out.println("All subgraphs algorithm is starting");
-        List<List<Node>> levelGraph = graph.getAttribute("levelgraph");
+        List<HashSet<Node>> levelGraph = graph.getAttribute("levelgraph");
         int graphMaxLevel = graph.getAttribute("maxlevel");
         System.out.println("Max Level: " + graphMaxLevel);
         for (int startLevel = 1; startLevel < graphMaxLevel; startLevel++) {
             int maxLastLevel = Math.min(graphMaxLevel, startLevel + maxFoldLevels);
             for (int lastLevel = startLevel + minFoldLevels - 1; lastLevel < maxLastLevel; lastLevel++) {
                 HashSet<Node> addedNodes = new HashSet<>();
-                for (Node n : levelGraph.get(startLevel)) {
+                for (Node n : levelGraph.get(lastLevel)) {
                     if (!addedNodes.contains(n)) {
                         SubgraphSearchAux searchAux = new SubgraphSearchAux(startLevel, lastLevel);
                         addNodeToTempSubgraph(n, addedNodes, searchAux);

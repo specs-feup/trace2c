@@ -2,11 +2,7 @@ package pt.up.fe.specs.printers;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
-import pt.up.fe.specs.Config;
-import pt.up.fe.specs.utils.LoopNameAndIterator;
-import pt.up.fe.specs.utils.FoldInfo;
-import pt.up.fe.specs.utils.LoopInfo;
-import pt.up.fe.specs.utils.SpecificLoopInfo;
+import pt.up.fe.specs.utils.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -27,9 +23,9 @@ public class CParallelLoopPrinter extends CLoopPrinter {
         for (String loopName: loopNames) {
             loopVariables.add(new LoopNameAndIterator(loopName, Character.toString((char)(105 + loopLevel))));
         }
-        this.maxLevel = graph.getAttribute("maxlevel");
-        this.levelGraph = graph.getAttribute("levelgraph");
-        this.foldInfo = graph.getAttribute("foldInfo");
+        this.maxLevel = Utils.getMaxLevel(graph);
+        this.sortedLevelGraph = Utils.getSortedLevelGraph(graph);
+        this.foldInfo = Utils.getFoldInfo(graph);
     }
 
 

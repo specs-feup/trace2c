@@ -7,18 +7,18 @@ import org.graphstream.graph.Node;
 import pt.up.fe.specs.utils.Utils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * New algorithm to detect addition chains starting in a given level
- * O(NodesInStartingLevel +
  */
 public class DetectAdditionChains implements Algorithm {
     private final int startLevel;
-    private Graph graph;
     private HashMap<Node, LinkedList<Node>> chains = new HashMap<>(); // maps node heads to node sequences
     private HashMap<Node, Node> chainHeads = new HashMap<>(); // maps node to their sequence head
     private Queue<Node> nodesToAnalyze = new LinkedList<>();
-    private List<List<Node>> levelGraph;
+    private List<HashSet<Node>> levelGraph;
+    private final int MIN_COUNT = 4;
 
     /**
      * Level to start searching for chains
@@ -30,12 +30,12 @@ public class DetectAdditionChains implements Algorithm {
     
     @Override
     public void init(Graph graph) {
-        this.graph = graph;
         this.levelGraph = Utils.getLevelGraph(graph);
     }
 
-    public HashMap<Node, LinkedList<Node>> getChains() {
-        return chains;
+    public List<LinkedList<Node>> getChains() {
+
+        return chains.values().stream().filter(chain -> chain.size() >= MIN_COUNT).collect(Collectors.toList());
     }
 
     @Override
@@ -46,7 +46,6 @@ public class DetectAdditionChains implements Algorithm {
                 chainHeads.put(node, node);
                 LinkedList<Node> chain = new LinkedList<>();
                 chain.add(node);
-
                 chains.put(node, chain);
                 nodesToAnalyze.add(node);
             }

@@ -6,11 +6,14 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
 
     private static final String startNodeID = "Start";
     private static final String endNodeID = "End";
+    private static final Pattern matchDigitsPattern = Pattern.compile("\\[\\d*\\]");
 
     /**
      * Receives a variable that is an array, and returns the sizes of all of it's partitions.
@@ -93,26 +96,23 @@ public class Utils {
 
     }
 
+
+
+
+
     /**
      * Isolate indexes of an array access.
      * @param label    label of array access,
      * @return indexes
      */
     public static ArrayList<Integer> getIndexes(String label) {
-        String temp = label;
+
         ArrayList<Integer> indexes = new ArrayList<>();
-        while (temp.lastIndexOf("[") != -1) {
-
-            temp = temp.substring(temp.indexOf("["));
-            String temp2 = temp.substring(1, temp.indexOf("]"));
-            try {
-                Integer intValue = Integer.parseInt(temp2);
-                indexes.add(intValue);
-            } catch (NumberFormatException exception) {
-                indexes.add(null);
-            }
-
-            temp = temp.substring(temp.indexOf("]"));
+        Matcher matcher = matchDigitsPattern.matcher(label);
+        while (matcher.find()) {
+            String numberString = label.substring(matcher.start()+1,  matcher.end()-1);
+            int index = Integer.parseInt(numberString);
+            indexes.add(index);
         }
         return indexes;
     }
@@ -345,13 +345,17 @@ public class Utils {
         return node.hasAttribute("level");
     }
 
-    public static void setLevelGraph(Graph graph, List<List<Node>> levelGraph) {
+    public static void setLevelGraph(Graph graph, List<HashSet<Node>> levelGraph) {
         graph.setAttribute("levelgraph", levelGraph);
         graph.addAttribute("level", true);
     }
 
-    public static List<List<Node>> getLevelGraph(Graph graph) {
+    public static List<HashSet<Node>> getLevelGraph(Graph graph) {
         return graph.getAttribute("levelgraph");
+    }
+
+    public static int getMaxLevel(Graph graph) {
+        return getLevelGraph(graph).size() - 1;
     }
 
     public static void clearLevelingAttributes(Graph graph) {
@@ -379,5 +383,13 @@ public class Utils {
             if (e.getSourceNode().equals(parent)) return true;
         }
         return false;
+    }
+
+    public static void setSortedLevelGraph(Graph graph, List<List<Node>> sortedLevelGraph) {
+        graph.setAttribute("sortedLevelGraph", sortedLevelGraph);
+    }
+
+    public static List<List<Node>> getSortedLevelGraph(Graph graph) {
+        return graph.getAttribute("sortedLevelGraph");
     }
 }

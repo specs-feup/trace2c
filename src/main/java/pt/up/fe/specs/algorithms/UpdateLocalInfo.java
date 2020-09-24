@@ -49,13 +49,10 @@ public class UpdateLocalInfo implements Algorithm {
 
                         arrayNamesToTypes.putIfAbsent(varElement.getName(), varElement.getType());
                         ArrayList<Integer> currentMaxIndexes = arraysToMaxIndexes.get(varElement.getName());
-                        for (int i = 0; i < varElement.getDim(); i++) {
-                            if (currentVarIndexes.get(i) != null) { // used when index is a variable
-                                if (currentVarIndexes.get(i) > currentMaxIndexes.get(i)) {
-                                    currentMaxIndexes.set(i, currentVarIndexes.get(i));
-                                }
+                        for (int i = 0; i < currentVarIndexes.size(); i++) {
+                            if (currentVarIndexes.get(i) > currentMaxIndexes.get(i)) {
+                                currentMaxIndexes.set(i, currentVarIndexes.get(i));
                             }
-
                         }
                     }
                 }

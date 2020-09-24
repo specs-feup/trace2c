@@ -1,6 +1,7 @@
 package pt.up.fe.specs.utils;
 
 import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,11 +28,20 @@ public class EdgeComparator implements Comparator<Edge> {
         for (int i = 0; i < indexes1.size(); i++) {
             Integer size1 = indexes1.get(i);
             Integer size2 = indexes2.get(i);
+            if (size1 == null || size2 == null) {
+                System.out.println("Debug null sizes");
+            }
             if (!size1.equals(size2)) {
                 return size1 - size2;
             }
         }
         return 0;
+    }
+
+    private int compareNodeName(Node n1, Node n2) {
+        String n1Id = n1.getId();
+        String n2Id = n2.getId();
+        return n1Id.compareTo(n2Id);
     }
 
     @Override
@@ -68,7 +78,10 @@ public class EdgeComparator implements Comparator<Edge> {
         }
         if (Utils.isArray(e1) && Utils.isArray(e2)) {
             if (name1.equals(name2)) {
-                return compareIndexes(label1, label2);
+                int indexesCompareResult = compareIndexes(label1, label2);
+                return indexesCompareResult != 0 ?
+                        indexesCompareResult :
+                        compareNodeName(e1.getTargetNode(), e2.getTargetNode());
             } else {
                 return name1.compareTo(name2);
             }

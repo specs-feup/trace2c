@@ -51,7 +51,7 @@ public class SetVarsAttributes implements Algorithm {
                 int arrayDim = 0;
                 String label = Utils.getLabel(node);
                 if (Utils.isArray(node)) {
-                    temp_name = cutIndexes(label);
+                    temp_name = Utils.varNameFromLabel(label);
                     arrayDim = Utils.getArrayDimension(label);
                     node.addAttribute("name", temp_name);
                     node.addAttribute("array", true);
@@ -74,21 +74,6 @@ public class SetVarsAttributes implements Algorithm {
 
 
 
-    /**
-     * Isolates dimension and indexes of array. Works with structs.
-     *
-     * @param name label of array access.
-     * @return label of array access without indexes.
-     */
-    public String cutIndexes(String name) {
-        String temp = name;
-        while (temp.lastIndexOf("[") != -1) {
-            String temp2 = temp.substring(temp.indexOf("["));
-            String temp3 = temp2.substring(0, temp2.indexOf("]"));
-            temp = temp.replace(temp3 + "]", "");
-        }
 
-        return temp;
-    }
 
 }

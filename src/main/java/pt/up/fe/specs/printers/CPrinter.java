@@ -100,9 +100,9 @@ abstract public class CPrinter {
             operands.add(name);
         }
 
-        String operationType = n.getAttribute("label").toString();
+        String operationType = Utils.getLabel(n);
         String operation;
-        if (edges.get(0).getAttribute("pos").toString().equals("l")) {
+        if (Utils.getPos(edges.get(0)).equals("l")) {
             operation = operands.get(0) + " " + operationType + " " + operands.get(1);
         } else {
             operation = operands.get(1) + " " + operationType + " " + operands.get(0);
@@ -113,7 +113,8 @@ abstract public class CPrinter {
 
     protected String getCallStatement(Edge edge) {
         StringBuffer buffer = new StringBuffer();
-        if (edge.getAttribute("att1").equals("call")) {
+
+        if (Utils.isCall(edge)) {
             String functionName = edge.getAttribute("att2");
             buffer.append(functionName);
             buffer.append("(");

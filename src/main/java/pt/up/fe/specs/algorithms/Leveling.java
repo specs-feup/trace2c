@@ -21,7 +21,7 @@ public class Leveling implements Algorithm {
     Graph graph;
     private HashSet<Node> nodeSet = new HashSet<>();
     private List<Node> nodesLeveled = new ArrayList<>();
-    private List<List<Node>> levelGraph = new ArrayList<List<Node>>();
+    private List<HashSet<Node>> levelGraph = new ArrayList<>();
     private int level;
 
     @Override
@@ -40,7 +40,7 @@ public class Leveling implements Algorithm {
         // graph.display();
         clearLeveling();
 
-        levelGraph.add(new ArrayList<>());
+        levelGraph.add(new HashSet<>());
         Node start = graph.getNode("Start");
 
         start.addAttribute("level", this.level);
@@ -72,7 +72,7 @@ public class Leveling implements Algorithm {
         while (!nodeSet.isEmpty()) {
             if (level % 10000 == 0) System.out.println("Processing level " + level);
             level++;
-            levelGraph.add(new ArrayList<>());
+            levelGraph.add(new HashSet<>());
 
             Set<Node> childrenToAdd = new HashSet<>();
 
@@ -90,6 +90,7 @@ public class Leveling implements Algorithm {
 
         }
 
+        Utils.setLevelGraph(graph, levelGraph);
         graph.addAttribute("levelgraph", levelGraph);
         graph.addAttribute("maxlevel", level);
         System.out.println("Leveling Finished: graph " + graph.getId() + " has " + (level+1) + " levels");
@@ -148,7 +149,7 @@ public class Leveling implements Algorithm {
      *
      * @return
      */
-    public List<List<Node>> getLevelGraph() {
+    public List<HashSet<Node>> getLevelGraph() {
         return levelGraph;
     }
 

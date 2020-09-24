@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class CFunctionPrinter extends CPrinter {
-    List<List<Node>> levelGraph;
+    List<List<Node>> sortedLevelGraph;
     int maxLevel;
     String graphType;
 
@@ -39,8 +39,8 @@ public class CFunctionPrinter extends CPrinter {
         }
 
 
-        this.maxLevel = graph.getAttribute("maxlevel");
-        this.levelGraph = graph.getAttribute("levelgraph");
+        this.maxLevel = Utils.getMaxLevel(graph);
+        this.sortedLevelGraph = Utils.getSortedLevelGraph(graph);
         this.graphType = graph.hasAttribute("type") ? graph.getAttribute("type") : "normal";
     }
 
@@ -58,7 +58,7 @@ public class CFunctionPrinter extends CPrinter {
                 CParallelLoopPrinter parallelLoopPrinter = new CParallelLoopPrinter(outBuffer, graph, 0);
                 parallelLoopPrinter.print();
             } else {
-                writeCodeByLevel(levelGraph, 0);
+                writeCodeByLevel(sortedLevelGraph, 0);
             }
 
 

@@ -3,11 +3,7 @@ package pt.up.fe.specs.printers;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import pt.up.fe.specs.Config;
-import pt.up.fe.specs.utils.LoopNameAndIterator;
-import pt.up.fe.specs.utils.LoopInfo;
-import pt.up.fe.specs.utils.SpecificLoopInfo;
-import pt.up.fe.specs.utils.FoldInfo;
+import pt.up.fe.specs.utils.*;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -22,7 +18,7 @@ import java.util.List;
  */
 public class CLoopPrinter extends CPrinter {
     Graph subgraph;
-    List<List<Node>> levelGraph = new ArrayList<>();
+    List<List<Node>> sortedLevelGraph = new ArrayList<>();
     int maxLevel;
     int loopLevel; // loop level in the nested loop hierarchy (starts in 0)
     ArrayList<LoopNameAndIterator> loopVariables = new ArrayList<LoopNameAndIterator>();
@@ -45,8 +41,8 @@ public class CLoopPrinter extends CPrinter {
         loopVariables.add(new LoopNameAndIterator(hyperNode.getAttribute("loopname"), Character.toString((char)(105 + loopLevel))));
         foldInfo = hyperNode.getAttribute("foldInfo");
         this.subgraph = ((ArrayList<Graph>) graph.getAttribute("HyperNode")).get(0);
-        maxLevel = subgraph.getAttribute("maxlevel");
-        this.levelGraph = subgraph.getAttribute("levelgraph");
+        maxLevel = Utils.getMaxLevel(graph);
+        this.sortedLevelGraph = Utils.getSortedLevelGraph(graph);
     }
 
     /**
@@ -61,7 +57,7 @@ public class CLoopPrinter extends CPrinter {
             outBuffer.append("// starting Loop\n");
             initLoop();
 
-            writeCodeByLevel(levelGraph, 0);
+            writeCodeByLevel(sortedLevelGraph, 0);
             outBuffer.append("}\n");
 
 

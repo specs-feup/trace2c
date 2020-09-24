@@ -56,9 +56,12 @@ public class WeightAlgorithm implements Algorithm {
         for (Node n : graph) {
             String nodeType = n.getAttribute("att1");
             Integer typeWeight = Utils.isOperation(n) ? operationTypeToInt.get(Utils.getLabel(n)) : nodeTypeToInt.get(nodeType);
-            Integer nodeLevel = n.getAttribute("level");
+            Integer nodeLevel = Utils.getLevel(n);
             if (typeWeight == null) {
                 System.err.println("Null type weight for node " + n.getId());
+            }
+            if (nodeLevel == null) {
+                System.err.println("Null level for node " + n.getId());
             }
             int sequential_weight = k2 * typeWeight * n.getDegree();
 
