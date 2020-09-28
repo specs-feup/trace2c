@@ -1,12 +1,33 @@
 {
-   "loadstores":2,
-   "inputs":["histogram[256]", "glm[256]"
+   "inputs": [],
+   "input_types": [],
+   "outputs": [
+      "image[4][4]",
+      "histogram[8]",
+      "glm[8]"
    ],
-   "input_types":["int", "int"
+   "output_types": [
+      "int",
+      "int",
+      "int"
    ],
-   "outputs":"image[128][128]",
-   "output_type": "int",
-   "fold" : true,
-   "arithmetic" : true,
-   "graph" : "histogram.dot"
+   "fold": true,
+   "arithmetic": true,
+   "parallelizeSums": true,
+   "pruneLocalArrays": false,
+   "graph": "histogram.dot",
+   "outputFile": "histogram_1parallel",
+   "saveEnergy": false,
+   "parallelFunctions": 1,
+   "maxNodesPerSubgraph": 10000,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 0,
+   "maxFoldLevels": 256,
+   "varsToPartition": [
+   ],
+   "includes": [
+      "<stdio.h>",
+      "\"traps.h\""
+   ],
+   "defines": []
 }
