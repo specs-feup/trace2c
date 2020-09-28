@@ -12,18 +12,18 @@
 #define DATAPROPERTIES_H
 
 /* BEGIN: parameters according to the use case. */
-#define NUM_FEATURES 64     //5 // number of features used
+#define NUM_FEATURES 32     //5 // number of features used
 #define K 3                    // value of k in kNN
 #define NUM_CLASSES 2//8          // number of classes considered
-#define NUM_KNOWN_POINTS 8 //10000 //8 //instances of the model used after training
+#define NUM_KNOWN_POINTS 10000 //10000 //8 //instances of the model used after training
 
 
 
 
 #define MAX_VALUE_OF_FEATURE 1
 
-#define ftype double // type used for features
-#define dtype double // type used for distance calculation
+#define ftype float // type used for features
+#define dtype float // type used for distance calculation
 #define ctype char   // type used for class ID, an integer
 
 #if dtype == double

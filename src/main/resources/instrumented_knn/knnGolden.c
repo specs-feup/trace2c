@@ -79,15 +79,10 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 	
 		// classify the point based on the K nearest points
    	ctype classifyID;
-	#if K == 1
-		classifyID = classify1NN(BestPointsClasses);
-	#elif K == 3
-		classifyID = classify3NN(BestPointsClasses, BestPointsDistances);
-	#else
-		classifyID = classifyKNN(BestPointsClasses, BestPointsDistances);
-	#endif
+	classifyID = classify3NN(BestPointsClasses, BestPointsDistances);
 
-   	showBestPoints(BestPointsClasses, BestPointsDistances);
+
+   	//showBestPoints(BestPointsClasses, BestPointsDistances);
    	
    	return classifyID;
 }
@@ -95,12 +90,12 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 /**
 	Classify based on the K BestPoints returned by the kNN function
 	Specialized code when using K = 1
-*/
+
 ctype classify1NN(ctype BestPointsClasses[K]) {
 	ctype classifID = BestPointsClasses[0]; // there is only one point	
 	return classifID;
 }
-
+*/
 /**
 	Classify based on the K BestPoints returned by the kNN function
 	Specialized code when using K = 3
@@ -118,26 +113,6 @@ ctype classify3NN(ctype BestPointsClasses[K], dtype BestPointsDistances[K]) {
 		
 		ctype classID;
 		
-		/*
-		if(c1 == c2) {
-			classID = c1;
-		} else if(c1 == c3) {
-			classID = c1;
-		} else if(c2 == c3) {
-			classID = c2;
-		} else {  // ELSE
-			dtype mindist = d1;
-			classID = c1;
-			if(mindist > d2) {
-				mindist = d2;
-				classID = c2;
-			}
-			if(mindist > d3) {
-				mindist = d3;
-				classID = c3;
-			}
-		}	
-		*/
 		
 		// ELSE
 		dtype mindist = d1;
@@ -162,7 +137,7 @@ ctype classify3NN(ctype BestPointsClasses[K], dtype BestPointsDistances[K]) {
 /**
 	This function can be heavely optimized by using specialized versions according to the value of K.
 	K=1, K=2, K=3, etc. Previous functions are examples of specialized code for K=1 and K=3.
-*/
+
 ctype classifyKNN(ctype BestPointsClasses[K], dtype BestPointsDistances[K]) {
 	
 	unsigned char histogram[NUM_CLASSES+1];
@@ -194,4 +169,4 @@ ctype classifyKNN(ctype BestPointsClasses[K], dtype BestPointsDistances[K]) {
 	//printf("\n#### Final kNN classification: %s: \n", classif[index]);
 	return classID;
 }
-
+*/

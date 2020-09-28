@@ -1,12 +1,12 @@
 {
   "inputs": [
     "xFeatures[32]",
-    "knownFeatures[8][32]",
-    "knownClasses[8]"
+    "knownFeatures[1000][32]",
+    "knownClasses[1000]"
   ],
   "input_types": [
-    "double",
-    "double",
+    "float",
+    "float",
     "char"
   ],
   "outputs": [
@@ -16,19 +16,19 @@
     "char"
   ],
   "fold": true,
-  "parallelizeSums": false,
+  "parallelizeSums": true,
   "foldPrologue": false,
   "foldEpilogue": true,
   "arithmetic": true,
   "pruneLocalArrays": false,
-  "graph": "knn8p32f.dot",
-  "outputFile": "knn_output",
-  "saveEnergy": true,
+  "graph": "knnFloatNoSqrt1000p32f.dot",
+  "outputFile": "knnFloatNoSqrt1000p32f_2parallel_newBalancing",
+  "saveEnergy": false,
   "parallelFunctions": 2,
-  "maxNodesPerSubgraph": 1000,
+  "maxNodesPerSubgraph": 100000,
   "subgraphRepeats": 0,
-  "minFoldLevels": 30,
-  "maxFoldLevels": 70,
+  "minFoldLevels": 5,
+  "maxFoldLevels": 20,
   "varsToPartition": [
     {
       "var": "knownFeatures",
