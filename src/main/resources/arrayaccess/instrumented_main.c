@@ -3,12 +3,13 @@
 void array_access_param( int a[5], int input, int *out) {
     FILE *log_file_0 = fopen("arrayaccess_param.dot", "w");
     fprintf(log_file_0, "Digraph G{\n");
-
+    // Declare variables
     fprintf(log_file_0, "input_0 [label=\"input\", att1=var, att2=param, att3=int];\n");
     fprintf(log_file_0, "out_0 [label=\"*out\", att1=var, att2=param, att3=int];\n");
     fprintf(log_file_0, "AA_0 [label=\"AA_0\", att1=nop];\n");
     fprintf(log_file_0, "\"a[input]_0\" [label=\"a[input]\", att1=var, att2=param, att3=int];\n");
     fprintf(log_file_0, "Assign_0 [label=\"Assign_0\", att1=assignment];\n");
+    // Declare edges
     fprintf(log_file_0, "input_0->AA_0  [label=\"1\", ord=1];\n");
     fprintf(log_file_0, "AA_0->\"a[input]_0\"  [label=\"2\", ord=2];\n");
     fprintf(log_file_0, "\"a[input]_0\"->Assign_0  [label=\"3\", ord=3];\n");

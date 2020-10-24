@@ -1,17 +1,21 @@
 {
-   "loadstores":2,
-   "inputs":["a"
-   ],
-   "input_types":["int"
-   ],
-   "outputs": ["b"],
+   "inputs":["a"],
+   "input_types":["int"],
+   "outputs": ["*b"],
    "output_types": ["int"],
-   "folding" : "false",
+   "fold" : "false",
+   "parallelizeSums": false,
    "arithmetic" : false,
-   "acc" : false,
-   "full_part" : false,
-   "full_connect" : false,
+   "pruneLocalArrays": false,
    "graph" : "ternary.dot",
-   "outputFile": "ternaryResult",
-   "parallelFunctions": 0
+   "outputFile": "ternary_out",
+   "parallelFunctions": 0,
+   "saveEnergy": false,
+   "subgraphRepeats": 0,
+   "minFoldLevels": 0,
+   "maxFoldLevels": 1000,
+   "maxNodesPerSubgraph": 1000,
+   "varsToPartition": [],
+   "includes": ["<stdio.h>"],
+   "defines": []
 }

@@ -1,0 +1,1 @@
+gcc dsp_dotprod_create_graph.c -Wall -o dotprod.exe

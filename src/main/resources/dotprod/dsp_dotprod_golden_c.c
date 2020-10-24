@@ -56,11 +56,8 @@
 int DSP_dotprod_golden_c(const short x[NX], const short y[NX], int nx)
 {
     int sum = 0, i;
-
-
     for (i = 0; i < nx; i++)
         sum += x[i] * y[i];
-
     return sum;
 }
 

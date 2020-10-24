@@ -21,10 +21,10 @@
    "foldEpilogue": true,
    "arithmetic": true,
    "pruneLocalArrays": true,
-   "graph": "svm1274.dot",
-   "outputFile": "svm1274parallel1_v2",
+   "graph": "svm.dot",
+   "outputFile": "fullSVMParallel2_v2",
    "saveEnergy": false,
-   "parallelFunctions": 1,
+   "parallelFunctions": 2,
    "maxNodesPerSubgraph": 1000,
    "subgraphRepeats": 0,
    "minFoldLevels": 0,
@@ -39,6 +39,6 @@
          "dim": 0
       }
    ],
-   "includes": [],
-   "defines": []
+   "includes": ["<stdio.h>","<math.h>","\"svm.h\""],
+   "defines": ["gamma 8", "b 0"]
 }

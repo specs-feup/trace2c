@@ -1,7 +1,7 @@
 {
    "inputs":[
-      "x[4000]",
-      "y[4000]"
+      "x[10]",
+      "y[10]"
    ],
    "input_types":[
       "short",
@@ -15,10 +15,10 @@
    "foldEpilogue": true,
    "arithmetic" : true,
    "pruneLocalArrays": true,
-   "graph" : "dotprod_graph.dot",
-   "outputFile": "n4000_dotprod_parallel1",
-   "parallelFunctions": 1,
-   "saveEnergy": true,
+   "graph" : "dotprod_graph_N10.dot",
+   "outputFile": "n10_dotprod_parallel2",
+   "parallelFunctions": 2,
+   "saveEnergy": false,
    "subgraphRepeats": 0,
    "minFoldLevels": 0,
    "maxFoldLevels": 1000,

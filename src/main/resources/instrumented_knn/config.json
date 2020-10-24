@@ -1,8 +1,8 @@
 {
   "inputs": [
-    "xFeatures[32]",
-    "knownFeatures[1000][32]",
-    "knownClasses[1000]"
+    "xFeatures[128]",
+    "knownFeatures[8][128]",
+    "knownClasses[8]"
   ],
   "input_types": [
     "float",
@@ -21,10 +21,10 @@
   "foldEpilogue": true,
   "arithmetic": true,
   "pruneLocalArrays": false,
-  "graph": "knnFloatNoSqrt1000p32f.dot",
-  "outputFile": "knnFloatNoSqrt1000p32f_2parallel_newBalancing",
-  "saveEnergy": false,
-  "parallelFunctions": 2,
+  "graph": "8p128fFloatNoSqrt/8p128f_knnFloatNoSqrt.dot",
+  "outputFile": "knnFloatNoSqrt8p128f_4parallel",
+  "saveEnergy": true,
+  "parallelFunctions": 4,
   "maxNodesPerSubgraph": 100000,
   "subgraphRepeats": 0,
   "minFoldLevels": 5,

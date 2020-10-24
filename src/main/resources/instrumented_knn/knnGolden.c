@@ -70,7 +70,7 @@ ctype knn(ftype xFeatures[NUM_FEATURES], ftype knownFeatures[NUM_KNOWN_POINTS][N
 		for(int j=0; j<NUM_FEATURES; j++) {
 			distance += sqr((dtype) xFeatures[j]-(dtype) knownFeatures[i][j]);
 		}
-		distance = sqrt(distance);
+		//distance = sqrt(distance);
 		//printf("distance %e\n", distance);
 		
 		// maintains the k best points updated

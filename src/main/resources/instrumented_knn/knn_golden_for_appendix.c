@@ -17,8 +17,6 @@ void updateBest(dtype distance, ctype classifID, dtype BestPointsDistances[K], c
 		max = (dbest > max_tmp) ? dbest : max; 
 		index = (dbest > max_tmp) ? i : index;
 	}
-	// if the point is better (shorter distance) than the worst one (longer distance) in the BestPoints
-	// update BestPoints substituting the wrost one
 
 	dtype dbest = BestPointsDistances[index];
 	ctype cbest = BestPointsClasses[index];
