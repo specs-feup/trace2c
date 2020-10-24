@@ -18,7 +18,7 @@ import java.util.Set;
  */
 public class Leveling implements Algorithm {
 
-    Graph graph;
+    private Graph graph;
     private HashSet<Node> nodeSet = new HashSet<>();
     private List<Node> nodesLeveled = new ArrayList<>();
     private List<HashSet<Node>> levelGraph = new ArrayList<>();
@@ -26,8 +26,8 @@ public class Leveling implements Algorithm {
 
     @Override
     /**
-     * Initializes algorithm. Checks if graphs has passed through the algorithm already.
-     * If true erases information from previous leveling. Start node
+     * Initializes algorithm. Checks if graphs has passed through the algorithm
+     * already. If true erases information from previous leveling. Start node
      * selected as beginning of algorithm
      */
     public void init(Graph graph) {
@@ -41,18 +41,17 @@ public class Leveling implements Algorithm {
         clearLeveling();
 
         levelGraph.add(new HashSet<>());
-        Node start = graph.getNode("Start");
-
-        start.addAttribute("level", this.level);
-        levelGraph.get(level).add(start);
-        nodeSet.addAll(getChildren(start));
+        Node start = Utils.getStartNode(graph);
+        Utils.setLevel(start, 0);
+        levelGraph.get(0).add(start);
+        nodeSet.addAll(getChildrenWithParentsLeveled(start));
         graph.addAttribute("level", true);
         System.out.println("Leveling initiated on graph" + graph.getId());
 
     }
 
     private boolean areAllParentsLeveled(Node n) {
-        for (Edge e: n.getEachEnteringEdge()) {
+        for (Edge e : n.getEachEnteringEdge()) {
             if (!Utils.isLeveled(e.getSourceNode())) {
                 return false;
             }
@@ -62,41 +61,36 @@ public class Leveling implements Algorithm {
 
     @Override
     /**
-     * Main body of the algorithm. Applies the levels to the nodes. After graph is leveled
-     * the algorithm is called for the lower levels.
+     * Main body of the algorithm. Applies the levels to the nodes. After graph is
+     * leveled the algorithm is called for the lower levels.
      *
      */
     public void compute() {
-        System.out.println("Starting graph leveling compute function");
-        graph.addAttribute("level", true);
         while (!nodeSet.isEmpty()) {
-            if (level % 10000 == 0) System.out.println("Processing level " + level);
             level++;
             levelGraph.add(new HashSet<>());
-
             Set<Node> childrenToAdd = new HashSet<>();
-
+            //System.out.println();
+            //System.out.print("Set elements:");
             for (Node n : nodeSet) {
+                //System.out.print(n.getId() + ", ");
                 levelNode(n, level);
                 if (n.getOutDegree() != 0) {
-                    childrenToAdd.addAll(getChildren(n));
+                    childrenToAdd.addAll(getChildrenWithParentsLeveled(n));
                 }
                 nodesLeveled.add(n);
             }
-
             nodeSet.removeAll(nodesLeveled);
             nodeSet.addAll(childrenToAdd);
             nodesLeveled.clear();
-
         }
 
         Utils.setLevelGraph(graph, levelGraph);
-        graph.addAttribute("levelgraph", levelGraph);
-        graph.addAttribute("maxlevel", level);
-        System.out.println("Leveling Finished: graph " + graph.getId() + " has " + (level+1) + " levels");
+        Utils.setMaxLevel(graph, level);
+        System.out.println("Leveling Finished: graph " + graph.getId() + " has " + (level + 1) + " levels");
 
         if (graph.hasAttribute("subgraphs")) {
-            for (Graph subgraph: graph.<List<Graph>>getAttribute("subgraphs")) {
+            for (Graph subgraph : graph.<List<Graph>>getAttribute("subgraphs")) {
                 init(subgraph);
                 compute();
             }
@@ -104,25 +98,25 @@ public class Leveling implements Algorithm {
     }
 
     /**
-     * Checks if node can be leveled
+     * Levels node
      *
      * @param n     Node to mark.
      * @param level level to assign if possible.
      * @return true if node marked.
      */
     private void levelNode(Node n, int level) {
-        if (Utils.isLeveled(n)) System.err.println("Leveling: Cyclic graph at node " + n.getId());
-            levelGraph.get(level).add(n);
-            n.addAttribute("level", level);
+        if (Utils.isLeveled(n))
+            System.err.println("Leveling: Cyclic graph at node " + n.getId());
+        levelGraph.get(level).add(n);
+        n.addAttribute("level", level);
     }
-
 
     /**
      * Gets children that can be leveled
      *
      * @param n Node from which the child nodes are obtained.
      */
-    private Set<Node> getChildren(Node n) {
+    private Set<Node> getChildrenWithParentsLeveled(Node n) {
         Set<Node> children = new HashSet<>();
         for (Edge e : n.getEachLeavingEdge()) {
             Node child = e.getTargetNode();

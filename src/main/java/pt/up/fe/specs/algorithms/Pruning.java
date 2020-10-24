@@ -6,7 +6,6 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.Graphs;
 import pt.up.fe.specs.utils.Utils;
-import sun.nio.ch.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +15,6 @@ import static java.util.stream.Collectors.toCollection;
 
 /**
  * Algorithm dedicated to pruning intermediate nodes
- * 
- * @author CPU TOSH
  *
  */
 public class Pruning implements Algorithm {
@@ -31,7 +28,6 @@ public class Pruning implements Algorithm {
      * Initialization of algorithm
      */
     public void init(Graph graph) {
-        // TODO Auto-generated method stub
         this.graph = graph;
         ne = 0;
         System.out.println("Initializing pruning - node count: " + graph.getNodeCount());
@@ -45,7 +41,6 @@ public class Pruning implements Algorithm {
      * call the method for their removal
      */
     public void compute() {
-        // TODO Auto-generated method stub
         List<Node> nodes = graph.getNodeSet().stream().collect(toCollection(ArrayList::new));
 
 

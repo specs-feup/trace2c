@@ -40,6 +40,7 @@ public class CreateEpilogue implements Algorithm {
             Leveling leveling = new Leveling();
             leveling.init(mainGraph);
             leveling.compute();
+
             mainGraph.setAttribute("epilogue", epilogueGraph);
         }
 

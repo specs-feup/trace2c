@@ -41,6 +41,7 @@ public class BalanceAdditionChains implements Algorithm {
     }
 
 
+
     /**
      * Removes the edge that enters into node n in position pos
      *
@@ -83,18 +84,7 @@ public class BalanceAdditionChains implements Algorithm {
                 addNewEdge(e2, fourthOp, "l");
                 addNewEdge(e3, secondOp, "r");
 
-                // update levels in the levelgraph and in the node attributes
-                /*
-                int secondOpLevel = Utils.getLevel(secondOp);
-                int thirdOpLevel = Utils.getLevel(thirdOp);
-                int fourthOpLevel = Utils.getLevel(fourthOp);
-                Utils.setLevel(thirdOp, secondOpLevel - 1);
-                Utils.setLevel(fourthOp, secondOpLevel + 1);
-                levelGraph.get(thirdOpLevel).remove(thirdOp);
-                levelGraph.get(fourthOpLevel).remove(fourthOp);
-                levelGraph.get(secondOpLevel-1).add(thirdOp);
-                levelGraph.get(secondOpLevel+1).add(fourthOp);
-                */
+
 
                 chain.remove(2);
                 chain.removeFirst();

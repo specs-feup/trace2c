@@ -66,26 +66,28 @@ public class Launcher {
 
 
         Queue<Algorithm> algorithmsQueue = new LinkedList<>();
-
+        algorithmsQueue.add(new InfoFromConfig());
         algorithmsQueue.add(new AddStartAndEnd());
         if (Config.isPruneLocalArrays()) {
-            // should only be used if there are no arrays accesses that depend on input
             algorithmsQueue.add(new LocalVectorPruning());
         }
-        algorithmsQueue.add(new SetVarsAttributes());
-        algorithmsQueue.add(new InfoFromConfig());
+        algorithmsQueue.add(new SetArrayAttributes());
         algorithmsQueue.add(new Pruning());
-        algorithmsQueue.add(new Leveling());
-        if (Config.isToParallelizeSums()) algorithmsQueue.add(new ParallelizeSums());
 
+        algorithmsQueue.add(new Leveling());
+        if (Config.isToParallelizeSums()) {
+            algorithmsQueue.add(new BalanceAdditionChains());
+        }
+        algorithmsQueue.add(new Snapshot());
 
         if (Config.isToFold()) {
             algorithmsQueue.add(new WeightAlgorithm());
             algorithmsQueue.add(new AllSubgraphsAlgorithm());
             algorithmsQueue.add(new FoldParallelSubgraphs());
-            //algorithmsQueue.add(new Snapshot());
+
             algorithmsQueue.add(new CreatePrologue());
             algorithmsQueue.add(new CreateEpilogue());
+            //algorithmsQueue.add(new Snapshot());
         }
 
         algorithmsQueue.add(new UpdateVarLabels());
@@ -94,7 +96,6 @@ public class Launcher {
 
         algorithmsQueue.add(new UpdateLocalInfo());
         algorithmsQueue.add(new OrderLevelGraph());
-        //algorithmsQueue.add(new Snapshot());
 
         while(!algorithmsQueue.isEmpty()) {
             Algorithm algorithm = algorithmsQueue.remove();

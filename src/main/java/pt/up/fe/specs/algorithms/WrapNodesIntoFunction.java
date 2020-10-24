@@ -142,10 +142,11 @@ public class WrapNodesIntoFunction implements Algorithm {
             }
 
             if (newSource == null || Utils.isStartNode(newSource)) {
-                newSource = functionGraph.getNode("Start");
-                Edge edgeEnteringInCallNode = mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
-                        edge.getSourceNode(), callNode, true);
-                Graphs.copyAttributes(edge, edgeEnteringInCallNode);
+                newSource = Utils.getStartNode(functionGraph);
+                if (!Utils.areConnected(edge.getSourceNode(), callNode)) {
+                    mainGraph.addEdge(edge.getSourceNode() + ";" + callNode.getId() + "_" + edgeCounter++,
+                            edge.getSourceNode(), callNode, true);
+                }
             }
             Edge newEdge = functionGraph.addEdge(edge.getId(), newSource, finalN, true);
             Graphs.copyAttributes(edge, newEdge);

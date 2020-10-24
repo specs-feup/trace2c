@@ -16,7 +16,7 @@ import java.util.List;
  * @author CPU TOSH
  */
 
-public class SetVarsAttributes implements Algorithm {
+public class SetArrayAttributes implements Algorithm {
 
     private Graph graph;
 
